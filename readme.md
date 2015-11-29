@@ -1,3 +1,3 @@
-DJ Mixer
+DJMixer
 
 A test
