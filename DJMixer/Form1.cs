@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NAudio;
+using NAudio.Wave;
 using SlimDX.DirectSound;
 using SlimDX.Multimedia;
 //using SlimDX.XAudio2;
@@ -16,159 +18,134 @@ using SlimDX.Multimedia;
 namespace DJMixer {
 	public partial class Form1 : Form {
 
-		/// <summary>
-		///  Audio output stream.
-		/// </summary>
-		//XAudio2 device;
+		ConfigForm config;
 
+		//BackgroundWorker rightPlayerWorker;
+		//BackgroundWorker leftPlayerWorker;
 
-		public DeviceCollection deviceCollection;
+		IWavePlayer waveOutLeftPlayer;
+		IWavePlayer waveOutRightPlayer;
+		Mp3FileReader leftAudioFileReader;
+		Mp3FileReader rightAudioFileReader;
 
-		public DirectSound ds;
-
+		public Thread threadLeftPlayer;
+		//bool leftPlayerPlaying = false;
 
 		public Form1() {
 			InitializeComponent();
 
-			getSoundDevices();
+			config = new ConfigForm();
+			config.getSoundDevices();
 
-			//device = new XAudio2();
-
-			setDirectSoundDevice();
+			initSoundDevices();
 
 
-		}
-
-		private void setDirectSoundDevice() {
-
-			ds = new DirectSound(deviceCollection[comboBox_SoundDeviceSelect.SelectedIndex].DriverGuid);
-			ds.SetCooperativeLevel(this.Handle, CooperativeLevel.Priority);
+			
 
 		}
 
+		private void initSoundDevices() {
 
-
-		private void buttonPlay_Click(Object sender, EventArgs e) {
-
-			WaveFormatExtensible format = new WaveFormatExtensible();
-			format.BitsPerSample = 16;
-			format.BlockAlignment = 4;
-			format.Channels = 2;
-			format.FormatTag = WaveFormatTag.MpegLayer3;
-			format.SamplesPerSecond = 44100;
-			format.AverageBytesPerSecond = format.SamplesPerSecond * format.BlockAlignment;
-
-			SoundBufferDescription desc = new SoundBufferDescription();
-			desc.Format = format;
-			desc.Flags = SlimDX.DirectSound.BufferFlags.GlobalFocus;
-			desc.SizeInBytes = 8 * format.AverageBytesPerSecond;
-
-			PrimarySoundBuffer pBuffer = new PrimarySoundBuffer(ds, desc);
-
-
-			SoundBufferDescription desc2 = new SoundBufferDescription();
-			desc2.Format = format;
-			desc2.Flags = BufferFlags.GlobalFocus | BufferFlags.ControlPositionNotify | BufferFlags.GetCurrentPosition2;
-			desc2.SizeInBytes = 8 * format.AverageBytesPerSecond;
-
-			SecondarySoundBuffer sBuffer = new SecondarySoundBuffer(ds, desc2);
-
-
-			NotificationPosition[] notifications = new NotificationPosition[2];
-			notifications[0].Offset = desc2.SizeInBytes / 2 + 1;
-			notifications[1].Offset = desc2.SizeInBytes - 1;
-
-
-			notifications[0].Event = new AutoResetEvent(false);
-			notifications[1].Event = new AutoResetEvent(false);
-			sBuffer.SetNotificationPositions(notifications);
-
-			byte[] bytes1 = new byte[desc2.SizeInBytes / 2];
-			byte[] bytes2 = new byte[desc2.SizeInBytes];
-
-			Stream stream = File.Open("D:/mp3z/JPop/Tsunku/Canary Club/05. [H!PBR] Canary Club - SWEET & TOUGHNESS.mp3", FileMode.Open);
-
-			Thread fillBuffer = new Thread(() => {
-				int readNumber = 1;
-				int bytesRead;
-
-				bytesRead = stream.Read(bytes2, 0, desc2.SizeInBytes);
-				sBuffer.Write<byte>(bytes2, 0, LockFlags.None);
-				sBuffer.Play(0, PlayFlags.Looping);
-				while (true) {
-					if (bytesRead == 0) { break; }
-					notifications[0].Event.WaitOne();
-					bytesRead = stream.Read(bytes1, 0, bytes1.Length);
-					sBuffer.Write<byte>(bytes1, 0, LockFlags.None);
-
-					if (bytesRead == 0) { break; }
-					notifications[1].Event.WaitOne();
-					bytesRead = stream.Read(bytes1, 0, bytes1.Length);
-					sBuffer.Write<byte>(bytes1, desc2.SizeInBytes / 2, LockFlags.None);
-				}
-				stream.Close();
-				stream.Dispose();
-			});
-			fillBuffer.Start();
-
-			//MasteringVoice mv = new MasteringVoice(device);
-
-			//System.IO.FileStream file = System.IO.File.OpenRead("D:/mp3z/JPop/Tsunku/Canary Club/05. [H!PBR] Canary Club - SWEET & TOUGHNESS.mp3");
-
-
-
-
-			//WaveStream stream = new WaveStream(;
-
-			//file.Close();
-
-			//AudioBuffer buffer = new AudioBuffer();
-			//buffer.AudioData = stream;
-			//buffer.AudioBytes = (int) stream.Length;
-			//buffer.Flags = SlimDX.XAudio2.BufferFlags.EndOfStream; // plays until end of stream
-
-			//SourceVoice sourceVoice = new SourceVoice(device, stream.Format);
-			//sourceVoice.SubmitSourceBuffer(buffer);
-			//sourceVoice.Start();
-
+			waveOutLeftPlayer = new WaveOut();
+			waveOutRightPlayer = new WaveOut();
 
 		}
 
-		private void getSoundDevices() {
 
-			deviceCollection = DirectSound.GetDevices();
+		private void button_StopLeftPlayer_Click(Object sender, EventArgs e) {
 
-			String[] deviceList = new String[deviceCollection.Count];
-			//SoundDevice[] devices = new SoundDevice[deviceCollection.Count];
-
-			int i = 0;
-			foreach (DeviceInformation info in deviceCollection) {
-
-				//devices[i] = new SoundDevice();
-				//devices[i].Description = info.Description;
-				//devices[i].DriverGuid = info.DriverGuid;
-				//devices[i].ModuleName = info.ModuleName;
-
-				deviceList[i] = info.Description;
-
-				++i;
-
-
+			if (waveOutLeftPlayer != null) {
+				waveOutLeftPlayer.Stop();
+				label2.Text = waveOutLeftPlayer.PlaybackState.ToString();
 			}
 
-
-
-			comboBox_SoundDeviceSelect.Items.AddRange(deviceList);
-			comboBox_SoundDeviceSelect.SelectedItem = comboBox_SoundDeviceSelect.Items[0];
-			//listBox_SoundDevices.Items.AddRange(devices);
 		}
 
-		private void comboBox_SoundDeviceSelect_SelectedIndexChanged(Object sender, EventArgs e) {
+		private void button_StopRightPlayer_Click(Object sender, EventArgs e) {
 
-			setDirectSoundDevice();
+
+			if (waveOutRightPlayer != null) {
+				waveOutRightPlayer.Stop();
+			}
 		}
 
-		private void button_Stop_Click(Object sender, EventArgs e) {
+
+		private void button_PlayLeft_Click(Object sender, EventArgs e) {
+
+			if (waveOutLeftPlayer.PlaybackState == PlaybackState.Playing) {
+
+				waveOutLeftPlayer.Pause();
+
+
+			} else if (waveOutLeftPlayer.PlaybackState == PlaybackState.Paused) {
+				waveOutLeftPlayer.Play();
+
+			} else {
+				leftAudioFileReader = new Mp3FileReader(@"D:/mp3z/JPop/Tsunku/Canary Club/05. [H!PBR] Canary Club - SWEET & TOUGHNESS.mp3");
+				waveOutLeftPlayer.Init(leftAudioFileReader);
+				waveOutLeftPlayer.Play();
+
+				threadLeftPlayer = new Thread(new ThreadStart(updateDisplays));
+				threadLeftPlayer.IsBackground = true;
+				threadLeftPlayer.Start();
+
+				
+
+			}
+			label2.Text = waveOutLeftPlayer.PlaybackState.ToString();
+		}
+
+
+		private void button_PlayRight_Click(Object sender, EventArgs e) {
+
+			rightAudioFileReader = new Mp3FileReader(@"D:\mp3z\JPop\Tsunku\Sub-Groups\Guardians 4\Shugo Chara Party - Party Time.mp3");
+
+			waveOutRightPlayer.Init(rightAudioFileReader);
+			waveOutRightPlayer.Play();
+
+		}
+
+
+
+
+
+		private void progressBar_click(Object sender, MouseEventArgs e) {
+
+			//waveOutLeftPlayer.PlaybackState.
+		}
+
+
+
+		private void updateDisplays() {
+
+			while (leftAudioFileReader.CurrentTime <= leftAudioFileReader.TotalTime &&
+				 waveOutLeftPlayer.PlaybackState != PlaybackState.Stopped) {
+				setText(leftAudioFileReader.CurrentTime.Minutes + ":" +
+					leftAudioFileReader.CurrentTime.Seconds +
+					" %" + ((int)leftAudioFileReader.CurrentTime.TotalSeconds / leftAudioFileReader.TotalTime.TotalSeconds));
+
+			}
+		}
+
+		private void playerWorker_ProgressChanged(Object sender, ProgressChangedEventArgs e) {
+
+			progressBar1.Value = e.ProgressPercentage;
+			label1.Text = e.ProgressPercentage.ToString();
+		}
+
+		// This delegate enables asynchronous calls for setting
+		// the text property on a TextBox control.
+		delegate void SetTextCallback(String text);
+
+		private void setText(String text) {
+
+			if (label1.InvokeRequired) {
+				SetTextCallback d = new SetTextCallback(setText);
+				Invoke(d, new object[] { text });
+			} else {
+				label1.Text = text;
+				progressBar1.Value = (int)(leftAudioFileReader.CurrentTime.TotalSeconds / leftAudioFileReader.TotalTime.TotalSeconds * 100);
+			}
 
 		}
 	}
