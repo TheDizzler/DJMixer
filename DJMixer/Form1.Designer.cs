@@ -28,39 +28,19 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.buttonPlay = new System.Windows.Forms.Button();
-			this.button_Stop = new System.Windows.Forms.Button();
 			this.button_PlayRight = new System.Windows.Forms.Button();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.progressBar1 = new System.Windows.Forms.ProgressBar();
 			this.button_StopRightPlayer = new System.Windows.Forms.Button();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.groupBox1.SuspendLayout();
+			this.trackBar_CrossFader = new System.Windows.Forms.TrackBar();
+			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.configToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.configToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.leftPlayer = new DJMixer.Player();
 			this.groupBox2.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.trackBar_CrossFader)).BeginInit();
+			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// buttonPlay
-			// 
-			this.buttonPlay.Location = new System.Drawing.Point(37, 441);
-			this.buttonPlay.Name = "buttonPlay";
-			this.buttonPlay.Size = new System.Drawing.Size(75, 23);
-			this.buttonPlay.TabIndex = 0;
-			this.buttonPlay.Text = "Play";
-			this.buttonPlay.UseVisualStyleBackColor = true;
-			this.buttonPlay.Click += new System.EventHandler(this.button_PlayLeft_Click);
-			// 
-			// button_Stop
-			// 
-			this.button_Stop.Cursor = System.Windows.Forms.Cursors.Default;
-			this.button_Stop.Location = new System.Drawing.Point(153, 441);
-			this.button_Stop.Name = "button_Stop";
-			this.button_Stop.Size = new System.Drawing.Size(75, 23);
-			this.button_Stop.TabIndex = 3;
-			this.button_Stop.Text = "Stop";
-			this.button_Stop.UseVisualStyleBackColor = true;
-			this.button_Stop.Click += new System.EventHandler(this.button_StopLeftPlayer_Click);
 			// 
 			// button_PlayRight
 			// 
@@ -71,28 +51,6 @@
 			this.button_PlayRight.Text = "Play";
 			this.button_PlayRight.UseVisualStyleBackColor = true;
 			this.button_PlayRight.Click += new System.EventHandler(this.button_PlayRight_Click);
-			// 
-			// groupBox1
-			// 
-			this.groupBox1.Controls.Add(this.label2);
-			this.groupBox1.Controls.Add(this.label1);
-			this.groupBox1.Controls.Add(this.progressBar1);
-			this.groupBox1.Controls.Add(this.buttonPlay);
-			this.groupBox1.Controls.Add(this.button_Stop);
-			this.groupBox1.Location = new System.Drawing.Point(13, 13);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(380, 470);
-			this.groupBox1.TabIndex = 5;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "groupBox1";
-			// 
-			// progressBar1
-			// 
-			this.progressBar1.Location = new System.Drawing.Point(7, 368);
-			this.progressBar1.Name = "progressBar1";
-			this.progressBar1.Size = new System.Drawing.Size(367, 42);
-			this.progressBar1.TabIndex = 4;
-			this.progressBar1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.progressBar_click);
 			// 
 			// button_StopRightPlayer
 			// 
@@ -108,58 +66,95 @@
 			// 
 			this.groupBox2.Controls.Add(this.button_PlayRight);
 			this.groupBox2.Controls.Add(this.button_StopRightPlayer);
-			this.groupBox2.Location = new System.Drawing.Point(426, 13);
+			this.groupBox2.Location = new System.Drawing.Point(425, 45);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(369, 470);
 			this.groupBox2.TabIndex = 7;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "groupBox2";
 			// 
-			// label1
+			// trackBar_CrossFader
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(37, 59);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(35, 13);
-			this.label1.TabIndex = 5;
-			this.label1.Text = "label1";
+			this.trackBar_CrossFader.Location = new System.Drawing.Point(269, 527);
+			this.trackBar_CrossFader.Maximum = 100;
+			this.trackBar_CrossFader.Name = "trackBar_CrossFader";
+			this.trackBar_CrossFader.Size = new System.Drawing.Size(270, 45);
+			this.trackBar_CrossFader.TabIndex = 8;
+			this.trackBar_CrossFader.TickFrequency = 5;
+			this.trackBar_CrossFader.Value = 50;
+			this.trackBar_CrossFader.Scroll += new System.EventHandler(this.trackBar_CrossFader_Scroll);
 			// 
-			// label2
+			// menuStrip1
 			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(40, 156);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(35, 13);
-			this.label2.TabIndex = 6;
-			this.label2.Text = "label2";
+			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem,
+            this.configToolStripMenuItem});
+			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+			this.menuStrip1.Name = "menuStrip1";
+			this.menuStrip1.Size = new System.Drawing.Size(806, 24);
+			this.menuStrip1.TabIndex = 9;
+			this.menuStrip1.Text = "menuStrip1";
+			// 
+			// fileToolStripMenuItem
+			// 
+			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+			this.fileToolStripMenuItem.Text = "File";
+			// 
+			// configToolStripMenuItem
+			// 
+			this.configToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.configToolStripMenuItem1});
+			this.configToolStripMenuItem.Name = "configToolStripMenuItem";
+			this.configToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
+			this.configToolStripMenuItem.Text = "Tools";
+			// 
+			// configToolStripMenuItem1
+			// 
+			this.configToolStripMenuItem1.Name = "configToolStripMenuItem1";
+			this.configToolStripMenuItem1.Size = new System.Drawing.Size(110, 22);
+			this.configToolStripMenuItem1.Text = "Config";
+			this.configToolStripMenuItem1.Click += new System.EventHandler(this.configToolStripMenuItem1_Click);
+			// 
+			// leftPlayer
+			// 
+			this.leftPlayer.Location = new System.Drawing.Point(12, 45);
+			this.leftPlayer.Name = "leftPlayer";
+			this.leftPlayer.Size = new System.Drawing.Size(392, 483);
+			this.leftPlayer.TabIndex = 10;
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(807, 495);
+			this.ClientSize = new System.Drawing.Size(806, 623);
+			this.Controls.Add(this.leftPlayer);
+			this.Controls.Add(this.trackBar_CrossFader);
 			this.Controls.Add(this.groupBox2);
-			this.Controls.Add(this.groupBox1);
+			this.Controls.Add(this.menuStrip1);
+			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "Form1";
 			this.Text = "Form1";
-			this.groupBox1.ResumeLayout(false);
-			this.groupBox1.PerformLayout();
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.onFormClosing);
 			this.groupBox2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.trackBar_CrossFader)).EndInit();
+			this.menuStrip1.ResumeLayout(false);
+			this.menuStrip1.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
 		#endregion
-
-		private System.Windows.Forms.Button buttonPlay;
-		private System.Windows.Forms.Button button_Stop;
 		private System.Windows.Forms.Button button_PlayRight;
-		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.Button button_StopRightPlayer;
 		private System.Windows.Forms.GroupBox groupBox2;
-		private System.Windows.Forms.ProgressBar progressBar1;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.TrackBar trackBar_CrossFader;
+		private System.Windows.Forms.MenuStrip menuStrip1;
+		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem configToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem configToolStripMenuItem1;
+		private Player leftPlayer;
 	}
 }
 

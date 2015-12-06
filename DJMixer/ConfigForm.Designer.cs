@@ -1,4 +1,6 @@
-﻿namespace DJMixer {
+﻿using System;
+
+namespace DJMixer {
 	partial class ConfigForm {
 		/// <summary>
 		/// Required designer variable.
@@ -30,7 +32,7 @@
 			// comboBox_SoundDeviceSelect
 			// 
 			this.comboBox_SoundDeviceSelect.FormattingEnabled = true;
-			this.comboBox_SoundDeviceSelect.Location = new System.Drawing.Point(412, 300);
+			this.comboBox_SoundDeviceSelect.Location = new System.Drawing.Point(12, 285);
 			this.comboBox_SoundDeviceSelect.Name = "comboBox_SoundDeviceSelect";
 			this.comboBox_SoundDeviceSelect.Size = new System.Drawing.Size(220, 21);
 			this.comboBox_SoundDeviceSelect.TabIndex = 4;
@@ -38,16 +40,17 @@
 			// listBox_SoundDevices
 			// 
 			this.listBox_SoundDevices.FormattingEnabled = true;
-			this.listBox_SoundDevices.Location = new System.Drawing.Point(412, 29);
+			this.listBox_SoundDevices.Location = new System.Drawing.Point(12, 12);
 			this.listBox_SoundDevices.Name = "listBox_SoundDevices";
 			this.listBox_SoundDevices.Size = new System.Drawing.Size(220, 251);
 			this.listBox_SoundDevices.TabIndex = 3;
+			this.listBox_SoundDevices.SelectedIndexChanged += new System.EventHandler(this.listBox_SoundDevices_SelectedIndexChanged);
 			// 
 			// ConfigForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(661, 448);
+			this.ClientSize = new System.Drawing.Size(288, 448);
 			this.Controls.Add(this.comboBox_SoundDeviceSelect);
 			this.Controls.Add(this.listBox_SoundDevices);
 			this.Name = "ConfigForm";

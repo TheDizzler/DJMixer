@@ -7,60 +7,70 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using SlimDX.DirectSound;
+using NAudio.Wave;
+
 
 namespace DJMixer {
 	public partial class ConfigForm : Form {
 
-		public DeviceCollection deviceCollection;
+
+		Form1 deck;
 
 
-		public ConfigForm() {
+		public ConfigForm(Form1 dck) {
 			InitializeComponent();
+
+			deck = dck;
 		}
 
 
+		/// <summary>
+		///  If less latency is required (it shouldn't?), can use ASIO drivers instead of WaveOut
+		/// </summary>
 		public void getSoundDevices() {
 
-			deviceCollection = DirectSound.GetDevices();
-
-			String[] deviceList = new String[deviceCollection.Count];
-			//SoundDevice[] devices = new SoundDevice[deviceCollection.Count];
-
-			int i = 0;
-			foreach (DeviceInformation info in deviceCollection) {
-
-				//devices[i] = new SoundDevice();
-				//devices[i].Description = info.Description;
-				//devices[i].DriverGuid = info.DriverGuid;
-				//devices[i].ModuleName = info.ModuleName;
-
-				deviceList[i] = info.Description;
-
-				++i;
-
+			for (int i = 0; i < WaveOut.DeviceCount; ++i) {
+				Console.WriteLine(WaveOut.GetCapabilities(i).ProductName);
+				comboBox_SoundDeviceSelect.Items.Add(WaveOut.GetCapabilities(i).ProductName);
 
 			}
 
-
-
-			comboBox_SoundDeviceSelect.Items.AddRange(deviceList);
 			comboBox_SoundDeviceSelect.SelectedItem = comboBox_SoundDeviceSelect.Items[0];
-			//listBox_SoundDevices.Items.AddRange(devices);
 		}
 
 
-		private void setDirectSoundDevice() {
+		public int getDeviceNumber() {
 
-			//ds = new DirectSound(deviceCollection[comboBox_SoundDeviceSelect.SelectedIndex].DriverGuid);
-			//ds.SetCooperativeLevel(this.Handle, CooperativeLevel.Priority);
-
+			return comboBox_SoundDeviceSelect.SelectedIndex;
 		}
+
+
+		public void getDirectSoundDevices() {
+
+			foreach (DirectSoundDeviceInfo device in DirectSoundOut.Devices) {
+
+				comboBox_SoundDeviceSelect.Items.Add(device.Description);
+            }
+		}
+
+		public Guid getDeviceGUID() {
+
+			foreach (DirectSoundDeviceInfo device in DirectSoundOut.Devices) {
+				return device.Guid;
+			}
+
+			return Guid.Empty;
+		}
+
+
 
 		private void comboBox_SoundDeviceSelect_SelectedIndexChanged(Object sender, EventArgs e) {
 
-			setDirectSoundDevice();
+			//setDirectSoundDevice();
 		}
 
+		private void listBox_SoundDevices_SelectedIndexChanged(Object sender, EventArgs e) {
+
+		}
 	}
 }

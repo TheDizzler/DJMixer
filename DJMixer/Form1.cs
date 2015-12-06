@@ -10,56 +10,56 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NAudio;
+using NAudio.Gui;
 using NAudio.Wave;
-using SlimDX.DirectSound;
-using SlimDX.Multimedia;
-//using SlimDX.XAudio2;
+using NAudio.Wave.SampleProviders;
+
 
 namespace DJMixer {
+
+
+
 	public partial class Form1 : Form {
 
 		ConfigForm config;
 
-		//BackgroundWorker rightPlayerWorker;
-		//BackgroundWorker leftPlayerWorker;
 
-		IWavePlayer waveOutLeftPlayer;
-		IWavePlayer waveOutRightPlayer;
-		Mp3FileReader leftAudioFileReader;
+
+		WaveOut waveOutRightPlayer;
 		Mp3FileReader rightAudioFileReader;
 
-		public Thread threadLeftPlayer;
-		//bool leftPlayerPlaying = false;
+
+		
 
 		public Form1() {
 			InitializeComponent();
 
-			config = new ConfigForm();
-			config.getSoundDevices();
+			config = new ConfigForm(this);
+			//config.getSoundDevices();
+			config.getDirectSoundDevices();
 
 			initSoundDevices();
 
 
-			
+
 
 		}
+
 
 		private void initSoundDevices() {
 
-			waveOutLeftPlayer = new WaveOut();
+
+			
+			leftPlayer.setGUID(config.getDeviceGUID());
+
+
+
+
 			waveOutRightPlayer = new WaveOut();
-
+			waveOutRightPlayer.DeviceNumber = config.getDeviceNumber();
 		}
 
 
-		private void button_StopLeftPlayer_Click(Object sender, EventArgs e) {
-
-			if (waveOutLeftPlayer != null) {
-				waveOutLeftPlayer.Stop();
-				label2.Text = waveOutLeftPlayer.PlaybackState.ToString();
-			}
-
-		}
 
 		private void button_StopRightPlayer_Click(Object sender, EventArgs e) {
 
@@ -70,30 +70,11 @@ namespace DJMixer {
 		}
 
 
-		private void button_PlayLeft_Click(Object sender, EventArgs e) {
-
-			if (waveOutLeftPlayer.PlaybackState == PlaybackState.Playing) {
-
-				waveOutLeftPlayer.Pause();
 
 
-			} else if (waveOutLeftPlayer.PlaybackState == PlaybackState.Paused) {
-				waveOutLeftPlayer.Play();
 
-			} else {
-				leftAudioFileReader = new Mp3FileReader(@"D:/mp3z/JPop/Tsunku/Canary Club/05. [H!PBR] Canary Club - SWEET & TOUGHNESS.mp3");
-				waveOutLeftPlayer.Init(leftAudioFileReader);
-				waveOutLeftPlayer.Play();
 
-				threadLeftPlayer = new Thread(new ThreadStart(updateDisplays));
-				threadLeftPlayer.IsBackground = true;
-				threadLeftPlayer.Start();
 
-				
-
-			}
-			label2.Text = waveOutLeftPlayer.PlaybackState.ToString();
-		}
 
 
 		private void button_PlayRight_Click(Object sender, EventArgs e) {
@@ -109,44 +90,30 @@ namespace DJMixer {
 
 
 
-		private void progressBar_click(Object sender, MouseEventArgs e) {
+		private void onFormClosing(Object sender, FormClosingEventArgs e) {
+			leftPlayer.prepareForClose();
 
-			//waveOutLeftPlayer.PlaybackState.
-		}
+			switch (MessageBox.Show("Are you sure?", "Exit?", MessageBoxButtons.YesNo)) {
 
-
-
-		private void updateDisplays() {
-
-			while (leftAudioFileReader.CurrentTime <= leftAudioFileReader.TotalTime &&
-				 waveOutLeftPlayer.PlaybackState != PlaybackState.Stopped) {
-				setText(leftAudioFileReader.CurrentTime.Minutes + ":" +
-					leftAudioFileReader.CurrentTime.Seconds +
-					" %" + ((int)leftAudioFileReader.CurrentTime.TotalSeconds / leftAudioFileReader.TotalTime.TotalSeconds));
-
+				case DialogResult.No:
+					e.Cancel = true;
+					leftPlayer.cancelClose();
+					break;
+				case DialogResult.Yes:
+					leftPlayer.stop();
+					button_StopRightPlayer_Click(null, e);
+					break;
 			}
 		}
 
-		private void playerWorker_ProgressChanged(Object sender, ProgressChangedEventArgs e) {
+		private void trackBar_CrossFader_Scroll(Object sender, EventArgs e) {
 
-			progressBar1.Value = e.ProgressPercentage;
-			label1.Text = e.ProgressPercentage.ToString();
 		}
 
-		// This delegate enables asynchronous calls for setting
-		// the text property on a TextBox control.
-		delegate void SetTextCallback(String text);
+		private void configToolStripMenuItem1_Click(Object sender, EventArgs e) {
 
-		private void setText(String text) {
-
-			if (label1.InvokeRequired) {
-				SetTextCallback d = new SetTextCallback(setText);
-				Invoke(d, new object[] { text });
-			} else {
-				label1.Text = text;
-				progressBar1.Value = (int)(leftAudioFileReader.CurrentTime.TotalSeconds / leftAudioFileReader.TotalTime.TotalSeconds * 100);
-			}
-
+			//this.Hide();
+			config.Show();
 		}
 	}
 }
