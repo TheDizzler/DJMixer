@@ -37,12 +37,14 @@
 			this.buttonPlay = new System.Windows.Forms.Button();
 			this.button_Stop = new System.Windows.Forms.Button();
 			this.loadMP3Dialog = new System.Windows.Forms.OpenFileDialog();
+			this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.trackBar_Volume)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.checkedListBox1);
 			this.groupBox1.Controls.Add(this.button_Load_Mp3);
 			this.groupBox1.Controls.Add(this.waveformPainterR);
 			this.groupBox1.Controls.Add(this.volumeMeterR);
@@ -64,7 +66,7 @@
 			// 
 			// button_Load_Mp3
 			// 
-			this.button_Load_Mp3.Location = new System.Drawing.Point(299, 441);
+			this.button_Load_Mp3.Location = new System.Drawing.Point(11, 251);
 			this.button_Load_Mp3.Name = "button_Load_Mp3";
 			this.button_Load_Mp3.Size = new System.Drawing.Size(75, 23);
 			this.button_Load_Mp3.TabIndex = 14;
@@ -75,16 +77,16 @@
 			// waveformPainterR
 			// 
 			this.waveformPainterR.BackColor = System.Drawing.SystemColors.Window;
-			this.waveformPainterR.Location = new System.Drawing.Point(225, 19);
+			this.waveformPainterR.Location = new System.Drawing.Point(237, 16);
 			this.waveformPainterR.Name = "waveformPainterR";
-			this.waveformPainterR.Size = new System.Drawing.Size(75, 23);
+			this.waveformPainterR.Size = new System.Drawing.Size(84, 23);
 			this.waveformPainterR.TabIndex = 13;
 			this.waveformPainterR.Text = "waveformPainterR";
 			// 
 			// volumeMeterR
 			// 
 			this.volumeMeterR.Amplitude = 0F;
-			this.volumeMeterR.Location = new System.Drawing.Point(52, 50);
+			this.volumeMeterR.Location = new System.Drawing.Point(282, 82);
 			this.volumeMeterR.MaxDb = 6F;
 			this.volumeMeterR.MinDb = -60F;
 			this.volumeMeterR.Name = "volumeMeterR";
@@ -95,16 +97,16 @@
 			// waveformPainterL
 			// 
 			this.waveformPainterL.BackColor = System.Drawing.SystemColors.Window;
-			this.waveformPainterL.Location = new System.Drawing.Point(225, 50);
+			this.waveformPainterL.Location = new System.Drawing.Point(237, 47);
 			this.waveformPainterL.Name = "waveformPainterL";
-			this.waveformPainterL.Size = new System.Drawing.Size(75, 23);
+			this.waveformPainterL.Size = new System.Drawing.Size(84, 23);
 			this.waveformPainterL.TabIndex = 11;
 			this.waveformPainterL.Text = "waveformPainterL";
 			// 
 			// volumeMeterL
 			// 
 			this.volumeMeterL.Amplitude = 0F;
-			this.volumeMeterL.Location = new System.Drawing.Point(7, 50);
+			this.volumeMeterL.Location = new System.Drawing.Point(237, 82);
 			this.volumeMeterL.MaxDb = 6F;
 			this.volumeMeterL.MinDb = -60F;
 			this.volumeMeterL.Name = "volumeMeterL";
@@ -114,16 +116,16 @@
 			// 
 			// panSlider1
 			// 
-			this.panSlider1.Location = new System.Drawing.Point(122, 231);
+			this.panSlider1.Location = new System.Drawing.Point(237, 248);
 			this.panSlider1.Name = "panSlider1";
 			this.panSlider1.Pan = 0F;
-			this.panSlider1.Size = new System.Drawing.Size(141, 51);
+			this.panSlider1.Size = new System.Drawing.Size(135, 30);
 			this.panSlider1.TabIndex = 9;
 			// 
 			// trackBar_Volume
 			// 
 			this.trackBar_Volume.LargeChange = 10;
-			this.trackBar_Volume.Location = new System.Drawing.Point(329, 125);
+			this.trackBar_Volume.Location = new System.Drawing.Point(327, 85);
 			this.trackBar_Volume.Maximum = 100;
 			this.trackBar_Volume.Name = "trackBar_Volume";
 			this.trackBar_Volume.Orientation = System.Windows.Forms.Orientation.Vertical;
@@ -194,6 +196,14 @@
 			this.loadMP3Dialog.Filter = "MP3 files | *.mp3";
 			this.loadMP3Dialog.FileOk += new System.ComponentModel.CancelEventHandler(this.loadMP3Dialog_FileOk);
 			// 
+			// checkedListBox1
+			// 
+			this.checkedListBox1.FormattingEnabled = true;
+			this.checkedListBox1.Location = new System.Drawing.Point(7, 16);
+			this.checkedListBox1.Name = "checkedListBox1";
+			this.checkedListBox1.Size = new System.Drawing.Size(221, 229);
+			this.checkedListBox1.TabIndex = 15;
+			// 
 			// Player
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -224,5 +234,6 @@
 		private System.Windows.Forms.Button button_Stop;
 		private System.Windows.Forms.Button button_Load_Mp3;
 		private System.Windows.Forms.OpenFileDialog loadMP3Dialog;
+		private System.Windows.Forms.CheckedListBox checkedListBox1;
 	}
 }

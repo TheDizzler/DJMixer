@@ -15,9 +15,9 @@ namespace DJMixer {
 	public partial class Player : UserControl {
 
 
-		DirectSoundOut directSoundOut;
-		Mp3FileReader fileReader;
-		Thread threadGUIUpdater;
+		private DirectSoundOut directSoundOut;
+		private Mp3FileReader fileReader;
+		private Thread threadGUIUpdater;
 
 		/// <summary>
 		/// Internal volume, i.e. actual volume when crossfader is 100% towards this player
@@ -30,13 +30,16 @@ namespace DJMixer {
 		private float mixedVolume = .50f;
 		private Action<float> volumeDelegate;
 
-		String mp3File = @"D:\mp3z\JPop\Tsunku\Sub-Groups\Guardians 4\Shugo Chara Party - Party Time.mp3";
+		private String mp3File = @"D:\mp3z\JPop\Tsunku\Sub-Groups\Guardians 4\Shugo Chara Party - Party Time.mp3";
 		/// <summary>
 		/// Stripped file name
 		/// </summary>
-		String songname;
+		private String songname;
 
-		MeteringSampleProvider postVolumeMeter;
+		private MeteringSampleProvider postVolumeMeter;
+
+		private Boolean changedDevice = false;
+
 
 
 		public Player() {
@@ -48,12 +51,23 @@ namespace DJMixer {
 
 			if (directSoundOut != null && fileReader != null) {
 
-				stop();
+				if (directSoundOut.PlaybackState == PlaybackState.Playing) {
+					directSoundOut.Stop();
+					directSoundOut = new DirectSoundOut(guid);
+					directSoundOut.Init(postVolumeMeter);
+					directSoundOut.Play();
+				} else if (directSoundOut.PlaybackState == PlaybackState.Paused) {
+					directSoundOut = new DirectSoundOut(guid);
+					directSoundOut.Init(postVolumeMeter);
+					changedDevice = true;
+				} else {
+					directSoundOut = new DirectSoundOut(guid);
+					directSoundOut.Init(postVolumeMeter);
+				}
+			} else {
 				directSoundOut = new DirectSoundOut(guid);
-				directSoundOut.Init(postVolumeMeter);
-				directSoundOut.Play();
-			} else
-				directSoundOut = new DirectSoundOut(guid);
+				changedDevice = false;
+			}
 
 		}
 
@@ -66,10 +80,11 @@ namespace DJMixer {
 				directSoundOut.Pause();
 				label_SongTitle.Text += " (Paused)";
 
-			} else if (directSoundOut.PlaybackState == PlaybackState.Paused) {
+			} else if (directSoundOut.PlaybackState == PlaybackState.Paused || changedDevice) {
 
 				directSoundOut.Play();
 				label_SongTitle.Text = songname;
+				changedDevice = false;
 
 			} else {
 
@@ -104,8 +119,6 @@ namespace DJMixer {
 					startpos = mp3File.LastIndexOf("/");
 				if (startpos == -1)
 					startpos = 0;
-
-				//int endpos = mp3File.LastIndexOf(".mp3");
 
 				songname = mp3File.Substring(startpos + 1, mp3File.Length - startpos - 5);
 				label_SongTitle.Text = songname;
@@ -229,9 +242,8 @@ namespace DJMixer {
 		public void stop() {
 
 			if (directSoundOut != null && directSoundOut.PlaybackState != PlaybackState.Stopped) {
+
 				directSoundOut.Stop();
-
-
 				label_SongTitle.Text = songname + " (Stopped)";
 			}
 		}
