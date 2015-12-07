@@ -82,6 +82,7 @@
     <Compile Include="ConfigForm.Designer.cs">
       <DependentUpon>ConfigForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="DSDevice.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

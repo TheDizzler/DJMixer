@@ -49,27 +49,23 @@ namespace DJMixer {
 
 			foreach (DirectSoundDeviceInfo device in DirectSoundOut.Devices) {
 
-				comboBox_SoundDeviceSelect.Items.Add(device.Description);
+				DSDevice d = new DSDevice(device);
+				comboBox_SoundDeviceSelect.Items.Add(d);
             }
+
+
+			comboBox_SoundDeviceSelect.SelectedItem = comboBox_SoundDeviceSelect.Items[0];
 		}
 
 		public Guid getDeviceGUID() {
 
-			foreach (DirectSoundDeviceInfo device in DirectSoundOut.Devices) {
-				return device.Guid;
-			}
-
-			return Guid.Empty;
+			return ((DSDevice)comboBox_SoundDeviceSelect.SelectedItem).getGUID();
 		}
-
 
 
 		private void comboBox_SoundDeviceSelect_SelectedIndexChanged(Object sender, EventArgs e) {
 
-			//setDirectSoundDevice();
-		}
-
-		private void listBox_SoundDevices_SelectedIndexChanged(Object sender, EventArgs e) {
+			deck.initSoundDevices();
 
 		}
 	}

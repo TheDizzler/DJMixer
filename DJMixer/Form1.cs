@@ -30,26 +30,19 @@ namespace DJMixer {
 			InitializeComponent();
 
 			config = new ConfigForm(this);
-			//config.getSoundDevices();
 			config.getDirectSoundDevices();
 
 			initSoundDevices();
 
-
-
-
 		}
 
 
-		private void initSoundDevices() {
+		public void initSoundDevices() {
 
 
 			leftPlayer.setGUID(config.getDeviceGUID());
 			rightPlayer.setGUID(config.getDeviceGUID());
 		}
-
-
-
 
 
 
@@ -77,13 +70,10 @@ namespace DJMixer {
 			leftPlayer.setMixedVolume(1 - masterMixFader);
 			rightPlayer.setMixedVolume(masterMixFader);
 
-
-
 		}
 
 		private void configToolStripMenuItem1_Click(Object sender, EventArgs e) {
 
-			//this.Hide();
 			config.Show();
 		}
 	}

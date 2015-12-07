@@ -1,4 +1,6 @@
-﻿namespace DJMixer
+﻿using System;
+
+namespace DJMixer
 {
 	partial class Form1
 	{
@@ -116,6 +118,7 @@
 			this.PerformLayout();
 
 		}
+
 
 		#endregion
 		private System.Windows.Forms.TrackBar trackBar_CrossFader;

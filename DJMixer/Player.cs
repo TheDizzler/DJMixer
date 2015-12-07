@@ -36,15 +36,25 @@ namespace DJMixer {
 		/// </summary>
 		String songname;
 
+		MeteringSampleProvider postVolumeMeter;
+
 
 		public Player() {
 			InitializeComponent();
 
-        }
+		}
 
 		public void setGUID(Guid guid) {
 
-			directSoundOut = new DirectSoundOut(guid); // config.getDeviceGUID()
+			if (directSoundOut != null && fileReader != null) {
+
+				stop();
+				directSoundOut = new DirectSoundOut(guid);
+				directSoundOut.Init(postVolumeMeter);
+				directSoundOut.Play();
+			} else
+				directSoundOut = new DirectSoundOut(guid);
+
 		}
 
 
@@ -74,7 +84,7 @@ namespace DJMixer {
 				SampleChannel sampleChannel = new SampleChannel(fileReader);
 				sampleChannel.PreVolumeMeter += onPreVolumeMeter;
 				this.volumeDelegate = (vol) => sampleChannel.Volume = vol;
-				MeteringSampleProvider postVolumeMeter = new MeteringSampleProvider(sampleChannel);
+				postVolumeMeter = new MeteringSampleProvider(sampleChannel);
 				postVolumeMeter.StreamVolume += onPostVolumeMeter;
 
 
@@ -220,8 +230,8 @@ namespace DJMixer {
 
 			if (directSoundOut != null && directSoundOut.PlaybackState != PlaybackState.Stopped) {
 				directSoundOut.Stop();
-				
-				
+
+
 				label_SongTitle.Text = songname + " (Stopped)";
 			}
 		}

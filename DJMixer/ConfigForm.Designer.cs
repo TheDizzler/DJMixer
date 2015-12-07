@@ -26,42 +26,44 @@ namespace DJMixer {
 		/// </summary>
 		private void InitializeComponent() {
 			this.comboBox_SoundDeviceSelect = new System.Windows.Forms.ComboBox();
-			this.listBox_SoundDevices = new System.Windows.Forms.ListBox();
+			this.label1 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// comboBox_SoundDeviceSelect
 			// 
 			this.comboBox_SoundDeviceSelect.FormattingEnabled = true;
-			this.comboBox_SoundDeviceSelect.Location = new System.Drawing.Point(12, 285);
+			this.comboBox_SoundDeviceSelect.Location = new System.Drawing.Point(12, 44);
 			this.comboBox_SoundDeviceSelect.Name = "comboBox_SoundDeviceSelect";
 			this.comboBox_SoundDeviceSelect.Size = new System.Drawing.Size(220, 21);
 			this.comboBox_SoundDeviceSelect.TabIndex = 4;
+			this.comboBox_SoundDeviceSelect.SelectedIndexChanged += new System.EventHandler(this.comboBox_SoundDeviceSelect_SelectedIndexChanged);
 			// 
-			// listBox_SoundDevices
+			// label1
 			// 
-			this.listBox_SoundDevices.FormattingEnabled = true;
-			this.listBox_SoundDevices.Location = new System.Drawing.Point(12, 12);
-			this.listBox_SoundDevices.Name = "listBox_SoundDevices";
-			this.listBox_SoundDevices.Size = new System.Drawing.Size(220, 251);
-			this.listBox_SoundDevices.TabIndex = 3;
-			this.listBox_SoundDevices.SelectedIndexChanged += new System.EventHandler(this.listBox_SoundDevices_SelectedIndexChanged);
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(12, 28);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(124, 13);
+			this.label1.TabIndex = 5;
+			this.label1.Text = "Select Audio Out Device";
 			// 
 			// ConfigForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(288, 448);
+			this.ClientSize = new System.Drawing.Size(288, 339);
+			this.Controls.Add(this.label1);
 			this.Controls.Add(this.comboBox_SoundDeviceSelect);
-			this.Controls.Add(this.listBox_SoundDevices);
 			this.Name = "ConfigForm";
-			this.Text = "ConfigForm";
+			this.Text = "Config";
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
 		#endregion
 
 		private System.Windows.Forms.ComboBox comboBox_SoundDeviceSelect;
-		private System.Windows.Forms.ListBox listBox_SoundDevices;
+		private System.Windows.Forms.Label label1;
 	}
 }
