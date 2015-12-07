@@ -19,14 +19,28 @@ namespace DJMixer {
 		Mp3FileReader fileReader;
 		Thread threadGUIUpdater;
 
-		private Action<float> setVolumeDelegate;
+		/// <summary>
+		/// Internal volume, i.e. actual volume when crossfader is 100% towards this player
+		/// This volume can only be changed from the player itself.
+		/// </summary>
+		private float absoluteVolume = .75f;
+		/// <summary>
+		/// Percent of volume to play.
+		/// </summary>
+		private float mixedVolume = .50f;
+		private Action<float> volumeDelegate;
+
+		String mp3File = @"D:\mp3z\JPop\Tsunku\Sub-Groups\Guardians 4\Shugo Chara Party - Party Time.mp3";
+		/// <summary>
+		/// Stripped file name
+		/// </summary>
+		String songname;
 
 
 		public Player() {
 			InitializeComponent();
 
-			
-		}
+        }
 
 		public void setGUID(Guid guid) {
 
@@ -40,17 +54,26 @@ namespace DJMixer {
 			if (directSoundOut.PlaybackState == PlaybackState.Playing) {
 
 				directSoundOut.Pause();
-
+				label_SongTitle.Text += " (Paused)";
 
 			} else if (directSoundOut.PlaybackState == PlaybackState.Paused) {
+
 				directSoundOut.Play();
+				label_SongTitle.Text = songname;
 
 			} else {
-				fileReader = new Mp3FileReader(@"D:/mp3z/JPop/Tsunku/Canary Club/05. [H!PBR] Canary Club - SWEET & TOUGHNESS.mp3");
+
+				try {
+					fileReader = new Mp3FileReader(mp3File);
+				} catch (Exception) {
+					MessageBox.Show("Error reading " + mp3File,
+						"File does not exist or cannot be read.");
+					return;
+				}
 
 				SampleChannel sampleChannel = new SampleChannel(fileReader);
 				sampleChannel.PreVolumeMeter += onPreVolumeMeter;
-				this.setVolumeDelegate = (vol) => sampleChannel.Volume = vol;
+				this.volumeDelegate = (vol) => sampleChannel.Volume = vol;
 				MeteringSampleProvider postVolumeMeter = new MeteringSampleProvider(sampleChannel);
 				postVolumeMeter.StreamVolume += onPostVolumeMeter;
 
@@ -64,10 +87,21 @@ namespace DJMixer {
 				threadGUIUpdater.Start();
 
 
-				setVolumeDelegate((float)trackBar_Volume.Value / 100);
+				volumeDelegate(absoluteVolume * mixedVolume);
+
+				int startpos = mp3File.LastIndexOf("\\");
+				if (startpos == -1)
+					startpos = mp3File.LastIndexOf("/");
+				if (startpos == -1)
+					startpos = 0;
+
+				//int endpos = mp3File.LastIndexOf(".mp3");
+
+				songname = mp3File.Substring(startpos + 1, mp3File.Length - startpos - 5);
+				label_SongTitle.Text = songname;
 			}
 
-			label2.Text = directSoundOut.PlaybackState.ToString();
+
 
 		}
 
@@ -106,64 +140,58 @@ namespace DJMixer {
 			}
 		}
 
+
 		private void trackBar_Volume_Scroll(Object sender, EventArgs e) {
 
-			if (fileReader != null) {
-				//float xPos = trackBar_Volume.PointToClient(Cursor.Position).X;
-				//int width = trackBar_Volume.Bounds.Width;
-				//float xPercent = xPos / progressBar1.Bounds.Width;
+			absoluteVolume = (float)trackBar_Volume.Value / 100;
 
-				//waveOutLeftPlayer.Volume = (float)trackBar_Volume.Value / 100;
-				setVolumeDelegate((float)trackBar_Volume.Value / 100);
+			if (fileReader != null)
+				volumeDelegate(absoluteVolume * mixedVolume);
 
-			}
 		}
 
 
+		public void setMixedVolume(float mixVol) {
 
-		/// Thread proc.
+			mixedVolume = mixVol;
+
+			if (fileReader != null)
+				volumeDelegate(absoluteVolume * mixedVolume);
+		}
+
+
+		/// <summary>
+		/// GUI update thread proc
+		/// </summary>
 		private void updateDisplay() {
 
 			while (fileReader.CurrentTime <= fileReader.TotalTime &&
 				 directSoundOut.PlaybackState != PlaybackState.Stopped) {
 
-				//int minsInt = leftAudioFileReader.CurrentTime.Minutes;
-
-				//String mins;
-				//if (minsInt < 10)
-				//	mins = "0" + minsInt;
-				//else
-				//	mins = minsInt.ToString();
-
-				//int secsInt = leftAudioFileReader.CurrentTime.Seconds;
-				//String secs;
-				//if (secsInt < 10)
-				//	secs = "0" + secsInt;
-				//else
-				//	secs = secsInt.ToString();
-
-
-				//setText(mins + ":" + secs +
-				//	" %" + (int)(leftAudioFileReader.CurrentTime.TotalSeconds
-				//	/ leftAudioFileReader.TotalTime.TotalSeconds * 100));
-
-				setText(String.Format("{0:00}:{1:00}",
+				setGUIText(String.Format("{0:00}:{1:00}",
 					(int)fileReader.CurrentTime.TotalMinutes,
 					fileReader.CurrentTime.Seconds));
 
-
 			}
+
+			setGUIText(String.Format("{0:00}:{1:00}", 0, 0));
 			Console.WriteLine("Thread terminated");
 		}
 
-		// This delegate enables asynchronous calls for setting
-		// the text property on a TextBox control.
+
+
+
+		/// <summary>
+		/// This delegate enables asynchronous calls for setting
+		/// the text property on a TextBox control.
+		/// </summary>
 		delegate void SetTextCallback(String text);
 
-		private void setText(String text) {
+
+		private void setGUIText(String text) {
 
 			if (timer.InvokeRequired) {
-				SetTextCallback d = new SetTextCallback(setText);
+				SetTextCallback d = new SetTextCallback(setGUIText);
 				Invoke(d, new object[] { text });
 			} else {
 				timer.Text = text;
@@ -190,10 +218,22 @@ namespace DJMixer {
 
 		public void stop() {
 
-			if (directSoundOut != null) {
+			if (directSoundOut != null && directSoundOut.PlaybackState != PlaybackState.Stopped) {
 				directSoundOut.Stop();
-				label2.Text = directSoundOut.PlaybackState.ToString();
+				
+				
+				label_SongTitle.Text = songname + " (Stopped)";
 			}
+		}
+
+		private void button_Load_Mp3_Click(Object sender, EventArgs e) {
+
+			loadMP3Dialog.ShowDialog(this);
+
+		}
+
+		private void loadMP3Dialog_FileOk(Object sender, CancelEventArgs e) {
+			mp3File = loadMP3Dialog.FileName;
 		}
 	}
 }

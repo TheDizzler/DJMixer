@@ -23,13 +23,8 @@ namespace DJMixer {
 
 		ConfigForm config;
 
+		float masterMixFader = 50;
 
-
-		WaveOut waveOutRightPlayer;
-		Mp3FileReader rightAudioFileReader;
-
-
-		
 
 		public Form1() {
 			InitializeComponent();
@@ -49,42 +44,10 @@ namespace DJMixer {
 		private void initSoundDevices() {
 
 
-			
 			leftPlayer.setGUID(config.getDeviceGUID());
-
-
-
-
-			waveOutRightPlayer = new WaveOut();
-			waveOutRightPlayer.DeviceNumber = config.getDeviceNumber();
+			rightPlayer.setGUID(config.getDeviceGUID());
 		}
 
-
-
-		private void button_StopRightPlayer_Click(Object sender, EventArgs e) {
-
-
-			if (waveOutRightPlayer != null) {
-				waveOutRightPlayer.Stop();
-			}
-		}
-
-
-
-
-
-
-
-
-
-		private void button_PlayRight_Click(Object sender, EventArgs e) {
-
-			rightAudioFileReader = new Mp3FileReader(@"D:\mp3z\JPop\Tsunku\Sub-Groups\Guardians 4\Shugo Chara Party - Party Time.mp3");
-
-			waveOutRightPlayer.Init(rightAudioFileReader);
-			waveOutRightPlayer.Play();
-
-		}
 
 
 
@@ -98,15 +61,23 @@ namespace DJMixer {
 				case DialogResult.No:
 					e.Cancel = true;
 					leftPlayer.cancelClose();
+					rightPlayer.cancelClose();
 					break;
 				case DialogResult.Yes:
 					leftPlayer.stop();
-					button_StopRightPlayer_Click(null, e);
+					rightPlayer.stop();
 					break;
 			}
 		}
 
+
 		private void trackBar_CrossFader_Scroll(Object sender, EventArgs e) {
+
+			masterMixFader = (float)trackBar_CrossFader.Value / 100;
+			leftPlayer.setMixedVolume(1 - masterMixFader);
+			rightPlayer.setMixedVolume(masterMixFader);
+
+
 
 		}
 
