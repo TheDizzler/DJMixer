@@ -93,6 +93,7 @@
     <Compile Include="Player.Designer.cs">
       <DependentUpon>Player.cs</DependentUpon>
     </Compile>
+    <Compile Include="Song.cs" />
     <EmbeddedResource Include="ConfigForm.resx">
       <DependentUpon>ConfigForm.cs</DependentUpon>
     </EmbeddedResource>

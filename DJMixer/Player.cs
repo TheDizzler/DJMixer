@@ -30,21 +30,22 @@ namespace DJMixer {
 		private float mixedVolume = .50f;
 		private Action<float> volumeDelegate;
 
-		private String mp3File = @"D:\mp3z\JPop\Tsunku\Sub-Groups\Guardians 4\Shugo Chara Party - Party Time.mp3";
+		private Song currentSong;
 		/// <summary>
 		/// Stripped file name
 		/// </summary>
-		private String songname;
+		//private String songname;
 
 		private MeteringSampleProvider postVolumeMeter;
 
 		private Boolean changedDevice = false;
-
+		private Boolean manuallyStopped = false;
 
 
 		public Player() {
 			InitializeComponent();
 
+			//currentSong = new Song(@"D:\mp3z\JPop\Tsunku\Sub-Groups\Guardians 4\Shugo Chara Party - Party Time.mp3");
 		}
 
 		public void setGUID(Guid guid) {
@@ -52,23 +53,26 @@ namespace DJMixer {
 			if (directSoundOut != null && fileReader != null) {
 
 				if (directSoundOut.PlaybackState == PlaybackState.Playing) {
+
 					directSoundOut.Stop();
 					directSoundOut = new DirectSoundOut(guid);
 					directSoundOut.Init(postVolumeMeter);
 					directSoundOut.Play();
-				} else if (directSoundOut.PlaybackState == PlaybackState.Paused) {
-					directSoundOut = new DirectSoundOut(guid);
-					directSoundOut.Init(postVolumeMeter);
-					changedDevice = true;
+					changedDevice = false;
+
 				} else {
+
 					directSoundOut = new DirectSoundOut(guid);
 					directSoundOut.Init(postVolumeMeter);
+					if (directSoundOut.PlaybackState == PlaybackState.Paused)
+						changedDevice = true;
+
 				}
 			} else {
 				directSoundOut = new DirectSoundOut(guid);
 				changedDevice = false;
 			}
-
+			directSoundOut.PlaybackStopped += loadNextSong;
 		}
 
 
@@ -83,58 +87,75 @@ namespace DJMixer {
 			} else if (directSoundOut.PlaybackState == PlaybackState.Paused || changedDevice) {
 
 				directSoundOut.Play();
-				label_SongTitle.Text = songname;
+				label_SongTitle.Text = currentSong.ToString();
 				changedDevice = false;
 
 			} else {
 
-				try {
-					fileReader = new Mp3FileReader(mp3File);
-				} catch (Exception) {
-					MessageBox.Show("Error reading " + mp3File,
-						"File does not exist or cannot be read.");
-					return;
-				}
-
-				SampleChannel sampleChannel = new SampleChannel(fileReader);
-				sampleChannel.PreVolumeMeter += onPreVolumeMeter;
-				this.volumeDelegate = (vol) => sampleChannel.Volume = vol;
-				postVolumeMeter = new MeteringSampleProvider(sampleChannel);
-				postVolumeMeter.StreamVolume += onPostVolumeMeter;
-
-
-				directSoundOut.Init(postVolumeMeter);
-				directSoundOut.Play();
-
-				threadGUIUpdater = new Thread(new ThreadStart(updateDisplay));
-				threadGUIUpdater.IsBackground = true;
-				threadGUIUpdater.Name = "Player GUI Update Thread";
-				threadGUIUpdater.Start();
-
-
-				volumeDelegate(absoluteVolume * mixedVolume);
-
-				int startpos = mp3File.LastIndexOf("\\");
-				if (startpos == -1)
-					startpos = mp3File.LastIndexOf("/");
-				if (startpos == -1)
-					startpos = 0;
-
-				songname = mp3File.Substring(startpos + 1, mp3File.Length - startpos - 5);
-				label_SongTitle.Text = songname;
+				loadSong();
 			}
 
 
 
 		}
 
+		private void loadSong() {
+			try {
+				if (currentSong == null) {
+
+					currentSong = (Song)songList.CheckedItems[0];
+					songList.SetItemChecked(songList.CheckedIndices[0], false);
+                }
+
+				fileReader = new Mp3FileReader(currentSong.filepath);
+
+			} catch (Exception) {
+				MessageBox.Show("Error reading " + currentSong,
+					"File does not exist or cannot be read.");
+				return;
+			}
+
+			SampleChannel sampleChannel = new SampleChannel(fileReader);
+			sampleChannel.PreVolumeMeter += onPreVolumeMeter;
+			this.volumeDelegate = (vol) => sampleChannel.Volume = vol;
+			postVolumeMeter = new MeteringSampleProvider(sampleChannel);
+			postVolumeMeter.StreamVolume += onPostVolumeMeter;
+
+			
+			directSoundOut.Init(postVolumeMeter);
+			directSoundOut.Play();
+
+			threadGUIUpdater = new Thread(new ThreadStart(updateDisplay));
+			threadGUIUpdater.IsBackground = true;
+			threadGUIUpdater.Name = "Player GUI Update Thread";
+			threadGUIUpdater.Start();
+
+
+			volumeDelegate(absoluteVolume * mixedVolume);
+
+			label_SongTitle.Text = currentSong.ToString();
+		}
+
 
 		private void button_Stop_Click(Object sender, EventArgs e) {
 
+			manuallyStopped = true;
 			stop();
 
 		}
 
+
+		void loadNextSong(object sender, StoppedEventArgs e) {
+
+			if (manuallyStopped) {
+				manuallyStopped = false;// do nothing for now
+				return;
+			}
+
+			currentSong = (Song)songList.CheckedItems[0];
+			songList.SetItemChecked(songList.CheckedIndices[0], false);
+			loadSong();
+        }
 
 
 		void onPreVolumeMeter(object sender, StreamVolumeEventArgs e) {
@@ -244,7 +265,7 @@ namespace DJMixer {
 			if (directSoundOut != null && directSoundOut.PlaybackState != PlaybackState.Stopped) {
 
 				directSoundOut.Stop();
-				label_SongTitle.Text = songname + " (Stopped)";
+				label_SongTitle.Text = currentSong.ToString() + " (Stopped)";
 			}
 		}
 
@@ -254,8 +275,21 @@ namespace DJMixer {
 
 		}
 
+
 		private void loadMP3Dialog_FileOk(Object sender, CancelEventArgs e) {
-			mp3File = loadMP3Dialog.FileName;
-		}
+
+			//mp3File = loadMP3Dialog.FileName;
+			int i = 0;
+			Song[] songs = new Song[loadMP3Dialog.FileNames.Length];
+
+			foreach (String file in loadMP3Dialog.FileNames) {
+
+				songs[i++] = new Song(file);
+			}
+
+			songList.Items.AddRange(songs);
+
+			
+        }
 	}
 }

@@ -37,14 +37,14 @@
 			this.buttonPlay = new System.Windows.Forms.Button();
 			this.button_Stop = new System.Windows.Forms.Button();
 			this.loadMP3Dialog = new System.Windows.Forms.OpenFileDialog();
-			this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
+			this.songList = new System.Windows.Forms.CheckedListBox();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.trackBar_Volume)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// groupBox1
 			// 
-			this.groupBox1.Controls.Add(this.checkedListBox1);
+			this.groupBox1.Controls.Add(this.songList);
 			this.groupBox1.Controls.Add(this.button_Load_Mp3);
 			this.groupBox1.Controls.Add(this.waveformPainterR);
 			this.groupBox1.Controls.Add(this.volumeMeterR);
@@ -194,15 +194,18 @@
 			// 
 			this.loadMP3Dialog.FileName = "loadMP3Dialog";
 			this.loadMP3Dialog.Filter = "MP3 files | *.mp3";
+			this.loadMP3Dialog.Multiselect = true;
+			this.loadMP3Dialog.SupportMultiDottedExtensions = true;
 			this.loadMP3Dialog.FileOk += new System.ComponentModel.CancelEventHandler(this.loadMP3Dialog_FileOk);
 			// 
-			// checkedListBox1
+			// songList
 			// 
-			this.checkedListBox1.FormattingEnabled = true;
-			this.checkedListBox1.Location = new System.Drawing.Point(7, 16);
-			this.checkedListBox1.Name = "checkedListBox1";
-			this.checkedListBox1.Size = new System.Drawing.Size(221, 229);
-			this.checkedListBox1.TabIndex = 15;
+			this.songList.FormattingEnabled = true;
+			this.songList.IntegralHeight = false;
+			this.songList.Location = new System.Drawing.Point(7, 16);
+			this.songList.Name = "songList";
+			this.songList.Size = new System.Drawing.Size(221, 229);
+			this.songList.TabIndex = 15;
 			// 
 			// Player
 			// 
@@ -234,6 +237,6 @@
 		private System.Windows.Forms.Button button_Stop;
 		private System.Windows.Forms.Button button_Load_Mp3;
 		private System.Windows.Forms.OpenFileDialog loadMP3Dialog;
-		private System.Windows.Forms.CheckedListBox checkedListBox1;
+		private System.Windows.Forms.CheckedListBox songList;
 	}
 }
