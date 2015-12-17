@@ -37,6 +37,7 @@ namespace DJMixer {
 		protected float mixedVolume = .50f;
 
 		protected Song currentSong;
+		protected int currentSongIndex = -1;
 
 		/// <summary>
 		/// A flag to denote when the audio output device has changed.
