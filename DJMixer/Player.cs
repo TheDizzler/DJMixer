@@ -12,68 +12,68 @@ using System.Threading;
 using NAudio.Wave.SampleProviders;
 
 namespace DJMixer {
-	public partial class Player : UserControl {
+	public partial class Player : BasicPlayer {
 
 
-		private DirectSoundOut directSoundOut;
-		private Mp3FileReader fileReader;
-		private Thread threadGUIUpdater;
+		//private DirectSoundOut directSoundOut;
+		//private Mp3FileReader fileReader;
+		//private Thread threadGUIUpdater;
 
-		/// <summary>
-		/// Internal volume, i.e. actual volume when crossfader is 100% towards this player
-		/// This volume can only be changed from the player itself.
-		/// </summary>
-		private float absoluteVolume = .75f;
-		/// <summary>
-		/// Percent of volume to play.
-		/// </summary>
-		private float mixedVolume = .50f;
-		private Action<float> volumeDelegate;
+		///// <summary>
+		///// Internal volume, i.e. actual volume when crossfader is 100% towards this player
+		///// This volume can only be changed from the player itself.
+		///// </summary>
+		//private float absoluteVolume = .75f;
+		///// <summary>
+		///// Percent of volume to play.
+		///// </summary>
+		//private float mixedVolume = .50f;
+		//private Action<float> volumeDelegate;
 
-		private Song currentSong;
-		/// <summary>
-		/// Stripped file name
-		/// </summary>
-		//private String songname;
+		//private Song currentSong;
+		///// <summary>
+		///// Stripped file name
+		///// </summary>
+		////private String songname;
 
-		private MeteringSampleProvider postVolumeMeter;
+		//private MeteringSampleProvider postVolumeMeter;
 
-		private Boolean changedDevice = false;
+		//private Boolean changedDevice = false;
 		private Boolean manuallyStopped = false;
 
 
 		public Player() {
 			InitializeComponent();
 
-			//currentSong = new Song(@"D:\mp3z\JPop\Tsunku\Sub-Groups\Guardians 4\Shugo Chara Party - Party Time.mp3");
+			currentSong = new Song(@"D:\mp3z\JPop\Tsunku\Sub-Groups\Guardians 4\Shugo Chara Party - Party Time.mp3");
 		}
 
-		public void setGUID(Guid guid) {
+		//public void setGUID(Guid guid) {
 
-			if (directSoundOut != null && fileReader != null) {
+		//	if (directSoundOut != null && fileReader != null) {
 
-				if (directSoundOut.PlaybackState == PlaybackState.Playing) {
+		//		if (directSoundOut.PlaybackState == PlaybackState.Playing) {
 
-					directSoundOut.Stop();
-					directSoundOut = new DirectSoundOut(guid);
-					directSoundOut.Init(postVolumeMeter);
-					directSoundOut.Play();
-					changedDevice = false;
+		//			directSoundOut.Stop();
+		//			directSoundOut = new DirectSoundOut(guid);
+		//			directSoundOut.Init(postVolumeMeter);
+		//			directSoundOut.Play();
+		//			changedDevice = false;
 
-				} else {
+		//		} else {
 
-					directSoundOut = new DirectSoundOut(guid);
-					directSoundOut.Init(postVolumeMeter);
-					if (directSoundOut.PlaybackState == PlaybackState.Paused)
-						changedDevice = true;
+		//			directSoundOut = new DirectSoundOut(guid);
+		//			directSoundOut.Init(postVolumeMeter);
+		//			if (directSoundOut.PlaybackState == PlaybackState.Paused)
+		//				changedDevice = true;
 
-				}
-			} else {
-				directSoundOut = new DirectSoundOut(guid);
-				changedDevice = false;
-			}
-			directSoundOut.PlaybackStopped += loadNextSong;
-		}
+		//		}
+		//	} else {
+		//		directSoundOut = new DirectSoundOut(guid);
+		//		changedDevice = false;
+		//	}
+		//	directSoundOut.PlaybackStopped += loadNextSong;
+		//}
 
 
 
@@ -99,13 +99,13 @@ namespace DJMixer {
 
 		}
 
-		private void loadSong() {
+		protected override void loadSong() {
 			try {
 				if (currentSong == null) {
 
 					currentSong = (Song)songList.CheckedItems[0];
 					songList.SetItemChecked(songList.CheckedIndices[0], false);
-                }
+				}
 
 				fileReader = new Mp3FileReader(currentSong.filepath);
 
@@ -115,13 +115,14 @@ namespace DJMixer {
 				return;
 			}
 
+
 			SampleChannel sampleChannel = new SampleChannel(fileReader);
 			sampleChannel.PreVolumeMeter += onPreVolumeMeter;
 			this.volumeDelegate = (vol) => sampleChannel.Volume = vol;
 			postVolumeMeter = new MeteringSampleProvider(sampleChannel);
 			postVolumeMeter.StreamVolume += onPostVolumeMeter;
 
-			
+
 			directSoundOut.Init(postVolumeMeter);
 			directSoundOut.Play();
 
@@ -137,35 +138,45 @@ namespace DJMixer {
 		}
 
 
-		private void button_Stop_Click(Object sender, EventArgs e) {
+		protected override void button_Stop_Click(Object sender, EventArgs e) {
 
 			manuallyStopped = true;
-			stop();
-
+			if (stop())
+				label_SongTitle.Text = currentSong.ToString() + " (Stopped)";
 		}
 
 
-		void loadNextSong(object sender, StoppedEventArgs e) {
+		protected override void loadNextSong(object sender, StoppedEventArgs e) {
 
 			if (manuallyStopped) {
 				manuallyStopped = false;// do nothing for now
 				return;
 			}
 
-			currentSong = (Song)songList.CheckedItems[0];
+
+			currentSong = getNextSong();
 			songList.SetItemChecked(songList.CheckedIndices[0], false);
 			loadSong();
-        }
+		}
+
+
+		Song getNextSong() {
+
+			Song next = (Song)songList.CheckedItems[0];
+
+
+			return next; 
+		}
 
 
 		void onPreVolumeMeter(object sender, StreamVolumeEventArgs e) {
-			// we know it is stereo
+			
 			waveformPainterL.AddMax(e.MaxSampleValues[0]);
 			waveformPainterR.AddMax(e.MaxSampleValues[1]);
 		}
 
 		void onPostVolumeMeter(object sender, StreamVolumeEventArgs e) {
-			// we know it is stereo
+			
 			volumeMeterL.Amplitude = e.MaxSampleValues[0];
 			volumeMeterR.Amplitude = e.MaxSampleValues[1];
 
@@ -175,9 +186,9 @@ namespace DJMixer {
 		private void progressBar1_Click(Object sender, EventArgs e) {
 
 			if (fileReader != null) {
-				float xPos = progressBar1.PointToClient(Cursor.Position).X;
-				int width = progressBar1.Bounds.Width;
-				float xPercent = xPos / progressBar1.Bounds.Width;
+				float xPos = progressBar.PointToClient(Cursor.Position).X;
+				int width = progressBar.Bounds.Width;
+				float xPercent = xPos / progressBar.Bounds.Width;
 
 				fileReader.Position = (long)(xPercent * fileReader.Length);
 
@@ -185,42 +196,23 @@ namespace DJMixer {
 		}
 
 
-		private void trackBar_Volume_Scroll(Object sender, EventArgs e) {
+		///// <summary>
+		///// GUI update thread proc
+		///// </summary>
+		//protected override void updateDisplay() {
 
-			absoluteVolume = (float)trackBar_Volume.Value / 100;
+		//	while (fileReader.CurrentTime <= fileReader.TotalTime &&
+		//		 directSoundOut.PlaybackState != PlaybackState.Stopped) {
 
-			if (fileReader != null)
-				volumeDelegate(absoluteVolume * mixedVolume);
+		//		setGUIText(String.Format("{0:00}:{1:00}",
+		//			(int)fileReader.CurrentTime.TotalMinutes,
+		//			fileReader.CurrentTime.Seconds));
 
-		}
+		//	}
 
-
-		public void setMixedVolume(float mixVol) {
-
-			mixedVolume = mixVol;
-
-			if (fileReader != null)
-				volumeDelegate(absoluteVolume * mixedVolume);
-		}
-
-
-		/// <summary>
-		/// GUI update thread proc
-		/// </summary>
-		private void updateDisplay() {
-
-			while (fileReader.CurrentTime <= fileReader.TotalTime &&
-				 directSoundOut.PlaybackState != PlaybackState.Stopped) {
-
-				setGUIText(String.Format("{0:00}:{1:00}",
-					(int)fileReader.CurrentTime.TotalMinutes,
-					fileReader.CurrentTime.Seconds));
-
-			}
-
-			setGUIText(String.Format("{0:00}:{1:00}", 0, 0));
-			Console.WriteLine("Thread terminated");
-		}
+		//	setGUIText(String.Format("{0:00}:{1:00}", 0, 0));
+		//	Console.WriteLine(this.Name + "Thread terminated");
+		//}
 
 
 
@@ -229,45 +221,21 @@ namespace DJMixer {
 		/// This delegate enables asynchronous calls for setting
 		/// the text property on a TextBox control.
 		/// </summary>
-		delegate void SetTextCallback(String text);
+		//delegate void SetTextCallback(String text);
 
 
-		private void setGUIText(String text) {
+		protected override void setGUIText(String text) {
 
 			if (timer.InvokeRequired) {
 				SetTextCallback d = new SetTextCallback(setGUIText);
 				Invoke(d, new object[] { text });
 			} else {
 				timer.Text = text;
-				progressBar1.Value = (int)(fileReader.CurrentTime.TotalSeconds / fileReader.TotalTime.TotalSeconds * 100);
+				progressBar.Value = (int)(fileReader.CurrentTime.TotalSeconds / fileReader.TotalTime.TotalSeconds * 100);
 			}
 
 		}
 
-
-		public void prepareForClose() {
-
-			if (threadGUIUpdater != null && threadGUIUpdater.IsAlive)
-				threadGUIUpdater.Suspend(); // necessary to interrupt this thread as MessageBox blocks UI threads
-
-		}
-
-
-		public void cancelClose() {
-
-			if (threadGUIUpdater != null && threadGUIUpdater.IsAlive)
-				threadGUIUpdater.Resume();
-		}
-
-
-		public void stop() {
-
-			if (directSoundOut != null && directSoundOut.PlaybackState != PlaybackState.Stopped) {
-
-				directSoundOut.Stop();
-				label_SongTitle.Text = currentSong.ToString() + " (Stopped)";
-			}
-		}
 
 		private void button_Load_Mp3_Click(Object sender, EventArgs e) {
 
@@ -289,7 +257,7 @@ namespace DJMixer {
 
 			songList.Items.AddRange(songs);
 
-			
-        }
+
+		}
 	}
 }
