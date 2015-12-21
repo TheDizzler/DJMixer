@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using NAudio.Wave;
 using System.Threading;
 using NAudio.Wave.SampleProviders;
-
+using NAudio.Gui;
 
 namespace DJMixer {
 	/// <summary>
@@ -23,6 +23,7 @@ namespace DJMixer {
 		protected Mp3FileReader fileReader;
 		protected Thread threadGUIUpdater;
 
+		protected WaveChannel32 waveChannel;
 		protected MeteringSampleProvider postVolumeMeter;
 		protected Action<float> volumeDelegate;
 
@@ -47,6 +48,8 @@ namespace DJMixer {
 
 		public BasicPlayer() {
 			InitializeComponent();
+
+			
 		}
 
 		/// <summary>
@@ -64,7 +67,7 @@ namespace DJMixer {
 					directSoundOut.Init(postVolumeMeter);
 					directSoundOut.Play();
 					changedDevice = false;
-
+					
 				} else {
 
 					directSoundOut = new DirectSoundOut(guid);
@@ -77,18 +80,20 @@ namespace DJMixer {
 				directSoundOut = new DirectSoundOut(guid);
 				changedDevice = false;
 			}
-			directSoundOut.PlaybackStopped += loadNextSong;
+			//directSoundOut.PlaybackStopped += loadNextSong;
+
+
 		}
 
 
 
-		protected virtual void loadSong() {
+		protected virtual void playSong() {
 
 		}
 
 
 		protected virtual void loadNextSong(object sender, StoppedEventArgs e) {
-			loadSong();
+			playSong();
 		}
 
 
@@ -98,7 +103,6 @@ namespace DJMixer {
 
 			if (fileReader != null)
 				volumeDelegate(absoluteVolume * mixedVolume);
-
 		}
 
 
@@ -177,6 +181,12 @@ namespace DJMixer {
 				return true;
 			}
 			return false;
+		}
+
+
+		private void onPanChanged(Object sender, EventArgs e) {
+			if (waveChannel != null)
+				waveChannel.Pan = panSlider.Pan ;
 		}
 	}
 }

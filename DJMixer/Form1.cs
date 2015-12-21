@@ -49,6 +49,7 @@ namespace DJMixer {
 		private void onFormClosing(Object sender, FormClosingEventArgs e) {
 
 			leftPlayer.prepareForClose();
+			rightPlayer.prepareForClose();
 
 			switch (MessageBox.Show("Are you sure?", "Exit?", MessageBoxButtons.YesNo)) {
 

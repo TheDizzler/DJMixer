@@ -27,30 +27,33 @@ namespace DJMixer {
 		/// <summary>
 		///  If less latency is required (it shouldn't?), can use ASIO drivers instead of WaveOut
 		/// </summary>
-		public void getSoundDevices() {
+		//public void getSoundDevices() {
 
-			for (int i = 0; i < WaveOut.DeviceCount; ++i) {
-				Console.WriteLine(WaveOut.GetCapabilities(i).ProductName);
-				comboBox_SoundDeviceSelect.Items.Add(WaveOut.GetCapabilities(i).ProductName);
+		//	for (int i = 0; i < WaveOut.DeviceCount; ++i) {
+		//		Console.WriteLine(WaveOut.GetCapabilities(i).ProductName);
+		//		comboBox_SoundDeviceSelect.Items.Add(WaveOut.GetCapabilities(i).ProductName);
 
-			}
+		//	}
 
-			comboBox_SoundDeviceSelect.SelectedItem = comboBox_SoundDeviceSelect.Items[0];
-		}
-
-
-		public int getDeviceNumber() {
-
-			return comboBox_SoundDeviceSelect.SelectedIndex;
-		}
+		//	comboBox_SoundDeviceSelect.SelectedItem = comboBox_SoundDeviceSelect.Items[0];
+		//}
 
 
+		//public int getDeviceNumber() {
+
+		//	return comboBox_SoundDeviceSelect.SelectedIndex;
+		//}
+
+		/// <summary>
+		///  If less latency is required (it shouldn't?), can use ASIO drivers instead of WaveOut
+		/// </summary>
 		public void getDirectSoundDevices() {
 
 			foreach (DirectSoundDeviceInfo device in DirectSoundOut.Devices) {
 
 				DSDevice d = new DSDevice(device);
 				comboBox_SoundDeviceSelect.Items.Add(d);
+				
             }
 
 

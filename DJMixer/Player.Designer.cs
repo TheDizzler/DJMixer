@@ -34,6 +34,7 @@
 			this.songList = new System.Windows.Forms.CheckedListBox();
 			this.progressBar = new System.Windows.Forms.ProgressBar();
 			this.button_Next = new System.Windows.Forms.Button();
+			this.button_SavePlaylist = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.trackBar_Volume)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -51,9 +52,9 @@
 			// 
 			this.timer.Location = new System.Drawing.Point(144, 299);
 			// 
-			// panSlider1
+			// panSlider
 			// 
-			this.panSlider1.Location = new System.Drawing.Point(238, 227);
+			this.panSlider.Location = new System.Drawing.Point(238, 227);
 			// 
 			// loadMP3Dialog
 			// 
@@ -162,10 +163,21 @@
 			this.button_Next.UseVisualStyleBackColor = true;
 			this.button_Next.Click += new System.EventHandler(this.button_Next_Click);
 			// 
+			// button_SavePlaylist
+			// 
+			this.button_SavePlaylist.Location = new System.Drawing.Point(283, 309);
+			this.button_SavePlaylist.Name = "button_SavePlaylist";
+			this.button_SavePlaylist.Size = new System.Drawing.Size(75, 23);
+			this.button_SavePlaylist.TabIndex = 18;
+			this.button_SavePlaylist.Text = "Save Playlist";
+			this.button_SavePlaylist.UseVisualStyleBackColor = true;
+			this.button_SavePlaylist.Click += new System.EventHandler(this.button_SavePlaylist_Click);
+			// 
 			// Player
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.button_SavePlaylist);
 			this.Controls.Add(this.button_Next);
 			this.Controls.Add(this.progressBar);
 			this.Controls.Add(this.buttonPlay);
@@ -178,7 +190,7 @@
 			this.Controls.Add(this.waveformPainterL);
 			this.Name = "Player";
 			this.Size = new System.Drawing.Size(380, 429);
-			this.Controls.SetChildIndex(this.panSlider1, 0);
+			this.Controls.SetChildIndex(this.panSlider, 0);
 			this.Controls.SetChildIndex(this.waveformPainterL, 0);
 			this.Controls.SetChildIndex(this.waveformPainterR, 0);
 			this.Controls.SetChildIndex(this.button_Load_Mp3, 0);
@@ -192,6 +204,7 @@
 			this.Controls.SetChildIndex(this.label_SongTitle, 0);
 			this.Controls.SetChildIndex(this.trackBar_Volume, 0);
 			this.Controls.SetChildIndex(this.button_Next, 0);
+			this.Controls.SetChildIndex(this.button_SavePlaylist, 0);
 			((System.ComponentModel.ISupportInitialize)(this.trackBar_Volume)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -210,5 +223,6 @@
 		private System.Windows.Forms.CheckedListBox songList;
 		private System.Windows.Forms.ProgressBar progressBar;
 		private System.Windows.Forms.Button button_Next;
+		private System.Windows.Forms.Button button_SavePlaylist;
 	}
 }

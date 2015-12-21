@@ -26,7 +26,7 @@
 			this.trackBar_Volume = new System.Windows.Forms.TrackBar();
 			this.label_SongTitle = new System.Windows.Forms.Label();
 			this.timer = new System.Windows.Forms.Label();
-			this.panSlider1 = new NAudio.Gui.PanSlider();
+			this.panSlider = new NAudio.Gui.PanSlider();
 			((System.ComponentModel.ISupportInitialize)(this.trackBar_Volume)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -69,19 +69,20 @@
 			this.timer.Text = "00:00";
 			this.timer.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
-			// panSlider1
+			// panSlider
 			// 
-			this.panSlider1.Location = new System.Drawing.Point(3, 71);
-			this.panSlider1.Name = "panSlider1";
-			this.panSlider1.Pan = 0F;
-			this.panSlider1.Size = new System.Drawing.Size(135, 30);
-			this.panSlider1.TabIndex = 12;
+			this.panSlider.Location = new System.Drawing.Point(3, 71);
+			this.panSlider.Name = "panSlider";
+			this.panSlider.Pan = 0F;
+			this.panSlider.Size = new System.Drawing.Size(135, 30);
+			this.panSlider.TabIndex = 12;
+			this.panSlider.PanChanged += new System.EventHandler(this.onPanChanged);
 			// 
 			// BasicPlayer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.panSlider1);
+			this.Controls.Add(this.panSlider);
 			this.Controls.Add(this.label_SongTitle);
 			this.Controls.Add(this.timer);
 			this.Controls.Add(this.trackBar_Volume);
@@ -98,6 +99,6 @@
 		protected System.Windows.Forms.TrackBar trackBar_Volume;
 		protected System.Windows.Forms.Label label_SongTitle;
 		protected System.Windows.Forms.Label timer;
-		protected NAudio.Gui.PanSlider panSlider1;
+		protected NAudio.Gui.PanSlider panSlider;
 	}
 }
