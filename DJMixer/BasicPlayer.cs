@@ -44,12 +44,12 @@ namespace DJMixer {
 		/// A flag to denote when the audio output device has changed.
 		/// </summary>
 		protected Boolean changedDevice = false;
-		
+
 
 		public BasicPlayer() {
 			InitializeComponent();
 
-			
+
 		}
 
 		/// <summary>
@@ -67,7 +67,7 @@ namespace DJMixer {
 					directSoundOut.Init(postVolumeMeter);
 					directSoundOut.Play();
 					changedDevice = false;
-					
+
 				} else {
 
 					directSoundOut = new DirectSoundOut(guid);
@@ -185,8 +185,15 @@ namespace DJMixer {
 
 
 		private void onPanChanged(Object sender, EventArgs e) {
+
+			if ((Control.ModifierKeys & Keys.Alt) != 0)
+				panSlider.Pan = 0;
+
 			if (waveChannel != null)
-				waveChannel.Pan = panSlider.Pan ;
+					waveChannel.Pan = panSlider.Pan;
+			
+				
+
 		}
 	}
 }

@@ -144,13 +144,6 @@ namespace DJMixer {
 
 
 
-		private void button_Load_Mp3_Click(Object sender, EventArgs e) {
-
-			loadMP3Dialog.ShowDialog(this);
-
-		}
-
-
 		private void button_Next_Click(Object sender, EventArgs e) {
 
 			if (directSoundOut.PlaybackState == PlaybackState.Playing) {
@@ -173,7 +166,28 @@ namespace DJMixer {
 
 		private void button_SavePlaylist_Click(Object sender, EventArgs e) {
 
-			using (StreamWriter writer = new StreamWriter("test.m3u")) {
+			if (songList.Items.Count == 0 ) {
+				MessageBox.Show("Song list is empty");
+				return;
+			}
+
+			savePlaylistDialog.FileName = null;
+			savePlaylistDialog.ShowDialog(this);
+		}
+
+
+		private void savePlaylistDialog_FileOk(Object sender, CancelEventArgs e) {
+
+
+			String file = savePlaylistDialog.FileName;
+
+			if (file.LastIndexOf(".m3u") == -1 && file.LastIndexOf(".M3U") == -1) {
+
+				file += ".m3u";
+			}
+
+
+			using (StreamWriter writer = new StreamWriter(file)) {
 
 				writer.WriteLine("#EXTM3U");
 
@@ -186,6 +200,13 @@ namespace DJMixer {
 			}
 		}
 
+
+		private void button_Load_Mp3_Click(Object sender, EventArgs e) {
+
+			loadMP3Dialog.FileName = null;
+			loadMP3Dialog.ShowDialog(this);
+
+		}
 
 		private void loadMP3Dialog_FileOk(Object sender, CancelEventArgs e) {
 
@@ -250,5 +271,7 @@ namespace DJMixer {
 			}
 
 		}
+
+		
 	}
 }

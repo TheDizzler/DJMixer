@@ -28,6 +28,11 @@ namespace DJMixer {
 		}
 
 
+		public String DisplayMember {
+
+			get { return songname; }
+		}
+
 		public override String ToString() {
 
 			return songname;

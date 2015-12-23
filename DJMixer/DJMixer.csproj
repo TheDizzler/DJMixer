@@ -100,6 +100,12 @@
     <Compile Include="Player.Designer.cs">
       <DependentUpon>Player.cs</DependentUpon>
     </Compile>
+    <Compile Include="SamplePlayer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SamplePlayer.Designer.cs">
+      <DependentUpon>SamplePlayer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Song.cs" />
     <EmbeddedResource Include="ConfigForm.resx">
       <DependentUpon>ConfigForm.cs</DependentUpon>
@@ -121,6 +127,9 @@
     </Compile>
     <EmbeddedResource Include="Player.resx">
       <DependentUpon>Player.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SamplePlayer.resx">
+      <DependentUpon>SamplePlayer.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />

@@ -68,6 +68,9 @@ namespace DJMixer {
 
 		private void trackBar_CrossFader_Scroll(Object sender, EventArgs e) {
 
+			if ((Control.ModifierKeys & Keys.Alt) != 0)
+				trackBar_CrossFader.Value = 50;
+
 			masterMixFader = (float)trackBar_CrossFader.Value / 100;
 			leftPlayer.setMixedVolume(1 - masterMixFader);
 			rightPlayer.setMixedVolume(masterMixFader);
