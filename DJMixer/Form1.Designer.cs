@@ -60,7 +60,7 @@ namespace DJMixer
             this.configToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(806, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(859, 24);
 			this.menuStrip1.TabIndex = 9;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -101,7 +101,7 @@ namespace DJMixer
 			// 
 			// samplePlayer1
 			// 
-			this.samplePlayer1.Location = new System.Drawing.Point(12, 364);
+			this.samplePlayer1.Location = new System.Drawing.Point(0, 484);
 			this.samplePlayer1.Name = "samplePlayer1";
 			this.samplePlayer1.Size = new System.Drawing.Size(374, 275);
 			this.samplePlayer1.TabIndex = 12;
@@ -110,7 +110,7 @@ namespace DJMixer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(806, 623);
+			this.ClientSize = new System.Drawing.Size(859, 752);
 			this.Controls.Add(this.samplePlayer1);
 			this.Controls.Add(this.rightPlayer);
 			this.Controls.Add(this.leftPlayer);

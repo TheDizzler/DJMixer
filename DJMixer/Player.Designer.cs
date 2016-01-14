@@ -36,6 +36,7 @@
 			this.button_Next = new System.Windows.Forms.Button();
 			this.button_SavePlaylist = new System.Windows.Forms.Button();
 			this.savePlaylistDialog = new System.Windows.Forms.SaveFileDialog();
+			this.label_EndTime = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.trackBar_Volume)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -51,7 +52,7 @@
 			// 
 			// timer
 			// 
-			this.timer.Location = new System.Drawing.Point(144, 299);
+			this.timer.Location = new System.Drawing.Point(92, 299);
 			// 
 			// panSlider
 			// 
@@ -178,10 +179,24 @@
 			// 
 			this.savePlaylistDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.savePlaylistDialog_FileOk);
 			// 
+			// label_EndTime
+			// 
+			this.label_EndTime.AutoSize = true;
+			this.label_EndTime.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.label_EndTime.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.label_EndTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label_EndTime.Location = new System.Drawing.Point(193, 299);
+			this.label_EndTime.Name = "label_EndTime";
+			this.label_EndTime.Size = new System.Drawing.Size(84, 33);
+			this.label_EndTime.TabIndex = 19;
+			this.label_EndTime.Text = "00:00";
+			this.label_EndTime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
 			// Player
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.label_EndTime);
 			this.Controls.Add(this.button_SavePlaylist);
 			this.Controls.Add(this.button_Next);
 			this.Controls.Add(this.progressBar);
@@ -210,6 +225,7 @@
 			this.Controls.SetChildIndex(this.timer, 0);
 			this.Controls.SetChildIndex(this.label_SongTitle, 0);
 			this.Controls.SetChildIndex(this.trackBar_Volume, 0);
+			this.Controls.SetChildIndex(this.label_EndTime, 0);
 			((System.ComponentModel.ISupportInitialize)(this.trackBar_Volume)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -230,5 +246,6 @@
 		private System.Windows.Forms.Button button_Next;
 		private System.Windows.Forms.Button button_SavePlaylist;
 		private System.Windows.Forms.SaveFileDialog savePlaylistDialog;
+		protected System.Windows.Forms.Label label_EndTime;
 	}
 }

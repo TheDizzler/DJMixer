@@ -62,7 +62,7 @@
 			this.timer.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.timer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.timer.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.timer.Location = new System.Drawing.Point(22, 35);
+			this.timer.Location = new System.Drawing.Point(3, 35);
 			this.timer.Name = "timer";
 			this.timer.Size = new System.Drawing.Size(84, 33);
 			this.timer.TabIndex = 10;

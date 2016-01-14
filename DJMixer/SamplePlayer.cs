@@ -8,18 +8,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using NAudio.Wave;
 
 namespace DJMixer {
 	public partial class SamplePlayer : BasicPlayer {
 		public SamplePlayer() {
 			InitializeComponent();
 
-			
+
 		}
 
 		private void radioButton_Auto_CheckedChanged(Object sender, EventArgs e) {
 
-			
+
 		}
 
 		private void button_LoadSamples_Click(Object sender, EventArgs e) {
@@ -57,7 +58,47 @@ namespace DJMixer {
 			}
 
 			sampleList.Items.AddRange(songs.ToArray());
-			
+
+		}
+
+		private void button_Play_Click(Object sender, EventArgs e) {
+
+			if (directSoundOut.PlaybackState == PlaybackState.Playing) {
+
+				directSoundOut.Pause();
+				label_SongTitle.Text += " (Paused)";
+
+			} else if (directSoundOut.PlaybackState == PlaybackState.Paused || changedDevice) {
+
+				directSoundOut.Play();
+				label_SongTitle.Text = currentSong.ToString();
+				changedDevice = false;
+
+			} else {
+
+				playSong();
+			}
+		}
+
+
+		protected override void playSong() {
+
+
+			try {
+				fileReader = new Mp3FileReader(currentSong.filepath);
+
+			} catch (Exception) {
+				MessageBox.Show("Error reading " + currentSong,
+					"File does not exist or cannot be read.");
+				return;
+			}
+
+			waveChannel = new WaveChannel32(fileReader, absoluteVolume * mixedVolume, panSlider.Pan);
+			waveChannel.PadWithZeroes = false;
+
+			directSoundOut.Init(waveChannel);
+			directSoundOut.Play();
+
 		}
 	}
 }

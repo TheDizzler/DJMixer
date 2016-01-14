@@ -30,6 +30,7 @@
 			this.radioButton3 = new System.Windows.Forms.RadioButton();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.loadMP3Dialog = new System.Windows.Forms.OpenFileDialog();
+			this.button_Play = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.trackBar_Volume)).BeginInit();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
@@ -122,10 +123,21 @@
 			this.loadMP3Dialog.SupportMultiDottedExtensions = true;
 			this.loadMP3Dialog.FileOk += new System.ComponentModel.CancelEventHandler(this.loadMP3Dialog_FileOk);
 			// 
+			// button_Play
+			// 
+			this.button_Play.Location = new System.Drawing.Point(23, 147);
+			this.button_Play.Name = "button_Play";
+			this.button_Play.Size = new System.Drawing.Size(75, 23);
+			this.button_Play.TabIndex = 18;
+			this.button_Play.Text = "Play";
+			this.button_Play.UseVisualStyleBackColor = true;
+			this.button_Play.Click += new System.EventHandler(this.button_Play_Click);
+			// 
 			// SamplePlayer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.button_Play);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.sampleList);
 			this.Controls.Add(this.button_LoadSamples);
@@ -138,6 +150,7 @@
 			this.Controls.SetChildIndex(this.panSlider, 0);
 			this.Controls.SetChildIndex(this.sampleList, 0);
 			this.Controls.SetChildIndex(this.groupBox1, 0);
+			this.Controls.SetChildIndex(this.button_Play, 0);
 			((System.ComponentModel.ISupportInitialize)(this.trackBar_Volume)).EndInit();
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
@@ -154,5 +167,6 @@
 		private System.Windows.Forms.RadioButton radioButton3;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.OpenFileDialog loadMP3Dialog;
+		private System.Windows.Forms.Button button_Play;
 	}
 }

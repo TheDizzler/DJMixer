@@ -18,12 +18,19 @@ namespace DJMixer {
 
 
 		private Boolean manuallyStopped = false;
-
+		private Song nextSong;
 
 		public Player() {
 			InitializeComponent();
 
-			currentSong = new Song(@"D:\mp3z\JPop\Tsunku\Sub-Groups\Guardians 4\Shugo Chara Party - Party Time.mp3");
+			nextSong = new Song(@"D:\mp3z\JPop\Tsunku\Sub-Groups\Guardians 4\Shugo Chara Party - Party Time.mp3");
+
+			threadGUIUpdater = new Thread(new ThreadStart(updateDisplay));
+			threadGUIUpdater.IsBackground = true;
+			threadGUIUpdater.Name = "Player GUI Update Thread";
+			threadGUIUpdater.Start();
+
+
 		}
 
 
@@ -54,11 +61,12 @@ namespace DJMixer {
 		protected override void playSong() {
 			try {
 
+				currentSong = nextSong;
 				if (currentSong == null) {
 
 					currentSong = getNextSong();
 					if (currentSong == null) {
-						MessageBox.Show("No more queued songs");
+						MessageBox.Show("No songs to play.");
 						return;
 					}
 				}
@@ -72,28 +80,47 @@ namespace DJMixer {
 			}
 
 			waveChannel = new WaveChannel32(fileReader, absoluteVolume * mixedVolume, panSlider.Pan);
+			waveChannel.PadWithZeroes = false;
 
 			SampleChannel sampleChannel = new SampleChannel(waveChannel);
 			sampleChannel.PreVolumeMeter += onPreVolumeMeter;
-			this.volumeDelegate = (vol) => sampleChannel.Volume = vol;
+			volumeDelegate = (vol) => sampleChannel.Volume = vol;
 			postVolumeMeter = new MeteringSampleProvider(sampleChannel);
 			postVolumeMeter.StreamVolume += onPostVolumeMeter;
 
 
 			directSoundOut.Init(postVolumeMeter);
 			directSoundOut.Play();
+			label_EndTime.Text = String.Format("{0:00}:{1:00}",
+						(int)fileReader.TotalTime.TotalMinutes,
+						fileReader.TotalTime.Seconds);
 
-			if (threadGUIUpdater != null) {
+			//if (threadGUIUpdater != null)
+			//	threadGUIUpdater.Abort();
 
-				threadGUIUpdater = new Thread(new ThreadStart(updateDisplay));
-				threadGUIUpdater.IsBackground = true;
-				threadGUIUpdater.Name = "Player GUI Update Thread";
-				threadGUIUpdater.Start();
-			}
+			//threadGUIUpdater = new Thread(new ThreadStart(updateDisplay));
+			//threadGUIUpdater.IsBackground = false;
+			//threadGUIUpdater.Name = "Player GUI Update Thread";
+			//threadGUIUpdater.Start();
+
 
 			volumeDelegate(absoluteVolume * mixedVolume);
 
 			label_SongTitle.Text = currentSong.ToString();
+		}
+
+
+		protected override void setGUIText(String text) {
+
+			if (timer.InvokeRequired) {
+				//SetTextCallback d = new SetTextCallback(setGUIText);
+				Invoke(new SetTextCallback(setGUIText), text);
+			} else {
+
+				timer.Text = text;
+				progressBar.Value = (int)(fileReader.CurrentTime.TotalSeconds / fileReader.TotalTime.TotalSeconds * 100);
+			}
+
 		}
 
 
@@ -107,13 +134,14 @@ namespace DJMixer {
 
 		protected override void loadNextSong(object sender, StoppedEventArgs e) {
 
-			if (manuallyStopped) {
-				manuallyStopped = false;    // do nothing for now
+			Console.WriteLine("Load next song");
+			if (manuallyStopped) {  // this prevents next song from loading when stop button is pressed
+				manuallyStopped = false;
 				return;
 			}
 
 
-			currentSong = getNextSong();
+			nextSong = getNextSong();
 
 			playSong();
 		}
@@ -121,8 +149,9 @@ namespace DJMixer {
 
 		Song getNextSong() {
 
-			if (songList.Items.Count > 0 && songList.Items.Count > currentSongIndex + 1) {
-				Song next = (Song)songList.Items[++currentSongIndex];
+			Console.WriteLine("Get next song");
+			if (songList.Items.Count > 0 && songList.Items.Count > nextSongIndex + 1) {
+				Song next = (Song)songList.Items[++nextSongIndex];
 				return next;
 			}
 
@@ -146,27 +175,34 @@ namespace DJMixer {
 
 		private void button_Next_Click(Object sender, EventArgs e) {
 
+			if (songList.Items.Count < nextSongIndex+2) {
+				MessageBox.Show("No more queued songs ");
+				return;
+			}
+
 			if (directSoundOut.PlaybackState == PlaybackState.Playing) {
 				stop();
 				Thread.Sleep(50); // sometimes the playback glitches if there is no pause.
 			}
 
-			manuallyStopped = false;
+			manuallyStopped = true;
 			loadNextSong(sender, null);
 		}
 
 
 		private void songList_MouseDoubleClick(Object sender, MouseEventArgs e) {
 
-			currentSongIndex = songList.SelectedIndex - 1;
+			//currentSongIndex = songList.SelectedIndex - 1;
+			nextSongIndex = songList.SelectedIndex - 1;
 			stop();
+			manuallyStopped = true;
 			loadNextSong(sender, null);
 		}
 
 
 		private void button_SavePlaylist_Click(Object sender, EventArgs e) {
 
-			if (songList.Items.Count == 0 ) {
+			if (songList.Items.Count == 0) {
 				MessageBox.Show("Song list is empty");
 				return;
 			}
@@ -244,8 +280,9 @@ namespace DJMixer {
 			for (int i = 0; i < songList.Items.Count; ++i) {
 				songList.SetItemChecked(i, true);
 			}
-
+			//nextSongIndex = 0;
 		}
+
 
 		void onPreVolumeMeter(object sender, StreamVolumeEventArgs e) {
 
@@ -260,18 +297,8 @@ namespace DJMixer {
 
 		}
 
-		protected override void setGUIText(String text) {
 
-			if (timer.InvokeRequired) {
-				SetTextCallback d = new SetTextCallback(setGUIText);
-				Invoke(d, new object[] { text });
-			} else {
-				timer.Text = text;
-				progressBar.Value = (int)(fileReader.CurrentTime.TotalSeconds / fileReader.TotalTime.TotalSeconds * 100);
-			}
 
-		}
 
-		
 	}
 }

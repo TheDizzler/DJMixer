@@ -38,12 +38,15 @@ namespace DJMixer {
 		protected float mixedVolume = .50f;
 
 		protected Song currentSong;
-		protected int currentSongIndex = -1;
+		//protected int currentSongIndex = -1;
+		protected int nextSongIndex = -1;
 
 		/// <summary>
 		/// A flag to denote when the audio output device has changed.
 		/// </summary>
 		protected Boolean changedDevice = false;
+
+		protected Boolean runUpdateThread = true;
 
 
 		public BasicPlayer() {
@@ -80,7 +83,7 @@ namespace DJMixer {
 				directSoundOut = new DirectSoundOut(guid);
 				changedDevice = false;
 			}
-			//directSoundOut.PlaybackStopped += loadNextSong;
+			directSoundOut.PlaybackStopped += loadNextSong;
 
 
 		}
@@ -111,12 +114,13 @@ namespace DJMixer {
 		/// </summary>
 		protected void updateDisplay() {
 
-			while (fileReader.CurrentTime <= fileReader.TotalTime &&
-				 directSoundOut.PlaybackState != PlaybackState.Stopped) {
-
-				setGUIText(String.Format("{0:00}:{1:00}",
-					(int)fileReader.CurrentTime.TotalMinutes,
-					fileReader.CurrentTime.Seconds));
+			//while (fileReader.CurrentTime <= fileReader.TotalTime &&
+			//while (directSoundOut.PlaybackState != PlaybackState.Stopped) {
+			while (runUpdateThread) {
+				if (fileReader != null)
+					setGUIText(String.Format("{0:00}:{1:00}",
+						(int)fileReader.CurrentTime.TotalMinutes,
+						fileReader.CurrentTime.Seconds));
 
 			}
 
@@ -138,7 +142,7 @@ namespace DJMixer {
 				Invoke(d, new object[] { text });
 			} else {
 				timer.Text = text;
-				//progressBar1.Value = (int)(fileReader.CurrentTime.TotalSeconds / fileReader.TotalTime.TotalSeconds * 100);
+				//progressBar.Value = (int)(fileReader.CurrentTime.TotalSeconds / fileReader.TotalTime.TotalSeconds * 100);
 			}
 
 		}
@@ -178,6 +182,7 @@ namespace DJMixer {
 			if (directSoundOut != null && directSoundOut.PlaybackState != PlaybackState.Stopped) {
 
 				directSoundOut.Stop();
+
 				return true;
 			}
 			return false;
@@ -190,9 +195,9 @@ namespace DJMixer {
 				panSlider.Pan = 0;
 
 			if (waveChannel != null)
-					waveChannel.Pan = panSlider.Pan;
-			
-				
+				waveChannel.Pan = panSlider.Pan;
+
+
 
 		}
 	}

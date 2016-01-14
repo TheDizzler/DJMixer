@@ -42,6 +42,7 @@ namespace DJMixer {
 
 			leftPlayer.setGUID(config.getDeviceGUID());
 			rightPlayer.setGUID(config.getDeviceGUID());
+			samplePlayer1.setGUID(config.getDeviceGUID());
 		}
 
 
@@ -50,6 +51,7 @@ namespace DJMixer {
 
 			leftPlayer.prepareForClose();
 			rightPlayer.prepareForClose();
+			samplePlayer1.prepareForClose();
 
 			switch (MessageBox.Show("Are you sure?", "Exit?", MessageBoxButtons.YesNo)) {
 
@@ -57,6 +59,7 @@ namespace DJMixer {
 					e.Cancel = true;
 					leftPlayer.cancelClose();
 					rightPlayer.cancelClose();
+
 					break;
 				case DialogResult.Yes:
 					leftPlayer.stop();
