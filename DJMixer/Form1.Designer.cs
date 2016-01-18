@@ -118,7 +118,7 @@ namespace DJMixer
 			this.Controls.Add(this.menuStrip1);
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "Form1";
-			this.Text = "Form1";
+			this.Text = "DJ Blaster";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.onFormClosing);
 			((System.ComponentModel.ISupportInitialize)(this.trackBar_CrossFader)).EndInit();
 			this.menuStrip1.ResumeLayout(false);

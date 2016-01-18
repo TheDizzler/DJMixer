@@ -48,6 +48,9 @@ namespace DJMixer {
 
 		protected Boolean runUpdateThread = true;
 
+		protected Boolean manuallyStopped = false;
+
+
 
 		public BasicPlayer() {
 			InitializeComponent();
@@ -139,7 +142,7 @@ namespace DJMixer {
 
 			if (timer.InvokeRequired) {
 				SetTextCallback d = new SetTextCallback(setGUIText);
-				Invoke(d, new object[] { text });
+				timer.Invoke(d, new object[] { text });
 			} else {
 				timer.Text = text;
 				//progressBar.Value = (int)(fileReader.CurrentTime.TotalSeconds / fileReader.TotalTime.TotalSeconds * 100);
@@ -177,8 +180,25 @@ namespace DJMixer {
 		}
 
 
-		public bool stop() {
+		public void shutdown() {
 
+			directSoundOut.PlaybackStopped -= loadNextSong;
+			stop();
+
+			cancelClose();
+			runUpdateThread = false;
+			threadGUIUpdater.Join(1000);
+
+			while (threadGUIUpdater.IsAlive) {
+				Thread.Sleep(500);
+				Console.WriteLine(threadGUIUpdater.Name + " not dieing");
+				threadGUIUpdater.Abort();
+			}
+		}
+
+
+		public bool stop() {
+			
 			if (directSoundOut != null && directSoundOut.PlaybackState != PlaybackState.Stopped) {
 
 				directSoundOut.Stop();

@@ -17,8 +17,11 @@ namespace DJMixer {
 	public partial class Player : BasicPlayer {
 
 
-		private Boolean manuallyStopped = false;
+		bool threadkilled = false;
+		int threadID = 0;
+
 		private Song nextSong;
+
 
 		public Player() {
 			InitializeComponent();
@@ -95,14 +98,6 @@ namespace DJMixer {
 						(int)fileReader.TotalTime.TotalMinutes,
 						fileReader.TotalTime.Seconds);
 
-			//if (threadGUIUpdater != null)
-			//	threadGUIUpdater.Abort();
-
-			//threadGUIUpdater = new Thread(new ThreadStart(updateDisplay));
-			//threadGUIUpdater.IsBackground = false;
-			//threadGUIUpdater.Name = "Player GUI Update Thread";
-			//threadGUIUpdater.Start();
-
 
 			volumeDelegate(absoluteVolume * mixedVolume);
 
@@ -113,10 +108,8 @@ namespace DJMixer {
 		protected override void setGUIText(String text) {
 
 			if (timer.InvokeRequired) {
-				//SetTextCallback d = new SetTextCallback(setGUIText);
-				Invoke(new SetTextCallback(setGUIText), text);
+				timer.Invoke(new SetTextCallback(setGUIText), new object[] { text });
 			} else {
-
 				timer.Text = text;
 				progressBar.Value = (int)(fileReader.CurrentTime.TotalSeconds / fileReader.TotalTime.TotalSeconds * 100);
 			}
@@ -136,6 +129,7 @@ namespace DJMixer {
 
 			Console.WriteLine("Load next song");
 			if (manuallyStopped) {  // this prevents next song from loading when stop button is pressed
+				Console.WriteLine("Manual stop");
 				manuallyStopped = false;
 				return;
 			}
@@ -175,18 +169,18 @@ namespace DJMixer {
 
 		private void button_Next_Click(Object sender, EventArgs e) {
 
-			if (songList.Items.Count < nextSongIndex+2) {
+			if (songList.Items.Count < nextSongIndex + 2) {
 				MessageBox.Show("No more queued songs ");
 				return;
 			}
 
 			if (directSoundOut.PlaybackState == PlaybackState.Playing) {
+
 				stop();
 				Thread.Sleep(50); // sometimes the playback glitches if there is no pause.
+
 			}
 
-			manuallyStopped = true;
-			loadNextSong(sender, null);
 		}
 
 

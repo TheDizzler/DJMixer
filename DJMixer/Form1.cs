@@ -62,8 +62,10 @@ namespace DJMixer {
 
 					break;
 				case DialogResult.Yes:
-					leftPlayer.stop();
-					rightPlayer.stop();
+					leftPlayer.shutdown();
+						//Console.WriteLine("Left player stopped");
+					rightPlayer.shutdown();
+						//Console.WriteLine("Right player stopped");
 					break;
 			}
 		}
