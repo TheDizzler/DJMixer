@@ -53,8 +53,8 @@ namespace DJMixer {
 
 				DSDevice d = new DSDevice(device);
 				comboBox_SoundDeviceSelect.Items.Add(d);
-				
-            }
+
+			}
 
 
 			comboBox_SoundDeviceSelect.SelectedItem = comboBox_SoundDeviceSelect.Items[0];
@@ -71,5 +71,12 @@ namespace DJMixer {
 			deck.initSoundDevices();
 
 		}
+
+		private void onFormClosing(Object sender, FormClosingEventArgs e) {
+
+			e.Cancel = true;
+			this.Hide();
+		}
+
 	}
 }

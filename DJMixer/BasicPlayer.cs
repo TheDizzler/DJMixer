@@ -68,6 +68,7 @@ namespace DJMixer {
 
 				if (directSoundOut.PlaybackState == PlaybackState.Playing) {
 
+					manuallyStopped = true;
 					directSoundOut.Stop();
 					directSoundOut = new DirectSoundOut(guid);
 					directSoundOut.Init(postVolumeMeter);
@@ -186,19 +187,24 @@ namespace DJMixer {
 			stop();
 
 			cancelClose();
-			runUpdateThread = false;
-			threadGUIUpdater.Join(1000);
 
-			while (threadGUIUpdater.IsAlive) {
-				Thread.Sleep(500);
-				Console.WriteLine(threadGUIUpdater.Name + " not dieing");
-				threadGUIUpdater.Abort();
+			if (threadGUIUpdater.ThreadState == ThreadState.Running) {
+				Console.WriteLine(threadGUIUpdater.Name + " starting close");
+
+				runUpdateThread = false;
+				threadGUIUpdater.Join(1000);
+
+				while (threadGUIUpdater.IsAlive) {
+					Thread.Sleep(500);
+					Console.WriteLine(threadGUIUpdater.Name + " not dieing");
+					threadGUIUpdater.Abort();
+				}
 			}
 		}
 
 
 		public bool stop() {
-			
+
 			if (directSoundOut != null && directSoundOut.PlaybackState != PlaybackState.Stopped) {
 
 				directSoundOut.Stop();

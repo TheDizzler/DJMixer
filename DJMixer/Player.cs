@@ -17,8 +17,6 @@ namespace DJMixer {
 	public partial class Player : BasicPlayer {
 
 
-		bool threadkilled = false;
-		int threadID = 0;
 
 		private Song nextSong;
 
@@ -31,7 +29,7 @@ namespace DJMixer {
 			threadGUIUpdater = new Thread(new ThreadStart(updateDisplay));
 			threadGUIUpdater.IsBackground = true;
 			threadGUIUpdater.Name = "Player GUI Update Thread";
-			threadGUIUpdater.Start();
+			//threadGUIUpdater.Start();
 
 
 		}
@@ -47,6 +45,9 @@ namespace DJMixer {
 				label_SongTitle.Text += " (Paused)";
 
 			} else if (directSoundOut.PlaybackState == PlaybackState.Paused || changedDevice) {
+
+				if (threadGUIUpdater.ThreadState == ThreadState.Unstarted)
+					threadGUIUpdater.Start();
 
 				directSoundOut.Play();
 				label_SongTitle.Text = currentSong.ToString();

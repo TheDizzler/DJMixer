@@ -56,6 +56,7 @@ namespace DJMixer {
 			this.Controls.Add(this.comboBox_SoundDeviceSelect);
 			this.Name = "ConfigForm";
 			this.Text = "Config";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.onFormClosing);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
