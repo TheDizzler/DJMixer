@@ -79,7 +79,7 @@
 			// 
 			// buttonPlay
 			// 
-			this.buttonPlay.Location = new System.Drawing.Point(86, 398);
+			this.buttonPlay.Location = new System.Drawing.Point(81, 398);
 			this.buttonPlay.Name = "buttonPlay";
 			this.buttonPlay.Size = new System.Drawing.Size(75, 23);
 			this.buttonPlay.TabIndex = 0;

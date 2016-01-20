@@ -17,8 +17,8 @@ namespace DJMixer {
 	public partial class Player : BasicPlayer {
 
 
-
 		private Song nextSong;
+		private SamplePlayer samplePlayer;
 
 
 		public Player() {
@@ -28,13 +28,16 @@ namespace DJMixer {
 
 			threadGUIUpdater = new Thread(new ThreadStart(updateDisplay));
 			threadGUIUpdater.IsBackground = true;
-			threadGUIUpdater.Name = "Player GUI Update Thread";
-			//threadGUIUpdater.Start();
-
+			threadGUIUpdater.Name = this.Name + " GUI Update Thread";
 
 		}
 
 
+		public void sampleDone() {
+
+			startGUIThread();
+			playSong();
+		}
 
 
 		private void button_Play_Click(Object sender, EventArgs e) {
@@ -46,19 +49,16 @@ namespace DJMixer {
 
 			} else if (directSoundOut.PlaybackState == PlaybackState.Paused || changedDevice) {
 
-				if (threadGUIUpdater.ThreadState == ThreadState.Unstarted)
-					threadGUIUpdater.Start();
-
 				directSoundOut.Play();
 				label_SongTitle.Text = currentSong.ToString();
 				changedDevice = false;
 
 			} else {
 
+				startGUIThread();
+
 				playSong();
 			}
-
-
 
 		}
 
@@ -84,23 +84,26 @@ namespace DJMixer {
 			}
 
 			waveChannel = new WaveChannel32(fileReader, absoluteVolume * mixedVolume, panSlider.Pan);
-			waveChannel.PadWithZeroes = false;
+			waveChannel.PadWithZeroes = true;
 
 			SampleChannel sampleChannel = new SampleChannel(waveChannel);
 			sampleChannel.PreVolumeMeter += onPreVolumeMeter;
 			volumeDelegate = (vol) => sampleChannel.Volume = vol;
+			volumeDelegate(absoluteVolume * mixedVolume);
+
 			postVolumeMeter = new MeteringSampleProvider(sampleChannel);
 			postVolumeMeter.StreamVolume += onPostVolumeMeter;
 
 
 			directSoundOut.Init(postVolumeMeter);
 			directSoundOut.Play();
+
 			label_EndTime.Text = String.Format("{0:00}:{1:00}",
 						(int)fileReader.TotalTime.TotalMinutes,
 						fileReader.TotalTime.Seconds);
 
 
-			volumeDelegate(absoluteVolume * mixedVolume);
+
 
 			label_SongTitle.Text = currentSong.ToString();
 		}
@@ -121,24 +124,28 @@ namespace DJMixer {
 		protected override void button_Stop_Click(Object sender, EventArgs e) {
 
 			manuallyStopped = true;
-			if (stop())
+			if (stop()) {
 				label_SongTitle.Text = currentSong.ToString() + " (Stopped)";
+				fileReader.CurrentTime += fileReader.CurrentTime.Negate();
+			}
 		}
 
 
 		protected override void loadNextSong(object sender, StoppedEventArgs e) {
 
-			Console.WriteLine("Load next song");
+			//Console.WriteLine("Load next song");
 			if (manuallyStopped) {  // this prevents next song from loading when stop button is pressed
-				Console.WriteLine("Manual stop");
+									//Console.WriteLine("Manual stop");
 				manuallyStopped = false;
 				return;
 			}
 
-
 			nextSong = getNextSong();
 
-			playSong();
+			if (samplePlayer.on)
+				samplePlayer.playSample();
+			else
+				playSong();
 		}
 
 
@@ -187,11 +194,13 @@ namespace DJMixer {
 
 		private void songList_MouseDoubleClick(Object sender, MouseEventArgs e) {
 
-			//currentSongIndex = songList.SelectedIndex - 1;
+
 			nextSongIndex = songList.SelectedIndex - 1;
-			stop();
-			manuallyStopped = true;
-			loadNextSong(sender, null);
+
+			if (!stop())
+				loadNextSong(null, null);
+
+
 		}
 
 
@@ -293,6 +302,19 @@ namespace DJMixer {
 		}
 
 
+		private void startGUIThread() {
+
+			if (!threadGUIUpdater.IsAlive) {
+				Console.WriteLine("Starting Thread");
+				threadGUIUpdater.Start();
+			}
+
+		}
+
+		public void setSampler(SamplePlayer smplPlyr) {
+
+			samplePlayer = smplPlyr;
+		}
 
 
 	}

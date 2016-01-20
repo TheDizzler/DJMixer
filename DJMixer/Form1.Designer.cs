@@ -37,7 +37,7 @@ namespace DJMixer
 			this.configToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.rightPlayer = new DJMixer.Player();
 			this.leftPlayer = new DJMixer.Player();
-			this.samplePlayer1 = new DJMixer.SamplePlayer();
+			this.leftSamplePlayer = new DJMixer.SamplePlayer();
 			((System.ComponentModel.ISupportInitialize)(this.trackBar_CrossFader)).BeginInit();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -60,7 +60,7 @@ namespace DJMixer
             this.configToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(859, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(1098, 24);
 			this.menuStrip1.TabIndex = 9;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -87,31 +87,31 @@ namespace DJMixer
 			// 
 			// rightPlayer
 			// 
-			this.rightPlayer.Location = new System.Drawing.Point(410, 45);
+			this.rightPlayer.Location = new System.Drawing.Point(595, 45);
 			this.rightPlayer.Name = "rightPlayer";
 			this.rightPlayer.Size = new System.Drawing.Size(392, 483);
 			this.rightPlayer.TabIndex = 11;
 			// 
 			// leftPlayer
 			// 
-			this.leftPlayer.Location = new System.Drawing.Point(12, 45);
+			this.leftPlayer.Location = new System.Drawing.Point(197, 45);
 			this.leftPlayer.Name = "leftPlayer";
 			this.leftPlayer.Size = new System.Drawing.Size(392, 483);
 			this.leftPlayer.TabIndex = 10;
 			// 
-			// samplePlayer1
+			// leftSamplePlayer
 			// 
-			this.samplePlayer1.Location = new System.Drawing.Point(0, 484);
-			this.samplePlayer1.Name = "samplePlayer1";
-			this.samplePlayer1.Size = new System.Drawing.Size(374, 275);
-			this.samplePlayer1.TabIndex = 12;
+			this.leftSamplePlayer.Location = new System.Drawing.Point(13, 45);
+			this.leftSamplePlayer.Name = "leftSamplePlayer";
+			this.leftSamplePlayer.Size = new System.Drawing.Size(236, 275);
+			this.leftSamplePlayer.TabIndex = 12;
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(859, 752);
-			this.Controls.Add(this.samplePlayer1);
+			this.ClientSize = new System.Drawing.Size(1098, 752);
+			this.Controls.Add(this.leftSamplePlayer);
 			this.Controls.Add(this.rightPlayer);
 			this.Controls.Add(this.leftPlayer);
 			this.Controls.Add(this.trackBar_CrossFader);
@@ -137,7 +137,7 @@ namespace DJMixer
 		private System.Windows.Forms.ToolStripMenuItem configToolStripMenuItem1;
 		private Player leftPlayer;
 		private Player rightPlayer;
-		private SamplePlayer samplePlayer1;
+		private SamplePlayer leftSamplePlayer;
 	}
 }
 

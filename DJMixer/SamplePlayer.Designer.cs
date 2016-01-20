@@ -43,19 +43,19 @@
 			// label_SongTitle
 			// 
 			this.label_SongTitle.Enabled = false;
-			this.label_SongTitle.Location = new System.Drawing.Point(212, 120);
+			this.label_SongTitle.Location = new System.Drawing.Point(89, 169);
 			// 
 			// timer
 			// 
-			this.timer.Location = new System.Drawing.Point(148, 214);
+			this.timer.Location = new System.Drawing.Point(8, 204);
 			// 
 			// panSlider
 			// 
-			this.panSlider.Location = new System.Drawing.Point(159, 158);
+			this.panSlider.Location = new System.Drawing.Point(89, 136);
 			// 
 			// button_LoadSamples
 			// 
-			this.button_LoadSamples.Location = new System.Drawing.Point(23, 196);
+			this.button_LoadSamples.Location = new System.Drawing.Point(8, 136);
 			this.button_LoadSamples.Name = "button_LoadSamples";
 			this.button_LoadSamples.Size = new System.Drawing.Size(75, 23);
 			this.button_LoadSamples.TabIndex = 1;
@@ -69,6 +69,7 @@
 			this.sampleList.Name = "sampleList";
 			this.sampleList.Size = new System.Drawing.Size(184, 21);
 			this.sampleList.TabIndex = 13;
+			this.sampleList.SelectedIndexChanged += new System.EventHandler(this.sampleList_SelectedIndexChanged);
 			// 
 			// radioButton_Auto
 			// 
@@ -125,7 +126,7 @@
 			// 
 			// button_Play
 			// 
-			this.button_Play.Location = new System.Drawing.Point(23, 147);
+			this.button_Play.Location = new System.Drawing.Point(8, 165);
 			this.button_Play.Name = "button_Play";
 			this.button_Play.Size = new System.Drawing.Size(75, 23);
 			this.button_Play.TabIndex = 18;
@@ -142,7 +143,7 @@
 			this.Controls.Add(this.sampleList);
 			this.Controls.Add(this.button_LoadSamples);
 			this.Name = "SamplePlayer";
-			this.Size = new System.Drawing.Size(374, 275);
+			this.Size = new System.Drawing.Size(236, 275);
 			this.Controls.SetChildIndex(this.button_LoadSamples, 0);
 			this.Controls.SetChildIndex(this.trackBar_Volume, 0);
 			this.Controls.SetChildIndex(this.timer, 0);

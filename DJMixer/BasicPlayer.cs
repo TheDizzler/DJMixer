@@ -71,14 +71,16 @@ namespace DJMixer {
 					manuallyStopped = true;
 					directSoundOut.Stop();
 					directSoundOut = new DirectSoundOut(guid);
-					directSoundOut.Init(postVolumeMeter);
+					if (postVolumeMeter != null)
+						directSoundOut.Init(postVolumeMeter);
 					directSoundOut.Play();
 					changedDevice = false;
 
 				} else {
 
 					directSoundOut = new DirectSoundOut(guid);
-					directSoundOut.Init(postVolumeMeter);
+					if (postVolumeMeter != null)
+						directSoundOut.Init(postVolumeMeter);
 					if (directSoundOut.PlaybackState == PlaybackState.Paused)
 						changedDevice = true;
 
@@ -121,6 +123,7 @@ namespace DJMixer {
 			//while (fileReader.CurrentTime <= fileReader.TotalTime &&
 			//while (directSoundOut.PlaybackState != PlaybackState.Stopped) {
 			while (runUpdateThread) {
+
 				if (fileReader != null)
 					setGUIText(String.Format("{0:00}:{1:00}",
 						(int)fileReader.CurrentTime.TotalMinutes,
@@ -169,6 +172,7 @@ namespace DJMixer {
 
 		public void prepareForClose() {
 
+
 			if (threadGUIUpdater != null && threadGUIUpdater.IsAlive)
 				threadGUIUpdater.Suspend(); // necessary to interrupt this thread as MessageBox blocks UI threads
 
@@ -188,7 +192,7 @@ namespace DJMixer {
 
 			cancelClose();
 
-			if (threadGUIUpdater.ThreadState == ThreadState.Running) {
+			if (threadGUIUpdater != null && threadGUIUpdater.IsAlive) {
 				Console.WriteLine(threadGUIUpdater.Name + " starting close");
 
 				runUpdateThread = false;

@@ -34,6 +34,8 @@ namespace DJMixer {
 
 			initSoundDevices();
 
+			leftPlayer.setSampler(leftSamplePlayer);
+			leftSamplePlayer.setPlayer(leftPlayer);
 		}
 
 
@@ -42,16 +44,15 @@ namespace DJMixer {
 
 			leftPlayer.setGUID(config.getDeviceGUID());
 			rightPlayer.setGUID(config.getDeviceGUID());
-			samplePlayer1.setGUID(config.getDeviceGUID());
+			leftSamplePlayer.setGUID(config.getDeviceGUID());
 		}
-
 
 
 		private void onFormClosing(Object sender, FormClosingEventArgs e) {
 
 			leftPlayer.prepareForClose();
 			rightPlayer.prepareForClose();
-			samplePlayer1.prepareForClose();
+			leftSamplePlayer.prepareForClose();
 
 			switch (MessageBox.Show("Are you sure?", "Exit?", MessageBoxButtons.YesNo)) {
 
@@ -59,13 +60,12 @@ namespace DJMixer {
 					e.Cancel = true;
 					leftPlayer.cancelClose();
 					rightPlayer.cancelClose();
-
+					leftSamplePlayer.cancelClose();
 					break;
 				case DialogResult.Yes:
 					leftPlayer.shutdown();
-						//Console.WriteLine("Left player stopped");
 					rightPlayer.shutdown();
-						//Console.WriteLine("Right player stopped");
+					leftSamplePlayer.shutdown();
 					break;
 			}
 		}
