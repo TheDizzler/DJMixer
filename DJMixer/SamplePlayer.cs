@@ -79,14 +79,14 @@ namespace DJMixer {
 		private void button_Play_Click(Object sender, EventArgs e) {
 
 			//Console.WriteLine("button_Play_Click()");
-			if (directSoundOut.PlaybackState == PlaybackState.Playing) {
+			if (deviceOut.PlaybackState == PlaybackState.Playing) {
 
-				directSoundOut.Pause();
+				deviceOut.Pause();
 				label_SongTitle.Text += " (Paused)";
 
-			} else if (directSoundOut.PlaybackState == PlaybackState.Paused || changedDevice) {
+			} else if (deviceOut.PlaybackState == PlaybackState.Paused || changedDevice) {
 
-				directSoundOut.Play();
+				deviceOut.Play();
 				label_SongTitle.Text = currentSong.ToString();
 				changedDevice = false;
 
@@ -126,8 +126,8 @@ namespace DJMixer {
 			volumeDelegate = (vol) => waveChannel.Volume = vol;
 			volumeDelegate(absoluteVolume * mixedVolume);
 
-			directSoundOut.Init(waveChannel);
-			directSoundOut.Play();
+			deviceOut.Init(waveChannel);
+			deviceOut.Play();
 
 		}
 

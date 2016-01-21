@@ -11,11 +11,21 @@ using NAudio.Wave;
 
 
 namespace DJMixer {
+
+	public enum DEVICEID {
+		DIRECTSOUND,
+		WAVEOUT,
+		NONESELECTED
+	};
+
 	public partial class ConfigForm : Form {
+
 
 
 		Form1 deck;
 
+		bool wasDirectSound = false;
+		bool populatingList = false;
 
 		public ConfigForm(Form1 dck) {
 			InitializeComponent();
@@ -23,31 +33,82 @@ namespace DJMixer {
 			deck = dck;
 		}
 
+		private void radioButton_DS_CheckedChanged(Object sender, EventArgs e) {
+
+			if (radioButton_DS.Checked) {
+				getDirectSoundDevices();
+				deck.initSoundDevices();
+			}
+		}
+
+		private void radioButton_WaveOut_CheckedChanged(Object sender, EventArgs e) {
+
+			if (radioButton_WaveOut.Checked) {
+				getWaveOutDevices();
+				deck.initSoundDevices();
+			}
+		}
+
+		public DEVICEID getDeviceOut() {
+
+			if (radioButton_DS.Checked) {
+				getDirectSoundDevices();
+				return DEVICEID.DIRECTSOUND;
+			}
+			if (radioButton_WaveOut.Checked) {
+				getWaveOutDevices();
+				return DEVICEID.WAVEOUT;
+			}
+
+			return DEVICEID.NONESELECTED;
+		}
+
 
 		/// <summary>
 		///  If less latency is required (it shouldn't?), can use ASIO drivers instead of WaveOut
 		/// </summary>
-		//public void getSoundDevices() {
+		public void getWaveOutDevices() {
 
-		//	for (int i = 0; i < WaveOut.DeviceCount; ++i) {
-		//		Console.WriteLine(WaveOut.GetCapabilities(i).ProductName);
-		//		comboBox_SoundDeviceSelect.Items.Add(WaveOut.GetCapabilities(i).ProductName);
+			int selectedOut;
+			if (comboBox_SoundDeviceSelect.Items.Count <= 0)
+				selectedOut = 0;
+			else
+				selectedOut = comboBox_SoundDeviceSelect.SelectedIndex;
 
-		//	}
+			comboBox_SoundDeviceSelect.Items.Clear();
 
-		//	comboBox_SoundDeviceSelect.SelectedItem = comboBox_SoundDeviceSelect.Items[0];
-		//}
+			for (int i = 0; i < WaveOut.DeviceCount; ++i) {
+				//Console.WriteLine(WaveOut.GetCapabilities(i).ProductName);
+				WaveOutDevice wave = new WaveOutDevice(WaveOut.GetCapabilities(i));
+				comboBox_SoundDeviceSelect.Items.Add(wave);
+
+			}
+
+			if (wasDirectSound && selectedOut > 0)
+				--selectedOut;
+			populatingList = true;
+			comboBox_SoundDeviceSelect.SelectedItem = comboBox_SoundDeviceSelect.Items[selectedOut];
+			wasDirectSound = false;
+		}
 
 
-		//public int getDeviceNumber() {
+		public int getWaveOutDeviceNumber() {
 
-		//	return comboBox_SoundDeviceSelect.SelectedIndex;
-		//}
+			return comboBox_SoundDeviceSelect.SelectedIndex;
+		}
+
 
 		/// <summary>
 		///  If less latency is required (it shouldn't?), can use ASIO drivers instead of WaveOut
 		/// </summary>
 		public void getDirectSoundDevices() {
+
+			int selectedOut;
+			if (comboBox_SoundDeviceSelect.Items.Count <= 0)
+				selectedOut = 0;
+			else
+				selectedOut = comboBox_SoundDeviceSelect.SelectedIndex;
+			comboBox_SoundDeviceSelect.Items.Clear();
 
 			foreach (DirectSoundDeviceInfo device in DirectSoundOut.Devices) {
 
@@ -56,8 +117,12 @@ namespace DJMixer {
 
 			}
 
+			if (!wasDirectSound)
+				++selectedOut;
+			populatingList = true;
+			comboBox_SoundDeviceSelect.SelectedItem = comboBox_SoundDeviceSelect.Items[selectedOut];
 
-			comboBox_SoundDeviceSelect.SelectedItem = comboBox_SoundDeviceSelect.Items[0];
+			wasDirectSound = true;
 		}
 
 		public Guid getDeviceGUID() {
@@ -68,7 +133,11 @@ namespace DJMixer {
 
 		private void comboBox_SoundDeviceSelect_SelectedIndexChanged(Object sender, EventArgs e) {
 
-			deck.initSoundDevices();
+			if (!populatingList) {
+				Console.WriteLine("Initing new sound device");
+				deck.initSoundDevices();
+			}
+			populatingList = false;
 
 		}
 
@@ -77,6 +146,7 @@ namespace DJMixer {
 			e.Cancel = true;
 			this.Hide();
 		}
+
 
 	}
 }

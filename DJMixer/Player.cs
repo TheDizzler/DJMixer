@@ -35,39 +35,39 @@ namespace DJMixer {
 
 		public void sampleDone() {
 
-			startGUIThread();
 			playSong();
+			startGUIThread();
 		}
 
 
 		private void button_Play_Click(Object sender, EventArgs e) {
 
-			if (directSoundOut.PlaybackState == PlaybackState.Playing) {
+			if (deviceOut.PlaybackState == PlaybackState.Playing) {
 
-				directSoundOut.Pause();
+				deviceOut.Pause();
 				label_SongTitle.Text += " (Paused)";
 
-			} else if (directSoundOut.PlaybackState == PlaybackState.Paused || changedDevice) {
+			} else if (deviceOut.PlaybackState == PlaybackState.Paused || changedDevice) {
 
-				directSoundOut.Play();
+				deviceOut.Play();
 				label_SongTitle.Text = currentSong.ToString();
 				changedDevice = false;
 
 			} else {
 
-				startGUIThread();
-
 				playSong();
+
+				startGUIThread();
 			}
 
 		}
 
 		protected override void playSong() {
 			try {
-
+				
 				currentSong = nextSong;
 				if (currentSong == null) {
-
+					
 					currentSong = getNextSong();
 					if (currentSong == null) {
 						MessageBox.Show("No songs to play.");
@@ -75,16 +75,18 @@ namespace DJMixer {
 					}
 				}
 
+				if (fileReader != null)
+					fileReader.Dispose();
 				fileReader = new Mp3FileReader(currentSong.filepath);
 
 			} catch (Exception) {
-				MessageBox.Show("Error reading " + currentSong,
+				MessageBox.Show("Error reading " + currentSong + "./n" +
 					"File does not exist or cannot be read.");
 				return;
 			}
 
 			waveChannel = new WaveChannel32(fileReader, absoluteVolume * mixedVolume, panSlider.Pan);
-			waveChannel.PadWithZeroes = true;
+			waveChannel.PadWithZeroes = false;
 
 			SampleChannel sampleChannel = new SampleChannel(waveChannel);
 			sampleChannel.PreVolumeMeter += onPreVolumeMeter;
@@ -95,8 +97,8 @@ namespace DJMixer {
 			postVolumeMeter.StreamVolume += onPostVolumeMeter;
 
 
-			directSoundOut.Init(postVolumeMeter);
-			directSoundOut.Play();
+			deviceOut.Init(postVolumeMeter);
+			deviceOut.Play();
 
 			label_EndTime.Text = String.Format("{0:00}:{1:00}",
 						(int)fileReader.TotalTime.TotalMinutes,
@@ -133,9 +135,9 @@ namespace DJMixer {
 
 		protected override void loadNextSong(object sender, StoppedEventArgs e) {
 
-			//Console.WriteLine("Load next song");
+			Console.WriteLine("Load next song");
 			if (manuallyStopped) {  // this prevents next song from loading when stop button is pressed
-									//Console.WriteLine("Manual stop");
+				Console.WriteLine("Manual stop");
 				manuallyStopped = false;
 				return;
 			}
@@ -182,7 +184,7 @@ namespace DJMixer {
 				return;
 			}
 
-			if (directSoundOut.PlaybackState == PlaybackState.Playing) {
+			if (deviceOut.PlaybackState == PlaybackState.Playing) {
 
 				stop();
 				Thread.Sleep(50); // sometimes the playback glitches if there is no pause.
@@ -305,7 +307,7 @@ namespace DJMixer {
 		private void startGUIThread() {
 
 			if (!threadGUIUpdater.IsAlive) {
-				Console.WriteLine("Starting Thread");
+				//Console.WriteLine("Starting Thread");
 				threadGUIUpdater.Start();
 			}
 

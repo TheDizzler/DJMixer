@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 using NAudio.Wave;
 
 namespace DJMixer {
-	class DSDevice {
 
+	abstract class OutputDevice {
+
+		public new abstract String ToString();
+	}
+
+
+	class DSDevice {
 
 		private DirectSoundDeviceInfo device;
 
@@ -21,9 +27,27 @@ namespace DJMixer {
 			return device.Description;
 		}
 
-		internal Guid getGUID() {
-			
+		public Guid getGUID() {
+
 			return device.Guid;
 		}
+	}
+
+
+	class WaveOutDevice {
+
+
+		private WaveOutCapabilities waveOutCapabilities;
+
+
+		public WaveOutDevice(WaveOutCapabilities waveOutCapabilities) {
+			this.waveOutCapabilities = waveOutCapabilities;
+		}
+
+		public override String ToString() {
+			
+			return waveOutCapabilities.ProductName;
+		}
+
 	}
 }

@@ -19,7 +19,14 @@ namespace DJMixer {
 	/// </summary>
 	public partial class BasicPlayer : UserControl, IPlayer {
 
-		protected DirectSoundOut directSoundOut;
+
+		protected DEVICEID deviceOutID;
+
+		protected IWavePlayer deviceOut;
+
+		//private WaveOut waveOut;
+		//private DirectSoundOut directSoundOut;
+
 		protected Mp3FileReader fileReader;
 		protected Thread threadGUIUpdater;
 
@@ -59,41 +66,93 @@ namespace DJMixer {
 		}
 
 		/// <summary>
-		/// Called from main form after config form construction
+		/// Called from main form when selecting Direct Sound device.
 		/// </summary>
 		/// <param name="guid"></param>
 		public void setGUID(Guid guid) {
 
-			if (directSoundOut != null && fileReader != null) {
+			deviceOutID = DEVICEID.DIRECTSOUND;
 
-				if (directSoundOut.PlaybackState == PlaybackState.Playing) {
+			DirectSoundOut directSoundOut;
 
-					manuallyStopped = true;
-					directSoundOut.Stop();
+			if (deviceOut != null) {
+
+				deviceOut.PlaybackStopped -= loadNextSong;
+				if (deviceOut.PlaybackState == PlaybackState.Playing) {
+					
+					deviceOut.Pause();
 					directSoundOut = new DirectSoundOut(guid);
 					if (postVolumeMeter != null)
 						directSoundOut.Init(postVolumeMeter);
 					directSoundOut.Play();
 					changedDevice = false;
-
+					
 				} else {
 
 					directSoundOut = new DirectSoundOut(guid);
 					if (postVolumeMeter != null)
 						directSoundOut.Init(postVolumeMeter);
-					if (directSoundOut.PlaybackState == PlaybackState.Paused)
+					if (deviceOut.PlaybackState == PlaybackState.Paused)
 						changedDevice = true;
-
+					
 				}
+				deviceOut.Dispose();
 			} else {
 				directSoundOut = new DirectSoundOut(guid);
 				changedDevice = false;
+
 			}
+
 			directSoundOut.PlaybackStopped += loadNextSong;
 
-
+			deviceOut = directSoundOut;
 		}
 
+		/// <summary>
+		/// Called from main form when selecting Wave Out device.
+		/// </summary>
+		/// <param name="waveOutDeviceNumber"></param>
+		public void setWaveOut(int waveOutDeviceNumber) {
+
+			deviceOutID = DEVICEID.WAVEOUT;
+			WaveOut waveOut;
+
+
+			if (deviceOut != null) {
+				deviceOut.PlaybackStopped -= loadNextSong;
+				if (deviceOut.PlaybackState == PlaybackState.Playing) {
+					Console.WriteLine("wave out playing");
+					deviceOut.Pause();
+					waveOut = new WaveOut();
+					waveOut.DeviceNumber = waveOutDeviceNumber;
+					if (postVolumeMeter != null)
+						waveOut.Init(postVolumeMeter);
+					waveOut.Play();
+					changedDevice = false;
+					
+				} else {
+					Console.WriteLine("wave out NOT playing");
+					waveOut = new WaveOut();
+					waveOut.DeviceNumber = waveOutDeviceNumber;
+					if (postVolumeMeter != null)
+						waveOut.Init(postVolumeMeter);
+					if (deviceOut.PlaybackState == PlaybackState.Paused)
+						changedDevice = true;
+					
+				}
+				
+				deviceOut.Dispose();
+			} else {
+				//Console.WriteLine("device null");
+				waveOut = new WaveOut();
+				waveOut.DeviceNumber = waveOutDeviceNumber;
+				changedDevice = false;
+			}
+
+			waveOut.PlaybackStopped += loadNextSong;
+
+			deviceOut = waveOut;
+		}
 
 
 		protected virtual void playSong() {
@@ -112,6 +171,8 @@ namespace DJMixer {
 
 			if (fileReader != null)
 				volumeDelegate(absoluteVolume * mixedVolume);
+
+			//Console.WriteLine(absoluteVolume * mixedVolume);
 		}
 
 
@@ -124,10 +185,10 @@ namespace DJMixer {
 			//while (directSoundOut.PlaybackState != PlaybackState.Stopped) {
 			while (runUpdateThread) {
 
-				if (fileReader != null)
-					setGUIText(String.Format("{0:00}:{1:00}",
-						(int)fileReader.CurrentTime.TotalMinutes,
-						fileReader.CurrentTime.Seconds));
+				//if (fileReader != null)
+				setGUIText(String.Format("{0:00}:{1:00}",
+					(int)fileReader.CurrentTime.TotalMinutes,
+					fileReader.CurrentTime.Seconds));
 
 			}
 
@@ -187,15 +248,19 @@ namespace DJMixer {
 
 		public void shutdown() {
 
-			directSoundOut.PlaybackStopped -= loadNextSong;
-			stop();
+			if (deviceOut != null) {
+				deviceOut.PlaybackStopped -= loadNextSong;
+				stop();
+				deviceOut.Dispose();
+			}
 
 			cancelClose();
+
+			runUpdateThread = false;
 
 			if (threadGUIUpdater != null && threadGUIUpdater.IsAlive) {
 				Console.WriteLine(threadGUIUpdater.Name + " starting close");
 
-				runUpdateThread = false;
 				threadGUIUpdater.Join(1000);
 
 				while (threadGUIUpdater.IsAlive) {
@@ -209,9 +274,9 @@ namespace DJMixer {
 
 		public bool stop() {
 
-			if (directSoundOut != null && directSoundOut.PlaybackState != PlaybackState.Stopped) {
+			if (deviceOut != null && deviceOut.PlaybackState != PlaybackState.Stopped) {
 
-				directSoundOut.Stop();
+				deviceOut.Stop();
 
 				return true;
 			}

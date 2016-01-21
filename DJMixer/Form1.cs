@@ -30,7 +30,7 @@ namespace DJMixer {
 			InitializeComponent();
 
 			config = new ConfigForm(this);
-			config.getDirectSoundDevices();
+			//config.getWaveOutDevices();
 
 			initSoundDevices();
 
@@ -42,9 +42,24 @@ namespace DJMixer {
 		public void initSoundDevices() {
 
 
-			leftPlayer.setGUID(config.getDeviceGUID());
-			rightPlayer.setGUID(config.getDeviceGUID());
-			leftSamplePlayer.setGUID(config.getDeviceGUID());
+			switch (config.getDeviceOut()) {
+				case DEVICEID.DIRECTSOUND:
+					Console.WriteLine("Initing direct sound");
+					leftPlayer.setGUID(config.getDeviceGUID());
+					//rightPlayer.setGUID(config.getDeviceGUID());
+					leftSamplePlayer.setGUID(config.getDeviceGUID());
+					break;
+				case DEVICEID.WAVEOUT:
+					Console.WriteLine("Initing WAVE out");
+					leftPlayer.setWaveOut(config.getWaveOutDeviceNumber());
+					//rightPlayer.setWaveOut(config.getWaveOutDeviceNumber());
+					leftSamplePlayer.setWaveOut(config.getWaveOutDeviceNumber());
+					break;
+				case DEVICEID.NONESELECTED:
+					config.Show();
+					MessageBox.Show("No Output device found");
+					break;
+			}
 		}
 
 
