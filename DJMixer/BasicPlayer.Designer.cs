@@ -23,10 +23,13 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+			this.components = new System.ComponentModel.Container();
 			this.trackBar_Volume = new System.Windows.Forms.TrackBar();
 			this.label_SongTitle = new System.Windows.Forms.Label();
 			this.timer = new System.Windows.Forms.Label();
 			this.panSlider = new NAudio.Gui.PanSlider();
+			this.toolTip_PanReset = new System.Windows.Forms.ToolTip(this.components);
+			this.button_ResetList = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.trackBar_Volume)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -71,17 +74,28 @@
 			// 
 			// panSlider
 			// 
-			this.panSlider.Location = new System.Drawing.Point(3, 71);
+			this.panSlider.Location = new System.Drawing.Point(0, 71);
 			this.panSlider.Name = "panSlider";
 			this.panSlider.Pan = 0F;
 			this.panSlider.Size = new System.Drawing.Size(135, 30);
 			this.panSlider.TabIndex = 12;
+			this.toolTip_PanReset.SetToolTip(this.panSlider, "Alt-Click to re-center pan");
 			this.panSlider.PanChanged += new System.EventHandler(this.onPanChanged);
+			// 
+			// button_ResetList
+			// 
+			this.button_ResetList.Location = new System.Drawing.Point(3, 108);
+			this.button_ResetList.Name = "button_ResetList";
+			this.button_ResetList.Size = new System.Drawing.Size(75, 23);
+			this.button_ResetList.TabIndex = 13;
+			this.button_ResetList.Text = "Clear List";
+			this.button_ResetList.UseVisualStyleBackColor = true;
 			// 
 			// BasicPlayer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.button_ResetList);
 			this.Controls.Add(this.panSlider);
 			this.Controls.Add(this.label_SongTitle);
 			this.Controls.Add(this.timer);
@@ -100,5 +114,7 @@
 		protected System.Windows.Forms.Label label_SongTitle;
 		protected System.Windows.Forms.Label timer;
 		protected NAudio.Gui.PanSlider panSlider;
+		private System.Windows.Forms.ToolTip toolTip_PanReset;
+		protected System.Windows.Forms.Button button_ResetList;
 	}
 }

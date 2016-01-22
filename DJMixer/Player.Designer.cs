@@ -58,6 +58,11 @@
 			// 
 			this.panSlider.Location = new System.Drawing.Point(238, 227);
 			// 
+			// button_ResetList
+			// 
+			this.button_ResetList.Location = new System.Drawing.Point(146, 227);
+			this.button_ResetList.Click += new System.EventHandler(this.button_ResetList_Click);
+			// 
 			// loadMP3Dialog
 			// 
 			this.loadMP3Dialog.FileName = "loadMP3Dialog";
@@ -129,22 +134,25 @@
 			// 
 			// button_Load_Mp3
 			// 
-			this.button_Load_Mp3.Location = new System.Drawing.Point(11, 309);
+			this.button_Load_Mp3.Location = new System.Drawing.Point(11, 227);
 			this.button_Load_Mp3.Name = "button_Load_Mp3";
 			this.button_Load_Mp3.Size = new System.Drawing.Size(75, 23);
 			this.button_Load_Mp3.TabIndex = 14;
-			this.button_Load_Mp3.Text = "Load MP3";
+			this.button_Load_Mp3.Text = "Load MP3z";
 			this.button_Load_Mp3.UseVisualStyleBackColor = true;
 			this.button_Load_Mp3.Click += new System.EventHandler(this.button_Load_Mp3_Click);
 			// 
 			// songList
 			// 
+			this.songList.AllowDrop = true;
 			this.songList.FormattingEnabled = true;
 			this.songList.IntegralHeight = false;
 			this.songList.Location = new System.Drawing.Point(11, 3);
 			this.songList.Name = "songList";
-			this.songList.Size = new System.Drawing.Size(221, 254);
+			this.songList.Size = new System.Drawing.Size(221, 218);
 			this.songList.TabIndex = 15;
+			this.songList.DragDrop += new System.Windows.Forms.DragEventHandler(this.songList_DragDrop);
+			this.songList.DragEnter += new System.Windows.Forms.DragEventHandler(this.songList_DragEnter);
 			this.songList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.songList_MouseDoubleClick);
 			// 
 			// progressBar
@@ -210,6 +218,7 @@
 			this.Controls.Add(this.waveformPainterL);
 			this.Name = "Player";
 			this.Size = new System.Drawing.Size(380, 429);
+			this.Controls.SetChildIndex(this.button_ResetList, 0);
 			this.Controls.SetChildIndex(this.waveformPainterL, 0);
 			this.Controls.SetChildIndex(this.waveformPainterR, 0);
 			this.Controls.SetChildIndex(this.button_Load_Mp3, 0);

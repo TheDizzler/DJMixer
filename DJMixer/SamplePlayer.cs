@@ -14,29 +14,32 @@ namespace DJMixer {
 	public partial class SamplePlayer : BasicPlayer {
 
 
-		public bool on = true;
+		int songsUntilNextSample = 1;
 
-		private Player player;
+		private Player mainPlayer;
 
 
 		public SamplePlayer() {
 			InitializeComponent();
 
-
+			songsUntilNextSample = (int)songsBetweenSamples.Value;
 		}
 
 
+		public void setPlayer(Player plyr) {
+
+			mainPlayer = plyr;
+		}
+
+
+
 		public void playSample() {
+
 
 			playSong();
 
 		}
 
-
-		private void radioButton_Auto_CheckedChanged(Object sender, EventArgs e) {
-
-
-		}
 
 		private void button_LoadSamples_Click(Object sender, EventArgs e) {
 
@@ -73,12 +76,19 @@ namespace DJMixer {
 			}
 
 			sampleList.Items.AddRange(songs.ToArray());
-
+			getNextSample();
 		}
+
 
 		private void button_Play_Click(Object sender, EventArgs e) {
 
-			//Console.WriteLine("button_Play_Click()");
+
+			if (mainPlayer.isPlaying()) {
+				songsUntilNextSample = 0;
+				setGUIText("Sample playing next");
+				return;
+			}
+
 			if (deviceOut.PlaybackState == PlaybackState.Playing) {
 
 				deviceOut.Pause();
@@ -106,7 +116,7 @@ namespace DJMixer {
 
 				if (currentSong == null) {
 					Console.WriteLine("No samples to play");
-					player.sampleDone();
+					mainPlayer.sampleDone();
 					return;
 				}
 
@@ -116,7 +126,7 @@ namespace DJMixer {
 				MessageBox.Show("Error reading " + currentSong,
 					"File does not exist or cannot be read.");
 				getNextSample();
-				player.sampleDone();
+				mainPlayer.sampleDone();
 				return;
 			}
 
@@ -128,6 +138,8 @@ namespace DJMixer {
 
 			deviceOut.Init(waveChannel);
 			deviceOut.Play();
+
+			setGUIText("Playing Sample");
 
 		}
 
@@ -151,7 +163,11 @@ namespace DJMixer {
 		protected override void loadNextSong(object sender, StoppedEventArgs e) {
 
 			getNextSample();
-			player.sampleDone();
+			if (songsUntilNextSample > 1)
+				setGUIText(songsUntilNextSample + " songs until sample");
+			else
+				setGUIText("Sample playing next");
+			mainPlayer.sampleDone();
 		}
 
 
@@ -161,9 +177,79 @@ namespace DJMixer {
 		}
 
 
-		public void setPlayer(Player plyr) {
+		public Boolean ready() {
 
-			player = plyr;
+			if (radioButton_On.Checked && songsUntilNextSample-- <= 1) {
+				songsUntilNextSample = (int)songsBetweenSamples.Value;
+				return true;
+			}
+
+			if (radioButton_Off.Checked)
+				setGUIText("Samples Disabled");
+			else {
+				if (songsUntilNextSample > 1)
+					setGUIText(songsUntilNextSample + " songs until sample");
+				else
+					setGUIText("Sample playing next");
+			}
+
+			return false;
+		}
+
+		private void songsBetweenSamples_ValueChanged(Object sender, EventArgs e) {
+
+			if ((int)songsBetweenSamples.Value > songsUntilNextSample)
+				++songsUntilNextSample;
+			else
+				--songsUntilNextSample;
+
+			if (radioButton_On.Checked)
+				if (songsUntilNextSample > 1)
+					setGUIText(songsUntilNextSample + " songs until sample");
+				else
+					setGUIText("Sample playing next");
+		}
+
+
+		protected override void setGUIText(String text) {
+
+			if (label_SongTitle.InvokeRequired) {
+				label_SongTitle.Invoke(new SetTextCallback(setGUIText), new object[] { text });
+			} else {
+				label_SongTitle.Text = text;
+			}
+
+		}
+
+		private void radioButton_On_CheckedChanged(Object sender, EventArgs e) {
+
+			if (radioButton_On.Checked) {
+				songsUntilNextSample = (int)songsBetweenSamples.Value;
+				if (songsUntilNextSample > 1)
+					setGUIText(songsUntilNextSample + " songs until sample");
+				else
+					setGUIText("Sample playing next");
+			}
+		}
+
+
+		private void radioButton_Off_CheckedChanged(Object sender, EventArgs e) {
+
+			if (radioButton_Off.Checked)
+				setGUIText("Samples Disabled");
+
+		}
+
+		private void button_ResetList_Click(Object sender, EventArgs e) {
+
+			sampleList.Items.Clear();
+
+		}
+
+		private void sampleList_DropDown(Object sender, EventArgs e) {
+
+			if (sampleList.Items.Count <= 0)
+				button_LoadSamples_Click(null, null);
 		}
 	}
 }

@@ -30,12 +30,14 @@ namespace DJMixer {
 			InitializeComponent();
 
 			config = new ConfigForm(this);
-			//config.getWaveOutDevices();
 
 			initSoundDevices();
 
 			leftPlayer.setSampler(leftSamplePlayer);
 			leftSamplePlayer.setPlayer(leftPlayer);
+
+			rightPlayer.setSampler(rightSamplePlayer);
+			rightSamplePlayer.setPlayer(rightPlayer);
 		}
 
 
@@ -46,14 +48,16 @@ namespace DJMixer {
 				case DEVICEID.DIRECTSOUND:
 					Console.WriteLine("Initing direct sound");
 					leftPlayer.setGUID(config.getDeviceGUID());
-					//rightPlayer.setGUID(config.getDeviceGUID());
+					rightPlayer.setGUID(config.getDeviceGUID());
 					leftSamplePlayer.setGUID(config.getDeviceGUID());
+					rightSamplePlayer.setGUID(config.getDeviceGUID());
 					break;
 				case DEVICEID.WAVEOUT:
 					Console.WriteLine("Initing WAVE out");
 					leftPlayer.setWaveOut(config.getWaveOutDeviceNumber());
-					//rightPlayer.setWaveOut(config.getWaveOutDeviceNumber());
+					rightPlayer.setWaveOut(config.getWaveOutDeviceNumber());
 					leftSamplePlayer.setWaveOut(config.getWaveOutDeviceNumber());
+					rightSamplePlayer.setWaveOut(config.getWaveOutDeviceNumber());
 					break;
 				case DEVICEID.NONESELECTED:
 					config.Show();
@@ -68,6 +72,7 @@ namespace DJMixer {
 			leftPlayer.prepareForClose();
 			rightPlayer.prepareForClose();
 			leftSamplePlayer.prepareForClose();
+			rightSamplePlayer.prepareForClose();
 
 			switch (MessageBox.Show("Are you sure?", "Exit?", MessageBoxButtons.YesNo)) {
 
@@ -76,11 +81,13 @@ namespace DJMixer {
 					leftPlayer.cancelClose();
 					rightPlayer.cancelClose();
 					leftSamplePlayer.cancelClose();
+					rightSamplePlayer.cancelClose();
 					break;
 				case DialogResult.Yes:
 					leftPlayer.shutdown();
 					rightPlayer.shutdown();
 					leftSamplePlayer.shutdown();
+					rightSamplePlayer.shutdown();
 					break;
 			}
 		}
@@ -101,5 +108,7 @@ namespace DJMixer {
 
 			config.Show();
 		}
+
+
 	}
 }

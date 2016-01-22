@@ -20,5 +20,6 @@ namespace DJMixer {
         void prepareForClose();
         bool stop();
 		void cancelClose();
-    }
+		bool isPlaying();
+	}
 }

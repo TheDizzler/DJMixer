@@ -119,6 +119,7 @@ namespace DJMixer {
 
 
 			if (deviceOut != null) {
+
 				deviceOut.PlaybackStopped -= loadNextSong;
 				if (deviceOut.PlaybackState == PlaybackState.Playing) {
 					Console.WriteLine("wave out playing");
@@ -160,6 +161,12 @@ namespace DJMixer {
 		}
 
 
+		public bool isPlaying() {
+
+			return deviceOut.PlaybackState == PlaybackState.Playing;
+		}
+
+
 		protected virtual void loadNextSong(object sender, StoppedEventArgs e) {
 			playSong();
 		}
@@ -181,11 +188,8 @@ namespace DJMixer {
 		/// </summary>
 		protected void updateDisplay() {
 
-			//while (fileReader.CurrentTime <= fileReader.TotalTime &&
-			//while (directSoundOut.PlaybackState != PlaybackState.Stopped) {
 			while (runUpdateThread) {
-
-				//if (fileReader != null)
+				
 				setGUIText(String.Format("{0:00}:{1:00}",
 					(int)fileReader.CurrentTime.TotalMinutes,
 					fileReader.CurrentTime.Seconds));
@@ -216,6 +220,7 @@ namespace DJMixer {
 		}
 
 
+
 		protected virtual void button_Stop_Click(Object sender, EventArgs e) {
 
 			stop();
@@ -239,6 +244,7 @@ namespace DJMixer {
 
 		}
 
+
 		public void cancelClose() {
 
 			if (threadGUIUpdater != null && threadGUIUpdater.IsAlive)
@@ -261,13 +267,13 @@ namespace DJMixer {
 			if (threadGUIUpdater != null && threadGUIUpdater.IsAlive) {
 				Console.WriteLine(threadGUIUpdater.Name + " starting close");
 
-				threadGUIUpdater.Join(1000);
+				//threadGUIUpdater.Join(1000);
 
-				while (threadGUIUpdater.IsAlive) {
-					Thread.Sleep(500);
-					Console.WriteLine(threadGUIUpdater.Name + " not dieing");
-					threadGUIUpdater.Abort();
-				}
+				//while (threadGUIUpdater.IsAlive) {
+				//	Thread.Sleep(500);
+				//	Console.WriteLine(threadGUIUpdater.Name + " not dieing");
+				//	threadGUIUpdater.Abort();
+				//}
 			}
 		}
 

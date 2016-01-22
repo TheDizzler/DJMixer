@@ -24,7 +24,7 @@ namespace DJMixer {
 		public Player() {
 			InitializeComponent();
 
-			nextSong = new Song(@"D:\mp3z\JPop\Tsunku\Sub-Groups\Guardians 4\Shugo Chara Party - Party Time.mp3");
+			//nextSong = new Song(@"D:\mp3z\JPop\Tsunku\Sub-Groups\Guardians 4\Shugo Chara Party - Party Time.mp3");
 
 			threadGUIUpdater = new Thread(new ThreadStart(updateDisplay));
 			threadGUIUpdater.IsBackground = true;
@@ -64,10 +64,10 @@ namespace DJMixer {
 
 		protected override void playSong() {
 			try {
-				
+
 				currentSong = nextSong;
 				if (currentSong == null) {
-					
+
 					currentSong = getNextSong();
 					if (currentSong == null) {
 						MessageBox.Show("No songs to play.");
@@ -80,8 +80,11 @@ namespace DJMixer {
 				fileReader = new Mp3FileReader(currentSong.filepath);
 
 			} catch (Exception) {
-				MessageBox.Show("Error reading " + currentSong + "./n" +
+				MessageBox.Show("Error reading " + currentSong + ".\n" +
 					"File does not exist or cannot be read.");
+				if (fileReader != null)
+					fileReader.Dispose();
+				loadNextSong(null, null);
 				return;
 			}
 
@@ -123,10 +126,13 @@ namespace DJMixer {
 		}
 
 
+
 		protected override void button_Stop_Click(Object sender, EventArgs e) {
 
-			manuallyStopped = true;
-			if (stop()) {
+			if (deviceOut.PlaybackState != PlaybackState.Stopped)
+				manuallyStopped = true;
+
+			if (stop()) {	
 				label_SongTitle.Text = currentSong.ToString() + " (Stopped)";
 				fileReader.CurrentTime += fileReader.CurrentTime.Negate();
 			}
@@ -144,7 +150,7 @@ namespace DJMixer {
 
 			nextSong = getNextSong();
 
-			if (samplePlayer.on)
+			if (samplePlayer.ready())
 				samplePlayer.playSample();
 			else
 				playSong();
@@ -179,6 +185,9 @@ namespace DJMixer {
 
 		private void button_Next_Click(Object sender, EventArgs e) {
 
+			if (samplePlayer.isPlaying())
+				return;
+
 			if (songList.Items.Count < nextSongIndex + 2) {
 				MessageBox.Show("No more queued songs ");
 				return;
@@ -189,7 +198,9 @@ namespace DJMixer {
 				stop();
 				Thread.Sleep(50); // sometimes the playback glitches if there is no pause.
 
-			}
+			} else
+
+				sampleDone();
 
 		}
 
@@ -306,7 +317,7 @@ namespace DJMixer {
 
 		private void startGUIThread() {
 
-			if (!threadGUIUpdater.IsAlive) {
+			if (!threadGUIUpdater.IsAlive && fileReader != null) {
 				//Console.WriteLine("Starting Thread");
 				threadGUIUpdater.Start();
 			}
@@ -318,6 +329,53 @@ namespace DJMixer {
 			samplePlayer = smplPlyr;
 		}
 
+		private void button_ResetList_Click(Object sender, EventArgs e) {
 
+			songList.Items.Clear();
+
+		}
+
+		private void songList_DragDrop(Object sender, DragEventArgs e) {
+
+			if (e.Data.GetDataPresent(DataFormats.FileDrop)) {
+				string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+				foreach (string file in files) {
+					String fileType = file.Substring(file.LastIndexOf(".") + 1);
+					if (fileType == "mp3")
+						songList.Items.Add(new Song(file));
+					else if (fileType == "m3u") {
+
+						StreamReader m3u = File.OpenText(file);
+						String line;
+						while ((line = m3u.ReadLine()) != null) {
+
+							if (line.StartsWith("#EXTINF:")) {
+
+								String filepath = m3u.ReadLine();
+								if (filepath.Substring(1, 1) != ":") {
+									filepath = file.Substring(0, file.LastIndexOf("\\") + 1) + filepath;
+								}
+								//Console.WriteLine(filepath);
+								songList.Items.Add(new Song(filepath));
+
+							}
+
+
+						}
+					}
+
+				}
+			}
+		}
+
+		private void songList_DragEnter(Object sender, DragEventArgs e) {
+
+			// Check if the Dataformat of the data can be accepted
+			// (we only accept file drops from Explorer, etc.)
+			if (e.Data.GetDataPresent(DataFormats.FileDrop))
+				e.Effect = DragDropEffects.Copy; // Okay
+			else
+				e.Effect = DragDropEffects.None; // Unknown data, ignore it
+		}
 	}
 }
