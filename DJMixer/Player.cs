@@ -18,6 +18,7 @@ namespace DJMixer {
 
 
 		private Song nextSong;
+		private Song songRightClicked;
 		private SamplePlayer samplePlayer;
 
 
@@ -132,7 +133,7 @@ namespace DJMixer {
 			if (deviceOut.PlaybackState != PlaybackState.Stopped)
 				manuallyStopped = true;
 
-			if (stop()) {	
+			if (stop()) {
 				label_SongTitle.Text = currentSong.ToString() + " (Stopped)";
 				fileReader.CurrentTime += fileReader.CurrentTime.Negate();
 			}
@@ -294,9 +295,9 @@ namespace DJMixer {
 
 			songList.Items.AddRange(songs.ToArray());
 
-			for (int i = 0; i < songList.Items.Count; ++i) {
-				songList.SetItemChecked(i, true);
-			}
+			//for (int i = 0; i < songList.Items.Count; ++i) {
+			//	songList.SetItemChecked(i, true);
+			//}
 			//nextSongIndex = 0;
 		}
 
@@ -376,6 +377,40 @@ namespace DJMixer {
 				e.Effect = DragDropEffects.Copy; // Okay
 			else
 				e.Effect = DragDropEffects.None; // Unknown data, ignore it
+		}
+
+		private void removeFromListToolStripMenuItem_Click(Object sender, EventArgs e) {
+
+			songList.Items.Remove(songRightClicked);
+
+			if (songRightClicked == currentSong)
+				--nextSongIndex;
+
+			songRightClicked = null;
+		}
+
+		private void mouseClickListBox(Object sender, MouseEventArgs e) {
+
+			int index = songList.IndexFromPoint(e.Location);
+
+			if (index <= -1)
+				return;
+
+			songRightClicked = (Song)songList.Items[index];
+			//Console.WriteLine(index);
+			//Console.WriteLine(songRightClicked);
+		}
+
+
+		private void editID3Tag(Object sender, EventArgs e) {
+
+			if (songRightClicked != null) {
+				MetaDataEditForm editForm = new MetaDataEditForm();
+				editForm.initialize(songRightClicked);
+				editForm.Show();
+
+				songRightClicked = null;
+			}
 		}
 	}
 }

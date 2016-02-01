@@ -23,6 +23,7 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+			this.components = new System.ComponentModel.Container();
 			this.loadMP3Dialog = new System.Windows.Forms.OpenFileDialog();
 			this.button_Stop = new System.Windows.Forms.Button();
 			this.buttonPlay = new System.Windows.Forms.Button();
@@ -31,13 +32,17 @@
 			this.volumeMeterR = new NAudio.Gui.VolumeMeter();
 			this.waveformPainterR = new NAudio.Gui.WaveformPainter();
 			this.button_Load_Mp3 = new System.Windows.Forms.Button();
-			this.songList = new System.Windows.Forms.CheckedListBox();
+			this.songList = new System.Windows.Forms.ListBox();
+			this.rightClickMenu_PlayList = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.removeFromListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.editID3DataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.progressBar = new System.Windows.Forms.ProgressBar();
 			this.button_Next = new System.Windows.Forms.Button();
 			this.button_SavePlaylist = new System.Windows.Forms.Button();
 			this.savePlaylistDialog = new System.Windows.Forms.SaveFileDialog();
 			this.label_EndTime = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.trackBar_Volume)).BeginInit();
+			this.rightClickMenu_PlayList.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// trackBar_Volume
@@ -145,8 +150,11 @@
 			// songList
 			// 
 			this.songList.AllowDrop = true;
+			this.songList.ContextMenuStrip = this.rightClickMenu_PlayList;
+			this.songList.Font = new System.Drawing.Font("Arial Unicode MS", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
 			this.songList.FormattingEnabled = true;
 			this.songList.IntegralHeight = false;
+			this.songList.ItemHeight = 16;
 			this.songList.Location = new System.Drawing.Point(11, 3);
 			this.songList.Name = "songList";
 			this.songList.Size = new System.Drawing.Size(221, 218);
@@ -154,6 +162,29 @@
 			this.songList.DragDrop += new System.Windows.Forms.DragEventHandler(this.songList_DragDrop);
 			this.songList.DragEnter += new System.Windows.Forms.DragEventHandler(this.songList_DragEnter);
 			this.songList.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.songList_MouseDoubleClick);
+			this.songList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.mouseClickListBox);
+			// 
+			// rightClickMenu_PlayList
+			// 
+			this.rightClickMenu_PlayList.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.removeFromListToolStripMenuItem,
+            this.editID3DataToolStripMenuItem});
+			this.rightClickMenu_PlayList.Name = "rightClickMenu_PlayList";
+			this.rightClickMenu_PlayList.Size = new System.Drawing.Size(170, 48);
+			// 
+			// removeFromListToolStripMenuItem
+			// 
+			this.removeFromListToolStripMenuItem.Name = "removeFromListToolStripMenuItem";
+			this.removeFromListToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+			this.removeFromListToolStripMenuItem.Text = "Remove From List";
+			this.removeFromListToolStripMenuItem.Click += new System.EventHandler(this.removeFromListToolStripMenuItem_Click);
+			// 
+			// editID3DataToolStripMenuItem
+			// 
+			this.editID3DataToolStripMenuItem.Name = "editID3DataToolStripMenuItem";
+			this.editID3DataToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+			this.editID3DataToolStripMenuItem.Text = "Edit ID3 Data";
+			this.editID3DataToolStripMenuItem.Click += new System.EventHandler(this.editID3Tag);
 			// 
 			// progressBar
 			// 
@@ -236,6 +267,7 @@
 			this.Controls.SetChildIndex(this.trackBar_Volume, 0);
 			this.Controls.SetChildIndex(this.label_EndTime, 0);
 			((System.ComponentModel.ISupportInitialize)(this.trackBar_Volume)).EndInit();
+			this.rightClickMenu_PlayList.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -250,11 +282,14 @@
 		private NAudio.Gui.VolumeMeter volumeMeterR;
 		private NAudio.Gui.WaveformPainter waveformPainterR;
 		private System.Windows.Forms.Button button_Load_Mp3;
-		private System.Windows.Forms.CheckedListBox songList;
+		private System.Windows.Forms.ListBox songList;
 		private System.Windows.Forms.ProgressBar progressBar;
 		private System.Windows.Forms.Button button_Next;
 		private System.Windows.Forms.Button button_SavePlaylist;
 		private System.Windows.Forms.SaveFileDialog savePlaylistDialog;
 		protected System.Windows.Forms.Label label_EndTime;
+		private System.Windows.Forms.ContextMenuStrip rightClickMenu_PlayList;
+		private System.Windows.Forms.ToolStripMenuItem removeFromListToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem editID3DataToolStripMenuItem;
 	}
 }

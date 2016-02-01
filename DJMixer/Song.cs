@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HundredMilesSoftware.UltraID3Lib;
 
 namespace DJMixer {
 	public class Song {
@@ -11,7 +12,14 @@ namespace DJMixer {
 		/// <summary>
 		/// Stripped file name
 		/// </summary>
-		private String songname;
+		private String filename;
+
+		public UltraID3 metaData;
+		//private String songname;
+		//private String artist;
+		//private String album;
+		//private short? year;
+		//private String genre;
 
 
 		public Song(String file) {
@@ -24,18 +32,27 @@ namespace DJMixer {
 			if (startpos == -1)
 				startpos = 0;
 
-			songname = filepath.Substring(startpos + 1, filepath.Length - startpos - 5);
+			filename = filepath.Substring(startpos + 1, filepath.Length - startpos - 5);
+
+			metaData = new UltraID3();
+			metaData.Read(filepath);
+			//artist = metaData.Artist;
+			//songname = metaData.Title;
+			//album = metaData.Album;
+			//genre = metaData.Genre;
+			//year = metaData.Year;
 		}
 
 
-		public String DisplayMember {
+		//public String DisplayMember
+		//{
 
-			get { return songname; }
-		}
+		//	get { return metaData.GetTag(Id3TagFamily.FileStartTag).Title.Value; }
+		//}
 
 		public override String ToString() {
 
-			return songname;
+			return metaData.Artist + " - " + metaData.Title;
 		}
 	}
 }
