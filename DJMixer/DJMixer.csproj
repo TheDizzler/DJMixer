@@ -143,7 +143,19 @@
     <Compile Include="SamplePlayer.Designer.cs">
       <DependentUpon>SamplePlayer.cs</DependentUpon>
     </Compile>
+    <Compile Include="SearchResultForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SearchResultForm.Designer.cs">
+      <DependentUpon>SearchResultForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Song.cs" />
+    <Compile Include="SongSearchForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SongSearchForm.Designer.cs">
+      <DependentUpon>SongSearchForm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="ConfigForm.resx">
       <DependentUpon>ConfigForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -171,6 +183,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SamplePlayer.resx">
       <DependentUpon>SamplePlayer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SearchResultForm.resx">
+      <DependentUpon>SearchResultForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SongSearchForm.resx">
+      <DependentUpon>SongSearchForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />

@@ -55,9 +55,15 @@ namespace DJMixer {
 			foreach (String file in loadMP3Dialog.FileNames) {
 
 				String fileType = file.Substring(file.LastIndexOf(".") + 1);
-				if (fileType == "mp3")
-					songs.Add(new Song(file));
-				else if (fileType == "m3u") {
+				if (fileType == "mp3") {
+
+					Song song = new Song();
+					if (song.initialize(file))
+						songs.Add(song);
+					else
+						MessageBox.Show(file + " does not appear to be a valid mp3 file");
+
+				} else if (fileType == "m3u") {
 
 					StreamReader m3u = File.OpenText(file);
 					String line;
@@ -69,7 +75,11 @@ namespace DJMixer {
 							if (filepath.Substring(1, 1) != ":") {
 								filepath = file.Substring(0, file.LastIndexOf("\\") + 1) + filepath;
 							}
-							songs.Add(new Song(filepath));
+							Song song = new Song();
+							if (song.initialize(file))
+								songs.Add(song);
+							else
+								MessageBox.Show(file + " does not appear to be a valid mp3 file");
 						}
 					}
 				}

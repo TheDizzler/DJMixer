@@ -109,6 +109,10 @@ namespace DJMixer {
 			config.Show();
 		}
 
+		private void searchToolStripMenuItem_Click(Object sender, EventArgs e) {
 
+			SongSearchForm searchForm = new SongSearchForm();
+			searchForm.Show();
+		}
 	}
 }

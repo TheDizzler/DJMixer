@@ -21,6 +21,7 @@ namespace DJMixer {
 		private Song songRightClicked;
 		private SamplePlayer samplePlayer;
 
+		private MetaDataEditForm editForm;
 
 		public Player() {
 			InitializeComponent();
@@ -269,9 +270,16 @@ namespace DJMixer {
 			foreach (String file in loadMP3Dialog.FileNames) {
 
 				String fileType = file.Substring(file.LastIndexOf(".") + 1);
-				if (fileType == "mp3")
-					songs.Add(new Song(file));
-				else if (fileType == "m3u") {
+				if (fileType == "mp3") {
+					Song song = new Song();
+					if (song.initialize(file))
+						songs.Add(song);
+					else {
+						MessageBox.Show(file + " does not appear to be a valid mp3 file");
+						e.Cancel = true;
+
+					}
+				} else if (fileType == "m3u") {
 
 					StreamReader m3u = File.OpenText(file);
 					String line;
@@ -283,8 +291,11 @@ namespace DJMixer {
 							if (filepath.Substring(1, 1) != ":") {
 								filepath = file.Substring(0, file.LastIndexOf("\\") + 1) + filepath;
 							}
-							//Console.WriteLine(filepath);
-							songs.Add(new Song(filepath));
+							Song song = new Song();
+							if (song.initialize(file))
+								songs.Add(song);
+							else
+								MessageBox.Show(file + " does not appear to be a valid mp3 file");
 
 						}
 
@@ -342,9 +353,14 @@ namespace DJMixer {
 				string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 				foreach (string file in files) {
 					String fileType = file.Substring(file.LastIndexOf(".") + 1);
-					if (fileType == "mp3")
-						songList.Items.Add(new Song(file));
-					else if (fileType == "m3u") {
+					if (fileType == "mp3") {
+						Song song = new Song();
+						if (song.initialize(file))
+							songList.Items.Add(song);
+						else
+							MessageBox.Show(file + " does not appear to be a valid mp3 file");
+						
+					}  else if (fileType == "m3u") {
 
 						StreamReader m3u = File.OpenText(file);
 						String line;
@@ -356,8 +372,11 @@ namespace DJMixer {
 								if (filepath.Substring(1, 1) != ":") {
 									filepath = file.Substring(0, file.LastIndexOf("\\") + 1) + filepath;
 								}
-								//Console.WriteLine(filepath);
-								songList.Items.Add(new Song(filepath));
+								Song song = new Song();
+								if (song.initialize(file))
+									songList.Items.Add(song);
+								else
+									MessageBox.Show(file + " does not appear to be a valid mp3 file");
 
 							}
 
@@ -396,6 +415,7 @@ namespace DJMixer {
 			if (index <= -1)
 				return;
 
+			songList.SelectedIndex = index;
 			songRightClicked = (Song)songList.Items[index];
 			//Console.WriteLine(index);
 			//Console.WriteLine(songRightClicked);
@@ -405,7 +425,8 @@ namespace DJMixer {
 		private void editID3Tag(Object sender, EventArgs e) {
 
 			if (songRightClicked != null) {
-				MetaDataEditForm editForm = new MetaDataEditForm();
+				if (editForm == null)
+					editForm = new MetaDataEditForm();
 				editForm.initialize(songRightClicked);
 				editForm.Show();
 

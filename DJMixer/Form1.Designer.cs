@@ -37,13 +37,15 @@ namespace DJMixer
 			this.configToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.configToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolTip_FaderReset = new System.Windows.Forms.ToolTip(this.components);
-			this.leftSamplePlayer = new DJMixer.SamplePlayer();
-			this.rightPlayer = new DJMixer.Player();
-			this.leftPlayer = new DJMixer.Player();
-			this.rightSamplePlayer = new DJMixer.SamplePlayer();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
+			this.songsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.rightSamplePlayer = new DJMixer.SamplePlayer();
+			this.leftSamplePlayer = new DJMixer.SamplePlayer();
+			this.rightPlayer = new DJMixer.Player();
+			this.leftPlayer = new DJMixer.Player();
 			((System.ComponentModel.ISupportInitialize)(this.trackBar_CrossFader)).BeginInit();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -64,7 +66,8 @@ namespace DJMixer
 			// 
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.configToolStripMenuItem});
+            this.configToolStripMenuItem,
+            this.songsToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Size = new System.Drawing.Size(1224, 24);
@@ -92,34 +95,6 @@ namespace DJMixer
 			this.configToolStripMenuItem1.Text = "Config";
 			this.configToolStripMenuItem1.Click += new System.EventHandler(this.configToolStripMenuItem1_Click);
 			// 
-			// leftSamplePlayer
-			// 
-			this.leftSamplePlayer.Location = new System.Drawing.Point(12, 45);
-			this.leftSamplePlayer.Name = "leftSamplePlayer";
-			this.leftSamplePlayer.Size = new System.Drawing.Size(203, 409);
-			this.leftSamplePlayer.TabIndex = 12;
-			// 
-			// rightPlayer
-			// 
-			this.rightPlayer.Location = new System.Drawing.Point(610, 45);
-			this.rightPlayer.Name = "rightPlayer";
-			this.rightPlayer.Size = new System.Drawing.Size(392, 432);
-			this.rightPlayer.TabIndex = 11;
-			// 
-			// leftPlayer
-			// 
-			this.leftPlayer.Location = new System.Drawing.Point(212, 45);
-			this.leftPlayer.Name = "leftPlayer";
-			this.leftPlayer.Size = new System.Drawing.Size(392, 432);
-			this.leftPlayer.TabIndex = 10;
-			// 
-			// rightSamplePlayer
-			// 
-			this.rightSamplePlayer.Location = new System.Drawing.Point(1008, 45);
-			this.rightSamplePlayer.Name = "rightSamplePlayer";
-			this.rightSamplePlayer.Size = new System.Drawing.Size(201, 432);
-			this.rightSamplePlayer.TabIndex = 13;
-			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
@@ -146,6 +121,49 @@ namespace DJMixer
 			this.label3.Size = new System.Drawing.Size(61, 13);
 			this.label3.TabIndex = 16;
 			this.label3.Text = "100% Right";
+			// 
+			// songsToolStripMenuItem
+			// 
+			this.songsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.searchToolStripMenuItem});
+			this.songsToolStripMenuItem.Name = "songsToolStripMenuItem";
+			this.songsToolStripMenuItem.Size = new System.Drawing.Size(51, 20);
+			this.songsToolStripMenuItem.Text = "Songs";
+			// 
+			// searchToolStripMenuItem
+			// 
+			this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
+			this.searchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.searchToolStripMenuItem.Text = "Search";
+			this.searchToolStripMenuItem.Click += new System.EventHandler(this.searchToolStripMenuItem_Click);
+			// 
+			// rightSamplePlayer
+			// 
+			this.rightSamplePlayer.Location = new System.Drawing.Point(1008, 45);
+			this.rightSamplePlayer.Name = "rightSamplePlayer";
+			this.rightSamplePlayer.Size = new System.Drawing.Size(201, 432);
+			this.rightSamplePlayer.TabIndex = 13;
+			// 
+			// leftSamplePlayer
+			// 
+			this.leftSamplePlayer.Location = new System.Drawing.Point(12, 45);
+			this.leftSamplePlayer.Name = "leftSamplePlayer";
+			this.leftSamplePlayer.Size = new System.Drawing.Size(203, 409);
+			this.leftSamplePlayer.TabIndex = 12;
+			// 
+			// rightPlayer
+			// 
+			this.rightPlayer.Location = new System.Drawing.Point(610, 45);
+			this.rightPlayer.Name = "rightPlayer";
+			this.rightPlayer.Size = new System.Drawing.Size(392, 432);
+			this.rightPlayer.TabIndex = 11;
+			// 
+			// leftPlayer
+			// 
+			this.leftPlayer.Location = new System.Drawing.Point(212, 45);
+			this.leftPlayer.Name = "leftPlayer";
+			this.leftPlayer.Size = new System.Drawing.Size(392, 432);
+			this.leftPlayer.TabIndex = 10;
 			// 
 			// Form1
 			// 
@@ -189,6 +207,8 @@ namespace DJMixer
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.ToolStripMenuItem songsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
 	}
 }
 

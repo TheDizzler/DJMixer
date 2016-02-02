@@ -71,7 +71,7 @@
 			// loadMP3Dialog
 			// 
 			this.loadMP3Dialog.FileName = "loadMP3Dialog";
-			this.loadMP3Dialog.Filter = "MP3 files | *.mp3 ; *.m3u";
+			this.loadMP3Dialog.Filter = "MP3 files |*.m3u;*.mp3";
 			this.loadMP3Dialog.Multiselect = true;
 			this.loadMP3Dialog.SupportMultiDottedExtensions = true;
 			this.loadMP3Dialog.FileOk += new System.ComponentModel.CancelEventHandler(this.loadMP3Dialog_FileOk);
@@ -167,8 +167,8 @@
 			// rightClickMenu_PlayList
 			// 
 			this.rightClickMenu_PlayList.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.removeFromListToolStripMenuItem,
-            this.editID3DataToolStripMenuItem});
+            this.editID3DataToolStripMenuItem,
+            this.removeFromListToolStripMenuItem});
 			this.rightClickMenu_PlayList.Name = "rightClickMenu_PlayList";
 			this.rightClickMenu_PlayList.Size = new System.Drawing.Size(170, 48);
 			// 

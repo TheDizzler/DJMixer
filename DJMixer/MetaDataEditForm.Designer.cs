@@ -35,11 +35,13 @@
 			this.textBox_Album = new System.Windows.Forms.RichTextBox();
 			this.textBox_Genre = new System.Windows.Forms.RichTextBox();
 			this.textBox_Year = new System.Windows.Forms.RichTextBox();
+			this.textBox_Comments = new System.Windows.Forms.RichTextBox();
+			this.label6 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// button_SaveChanges
 			// 
-			this.button_SaveChanges.Location = new System.Drawing.Point(295, 226);
+			this.button_SaveChanges.Location = new System.Drawing.Point(211, 296);
 			this.button_SaveChanges.Name = "button_SaveChanges";
 			this.button_SaveChanges.Size = new System.Drawing.Size(75, 23);
 			this.button_SaveChanges.TabIndex = 0;
@@ -49,7 +51,7 @@
 			// 
 			// button_Cancel
 			// 
-			this.button_Cancel.Location = new System.Drawing.Point(12, 226);
+			this.button_Cancel.Location = new System.Drawing.Point(295, 296);
 			this.button_Cancel.Name = "button_Cancel";
 			this.button_Cancel.Size = new System.Drawing.Size(75, 23);
 			this.button_Cancel.TabIndex = 1;
@@ -87,7 +89,7 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(12, 122);
+			this.label4.Location = new System.Drawing.Point(163, 122);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(36, 13);
 			this.label4.TabIndex = 6;
@@ -96,7 +98,7 @@
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(12, 157);
+			this.label5.Location = new System.Drawing.Point(12, 122);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(29, 13);
 			this.label5.TabIndex = 7;
@@ -138,31 +140,53 @@
 			// textBox_Genre
 			// 
 			this.textBox_Genre.Font = new System.Drawing.Font("Arial Unicode MS", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.textBox_Genre.Location = new System.Drawing.Point(56, 117);
+			this.textBox_Genre.Location = new System.Drawing.Point(208, 117);
 			this.textBox_Genre.Multiline = false;
 			this.textBox_Genre.Name = "textBox_Genre";
 			this.textBox_Genre.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-			this.textBox_Genre.Size = new System.Drawing.Size(314, 29);
+			this.textBox_Genre.Size = new System.Drawing.Size(162, 29);
 			this.textBox_Genre.TabIndex = 10;
 			this.textBox_Genre.Text = "";
 			// 
 			// textBox_Year
 			// 
+			this.textBox_Year.BackColor = System.Drawing.SystemColors.Window;
 			this.textBox_Year.Font = new System.Drawing.Font("Arial Unicode MS", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.textBox_Year.Location = new System.Drawing.Point(56, 152);
+			this.textBox_Year.Location = new System.Drawing.Point(56, 117);
+			this.textBox_Year.MaxLength = 4;
 			this.textBox_Year.Multiline = false;
 			this.textBox_Year.Name = "textBox_Year";
 			this.textBox_Year.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
 			this.textBox_Year.Size = new System.Drawing.Size(92, 29);
 			this.textBox_Year.TabIndex = 11;
 			this.textBox_Year.Text = "";
+			this.textBox_Year.TextChanged += new System.EventHandler(this.yearValidate);
+			// 
+			// textBox_Comments
+			// 
+			this.textBox_Comments.Location = new System.Drawing.Point(15, 162);
+			this.textBox_Comments.Name = "textBox_Comments";
+			this.textBox_Comments.Size = new System.Drawing.Size(355, 118);
+			this.textBox_Comments.TabIndex = 12;
+			this.textBox_Comments.Text = "";
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(12, 146);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(56, 13);
+			this.label6.TabIndex = 13;
+			this.label6.Text = "Comments";
 			// 
 			// MetaDataEditForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(396, 261);
+			this.ClientSize = new System.Drawing.Size(384, 331);
 			this.ControlBox = false;
+			this.Controls.Add(this.label6);
+			this.Controls.Add(this.textBox_Comments);
 			this.Controls.Add(this.textBox_Year);
 			this.Controls.Add(this.textBox_Genre);
 			this.Controls.Add(this.textBox_Album);
@@ -199,5 +223,7 @@
 		private System.Windows.Forms.RichTextBox textBox_Album;
 		private System.Windows.Forms.RichTextBox textBox_Genre;
 		private System.Windows.Forms.RichTextBox textBox_Year;
+		private System.Windows.Forms.RichTextBox textBox_Comments;
+		private System.Windows.Forms.Label label6;
 	}
 }

@@ -22,8 +22,10 @@ namespace DJMixer {
 		//private String genre;
 
 
-		public Song(String file) {
+		public Song() {
+		}
 
+		public bool initialize(String file) {
 			filepath = file;
 
 			int startpos = filepath.LastIndexOf("\\");
@@ -35,23 +37,38 @@ namespace DJMixer {
 			filename = filepath.Substring(startpos + 1, filepath.Length - startpos - 5);
 
 			metaData = new UltraID3();
-			metaData.Read(filepath);
-			//artist = metaData.Artist;
-			//songname = metaData.Title;
-			//album = metaData.Album;
-			//genre = metaData.Genre;
-			//year = metaData.Year;
+			try {
+				metaData.Read(filepath);
+			} catch (Exception ex) {
+				Console.WriteLine("Source: " + ex.Source);
+				Console.WriteLine("BaseException: " + ex.GetBaseException());
+				Console.WriteLine(filepath + ": " + ex.Message);
+				return false;
+			}
+
+			return true;
 		}
 
 
-		//public String DisplayMember
-		//{
+		public bool matches(String keyword) {
 
-		//	get { return metaData.GetTag(Id3TagFamily.FileStartTag).Title.Value; }
-		//}
+			try {
+				return metaData.Album.ToLower().Contains(keyword) || metaData.Artist.ToLower().Contains(keyword)
+					|| metaData.Comments.ToLower().Contains(keyword) || metaData.FileName.ToLower().Contains(keyword)
+					|| metaData.Genre.ToLower().Contains(keyword);
+			} catch (Exception ex) {
+
+				Console.WriteLine(ex.Message);
+				return false;
+			}
+
+		}
+
 
 		public override String ToString() {
 
+			if (metaData.Artist.Length + metaData.Title.Length == 0)
+				return filename;
 			return metaData.Artist + " - " + metaData.Title;
 		}
 	}

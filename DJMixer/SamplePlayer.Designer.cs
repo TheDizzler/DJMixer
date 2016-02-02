@@ -133,7 +133,7 @@
 			// loadMP3Dialog
 			// 
 			this.loadMP3Dialog.FileName = "loadMP3Dialog";
-			this.loadMP3Dialog.Filter = "MP3 files | *.mp3 ; *.m3u";
+			this.loadMP3Dialog.Filter = "MP3 files |*.m3u;*.mp3";
 			this.loadMP3Dialog.Multiselect = true;
 			this.loadMP3Dialog.SupportMultiDottedExtensions = true;
 			this.loadMP3Dialog.FileOk += new System.ComponentModel.CancelEventHandler(this.loadMP3Dialog_FileOk);
