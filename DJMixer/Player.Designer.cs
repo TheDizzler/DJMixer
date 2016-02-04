@@ -34,8 +34,8 @@
 			this.button_Load_Mp3 = new System.Windows.Forms.Button();
 			this.songList = new System.Windows.Forms.ListBox();
 			this.rightClickMenu_PlayList = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.removeFromListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.editID3DataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.removeFromListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.progressBar = new System.Windows.Forms.ProgressBar();
 			this.button_Next = new System.Windows.Forms.Button();
 			this.button_SavePlaylist = new System.Windows.Forms.Button();
@@ -54,6 +54,7 @@
 			// 
 			this.label_SongTitle.Location = new System.Drawing.Point(11, 260);
 			this.label_SongTitle.Size = new System.Drawing.Size(361, 39);
+			this.label_SongTitle.DoubleClick += new System.EventHandler(this.label_SongTitle_DoubleClick);
 			// 
 			// timer
 			// 
@@ -172,19 +173,19 @@
 			this.rightClickMenu_PlayList.Name = "rightClickMenu_PlayList";
 			this.rightClickMenu_PlayList.Size = new System.Drawing.Size(170, 48);
 			// 
-			// removeFromListToolStripMenuItem
-			// 
-			this.removeFromListToolStripMenuItem.Name = "removeFromListToolStripMenuItem";
-			this.removeFromListToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
-			this.removeFromListToolStripMenuItem.Text = "Remove From List";
-			this.removeFromListToolStripMenuItem.Click += new System.EventHandler(this.removeFromListToolStripMenuItem_Click);
-			// 
 			// editID3DataToolStripMenuItem
 			// 
 			this.editID3DataToolStripMenuItem.Name = "editID3DataToolStripMenuItem";
 			this.editID3DataToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.editID3DataToolStripMenuItem.Text = "Edit ID3 Data";
 			this.editID3DataToolStripMenuItem.Click += new System.EventHandler(this.editID3Tag);
+			// 
+			// removeFromListToolStripMenuItem
+			// 
+			this.removeFromListToolStripMenuItem.Name = "removeFromListToolStripMenuItem";
+			this.removeFromListToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+			this.removeFromListToolStripMenuItem.Text = "Remove From List";
+			this.removeFromListToolStripMenuItem.Click += new System.EventHandler(this.removeFromListToolStripMenuItem_Click);
 			// 
 			// progressBar
 			// 

@@ -45,6 +45,7 @@
 			this.button_Select.TabIndex = 1;
 			this.button_Select.Text = "Select Songs";
 			this.button_Select.UseVisualStyleBackColor = true;
+			this.button_Select.Click += new System.EventHandler(this.button_Select_Click);
 			// 
 			// label_NumResults
 			// 

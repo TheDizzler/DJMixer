@@ -27,5 +27,11 @@ namespace DJMixer {
 			//}
 
 		}
+
+		private void button_Select_Click(Object sender, EventArgs e) {
+
+
+
+		}
 	}
 }

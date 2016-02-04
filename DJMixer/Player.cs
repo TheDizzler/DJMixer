@@ -37,6 +37,7 @@ namespace DJMixer {
 
 		public void sampleDone() {
 
+			Console.WriteLine("Sample Done");
 			playSong();
 			startGUIThread();
 		}
@@ -59,7 +60,7 @@ namespace DJMixer {
 
 				playSong();
 
-				startGUIThread();
+				//startGUIThread();
 			}
 
 		}
@@ -89,6 +90,8 @@ namespace DJMixer {
 				loadNextSong(null, null);
 				return;
 			}
+
+			startGUIThread();
 
 			waveChannel = new WaveChannel32(fileReader, absoluteVolume * mixedVolume, panSlider.Pan);
 			waveChannel.PadWithZeroes = false;
@@ -212,9 +215,10 @@ namespace DJMixer {
 
 			nextSongIndex = songList.SelectedIndex - 1;
 
-			if (!stop())
+			if (!stop()) {
+				//Console.WriteLine("stopped?");
 				loadNextSong(null, null);
-
+			}
 
 		}
 
@@ -267,18 +271,30 @@ namespace DJMixer {
 
 			List<Song> songs = new List<Song>();
 
-			foreach (String file in loadMP3Dialog.FileNames) {
+			loadMp3Files(loadMP3Dialog.FileNames);
+		}
 
+
+		private void songList_DragDrop(Object sender, DragEventArgs e) {
+
+			if (e.Data.GetDataPresent(DataFormats.FileDrop)) {
+				string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+				loadMp3Files(files);
+			}
+		}
+
+
+		private void loadMp3Files(String[] files) {
+
+			foreach (string file in files) {
 				String fileType = file.Substring(file.LastIndexOf(".") + 1);
 				if (fileType == "mp3") {
 					Song song = new Song();
 					if (song.initialize(file))
-						songs.Add(song);
-					else {
+						songList.Items.Add(song);
+					else
 						MessageBox.Show(file + " does not appear to be a valid mp3 file");
-						e.Cancel = true;
 
-					}
 				} else if (fileType == "m3u") {
 
 					StreamReader m3u = File.OpenText(file);
@@ -293,23 +309,15 @@ namespace DJMixer {
 							}
 							Song song = new Song();
 							if (song.initialize(file))
-								songs.Add(song);
+								songList.Items.Add(song);
 							else
 								MessageBox.Show(file + " does not appear to be a valid mp3 file");
 
 						}
-
-
 					}
 				}
+
 			}
-
-			songList.Items.AddRange(songs.ToArray());
-
-			//for (int i = 0; i < songList.Items.Count; ++i) {
-			//	songList.SetItemChecked(i, true);
-			//}
-			//nextSongIndex = 0;
 		}
 
 
@@ -330,7 +338,7 @@ namespace DJMixer {
 		private void startGUIThread() {
 
 			if (!threadGUIUpdater.IsAlive && fileReader != null) {
-				//Console.WriteLine("Starting Thread");
+				Console.WriteLine("Starting Thread");
 				threadGUIUpdater.Start();
 			}
 
@@ -347,46 +355,7 @@ namespace DJMixer {
 
 		}
 
-		private void songList_DragDrop(Object sender, DragEventArgs e) {
 
-			if (e.Data.GetDataPresent(DataFormats.FileDrop)) {
-				string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-				foreach (string file in files) {
-					String fileType = file.Substring(file.LastIndexOf(".") + 1);
-					if (fileType == "mp3") {
-						Song song = new Song();
-						if (song.initialize(file))
-							songList.Items.Add(song);
-						else
-							MessageBox.Show(file + " does not appear to be a valid mp3 file");
-						
-					}  else if (fileType == "m3u") {
-
-						StreamReader m3u = File.OpenText(file);
-						String line;
-						while ((line = m3u.ReadLine()) != null) {
-
-							if (line.StartsWith("#EXTINF:")) {
-
-								String filepath = m3u.ReadLine();
-								if (filepath.Substring(1, 1) != ":") {
-									filepath = file.Substring(0, file.LastIndexOf("\\") + 1) + filepath;
-								}
-								Song song = new Song();
-								if (song.initialize(file))
-									songList.Items.Add(song);
-								else
-									MessageBox.Show(file + " does not appear to be a valid mp3 file");
-
-							}
-
-
-						}
-					}
-
-				}
-			}
-		}
 
 		private void songList_DragEnter(Object sender, DragEventArgs e) {
 
@@ -416,7 +385,8 @@ namespace DJMixer {
 				return;
 
 			songList.SelectedIndex = index;
-			songRightClicked = (Song)songList.Items[index];
+			if (e.Button == MouseButtons.Right)
+				songRightClicked = (Song)songList.Items[index];
 			//Console.WriteLine(index);
 			//Console.WriteLine(songRightClicked);
 		}
@@ -432,6 +402,13 @@ namespace DJMixer {
 
 				songRightClicked = null;
 			}
+		}
+
+
+		private void label_SongTitle_DoubleClick(Object sender, EventArgs e) {
+
+			songRightClicked = currentSong;
+			editID3Tag(sender, e);
 		}
 	}
 }

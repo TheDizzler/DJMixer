@@ -203,7 +203,6 @@
 			this.Name = "MetaDataEditForm";
 			this.ShowIcon = false;
 			this.Text = "Edit MP3 MetaData";
-			this.Shown += new System.EventHandler(this.formShown);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

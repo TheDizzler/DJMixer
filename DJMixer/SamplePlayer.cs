@@ -50,16 +50,15 @@ namespace DJMixer {
 
 		private void loadMP3Dialog_FileOk(Object sender, CancelEventArgs e) {
 
-			List<Song> songs = new List<Song>();
+			//List<Song> songs = new List<Song>();
 
 			foreach (String file in loadMP3Dialog.FileNames) {
 
 				String fileType = file.Substring(file.LastIndexOf(".") + 1);
 				if (fileType == "mp3") {
-
 					Song song = new Song();
 					if (song.initialize(file))
-						songs.Add(song);
+						sampleList.Items.Add(song);
 					else
 						MessageBox.Show(file + " does not appear to be a valid mp3 file");
 
@@ -77,15 +76,16 @@ namespace DJMixer {
 							}
 							Song song = new Song();
 							if (song.initialize(file))
-								songs.Add(song);
+								sampleList.Items.Add(song);
 							else
 								MessageBox.Show(file + " does not appear to be a valid mp3 file");
+
 						}
 					}
 				}
 			}
 
-			sampleList.Items.AddRange(songs.ToArray());
+			//sampleList.Items.AddRange(songs.ToArray());
 			getNextSample();
 		}
 
