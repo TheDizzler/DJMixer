@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -10,9 +11,13 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DJMixer {
+
+	enum Keyword { Title, Artist, Genre, Year, Comments };
+
+
 	public partial class SongSearchForm : Form {
 
-		Size defaultSize = new Size(new Point (444, 173));
+		Size defaultSize = new Size(new Point(444, 173));
 		Size fullSize = new Size(new Point(444, 410));
 
 
@@ -31,23 +36,35 @@ namespace DJMixer {
 		private void button_Search_Click(Object sender, EventArgs e) {
 
 
-			SearchResultForm resultForm = new SearchResultForm();
+			//SearchResultForm resultForm = new SearchResultForm();
 
-
-
-			List<Song> results = getResults(Directory.GetFiles(@"D:\mp3z", "*.mp3", SearchOption.AllDirectories));
-			if (results.Count > 0) {
-
-
-				this.Size = fullSize;
-				listBox_SearchResults.Items.AddRange(results.ToArray());
-				label_NumResults.Text = results.Count + " Matches Found";
-
-			} else {
-
-				this.Size = defaultSize;
+			if (String.IsNullOrWhiteSpace(searchKeyword.Text)) {
+				searchKeyword.BackColor = Color.Red;
+				return;
 			}
 
+			DialogResult result = folderBrowserDialog.ShowDialog(this);
+
+			if (result == DialogResult.OK) {
+
+				Stopwatch timer = new Stopwatch();
+				timer.Start();
+				List<Song> results = getResults(Directory.GetFiles(folderBrowserDialog.SelectedPath, "*.mp3", SearchOption.AllDirectories));
+				timer.Stop();
+
+				//if (results.Count > 0) {
+
+				//	this.Size = fullSize;
+				//	listBox_SearchResults.Items.AddRange(results.ToArray());
+
+				//} else {
+
+				//	this.Size = defaultSize;
+				//}
+
+				label_NumResults.Text = results.Count + " Matches Found";
+				label_Timer.Text = "in " + timer.Elapsed.Seconds + " seconds";
+			}
 			//resultForm.loadResults(getResults(Directory.GetFiles(@"D:\mp3z", "*.mp3", SearchOption.AllDirectories)));
 
 			//resultForm.Show();
@@ -59,16 +76,30 @@ namespace DJMixer {
 
 			List<Song> results = new List<Song>();
 
+			searchKeyword.Text = searchKeyword.Text.Trim(' ');
+
+			String keyword = searchKeyword.Text.ToLower();
+
+
 			foreach (String file in allFiles) {
 
 				Song song = new Song();
-				if (song.initialize(file) && song.matches(searchKeyword.Text.ToLower()))
-						results.Add(song);
-						
+				if (song.initialize(file) && song.matchesAll(keyword)) {
+
+					results.Add(song);
+					listBox_SearchResults.Items.Add(song);
+					this.Size = fullSize;
+				}
 			}
 
 
 			return results;
+		}
+
+		private void searchFieldChanged(Object sender, EventArgs e) {
+
+			if (String.IsNullOrWhiteSpace(searchKeyword.Text))
+				searchKeyword.BackColor = Color.White;
 		}
 	}
 }

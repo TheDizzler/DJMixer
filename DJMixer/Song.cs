@@ -73,6 +73,9 @@ namespace DJMixer {
 				tagFile = File.Create(filepath);
 			} catch (Exception ex) {
 				Console.WriteLine(filepath + " invalid");
+				Console.WriteLine(ex.Message);
+				usingTagLib = false;
+				return false;
 			}
 			usingTagLib = true;
 
@@ -80,23 +83,63 @@ namespace DJMixer {
 		}
 
 
-		public bool matches(String keyword) {
+		public bool matchesAll(String keyword) {
 
-			//if (usingUltraID3) {
-			//	try {
-			//		return metaData.Album.ToLower().Contains(keyword) || metaData.Artist.ToLower().Contains(keyword)
-			//			|| metaData.Comments.ToLower().Contains(keyword) || metaData.FileName.ToLower().Contains(keyword)
-			//			|| metaData.Genre.ToLower().Contains(keyword);
-			//	} catch (Exception ex) {
+			if (usingTagLib) {
+				try {
+					return matchesArtist(keyword) || matchesAlbum(keyword)
+						|| matchesInComment(keyword) || matchesFilename(keyword)
+						|| matchesGenre(keyword);
+				} catch (Exception ex) {
 
-			//		Console.WriteLine(ex.Message);
-			//	}
-			//}
+					Console.WriteLine(filename + " has a problem");
+				}
+			}
 
 			return false;
 
 		}
 
+		private Boolean matchesFilename(String keyword) {
+
+			if (String.IsNullOrEmpty(filename))
+				return false;
+			return filename.ToLower().Contains(keyword);
+		}
+
+		private Boolean matchesInComment(String keyword) {
+
+			if (String.IsNullOrEmpty(tagFile.Tag.Comment))
+				return false;
+			return tagFile.Tag.Comment.ToLower().Contains(keyword);
+		}
+
+		private Boolean matchesAlbum(String keyword) {
+
+			if (String.IsNullOrEmpty(tagFile.Tag.Album))
+				return false;
+			return tagFile.Tag.Album.ToLower().Contains(keyword);
+		}
+
+		private Boolean matchesArtist(String keyword) {
+			
+			foreach (String artist in tagFile.Tag.Performers)
+				if (artist.ToLower().Contains(keyword))
+					return true;
+
+			return false;
+		}
+
+
+		private Boolean matchesGenre(String keyword) {
+
+			foreach (String genre in tagFile.Tag.Genres) {
+				if (genre.ToLower().Contains(keyword))
+					return true;
+			}
+			
+			return false;
+		}
 
 		public override String ToString() {
 
@@ -105,7 +148,7 @@ namespace DJMixer {
 			//Console.WriteLine(tagFile.Tag.Title.Length);
 
 
-			if (!usingTagLib || tagFile.Tag.FirstPerformer == null
+			if (!usingTagLib || String.IsNullOrWhiteSpace(tagFile.Tag.FirstPerformer)
 				|| (tagFile.Tag.FirstPerformer.Length + tagFile.Tag.Title.Length == 0)) {
 				return filename;
 			} else

@@ -33,6 +33,8 @@
 			this.label_NumResults = new System.Windows.Forms.Label();
 			this.button_Select = new System.Windows.Forms.Button();
 			this.listBox_SearchResults = new System.Windows.Forms.ListBox();
+			this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+			this.label_Timer = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -48,14 +50,16 @@
 			// 
 			// searchKeyword
 			// 
-			this.searchKeyword.Location = new System.Drawing.Point(138, 41);
+			this.searchKeyword.Location = new System.Drawing.Point(79, 20);
 			this.searchKeyword.Name = "searchKeyword";
-			this.searchKeyword.Size = new System.Drawing.Size(137, 33);
+			this.searchKeyword.Size = new System.Drawing.Size(137, 29);
 			this.searchKeyword.TabIndex = 2;
 			this.searchKeyword.Text = "";
+			this.searchKeyword.TextChanged += new System.EventHandler(this.searchFieldChanged);
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.label_Timer);
 			this.groupBox1.Controls.Add(this.label_NumResults);
 			this.groupBox1.Controls.Add(this.checkBox_Comments);
 			this.groupBox1.Controls.Add(this.searchKeyword);
@@ -114,7 +118,7 @@
 			// label_NumResults
 			// 
 			this.label_NumResults.AutoSize = true;
-			this.label_NumResults.Location = new System.Drawing.Point(217, 93);
+			this.label_NumResults.Location = new System.Drawing.Point(217, 77);
 			this.label_NumResults.Name = "label_NumResults";
 			this.label_NumResults.Size = new System.Drawing.Size(90, 13);
 			this.label_NumResults.TabIndex = 6;
@@ -137,6 +141,20 @@
 			this.listBox_SearchResults.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
 			this.listBox_SearchResults.Size = new System.Drawing.Size(404, 199);
 			this.listBox_SearchResults.TabIndex = 4;
+			// 
+			// folderBrowserDialog
+			// 
+			this.folderBrowserDialog.Description = "Chose a directory to search";
+			this.folderBrowserDialog.ShowNewFolderButton = false;
+			// 
+			// label_Timer
+			// 
+			this.label_Timer.AutoSize = true;
+			this.label_Timer.Location = new System.Drawing.Point(217, 95);
+			this.label_Timer.Name = "label_Timer";
+			this.label_Timer.Size = new System.Drawing.Size(67, 13);
+			this.label_Timer.TabIndex = 7;
+			this.label_Timer.Text = "in 0 seconds";
 			// 
 			// SongSearchForm
 			// 
@@ -166,5 +184,7 @@
 		private System.Windows.Forms.Label label_NumResults;
 		private System.Windows.Forms.Button button_Select;
 		private System.Windows.Forms.ListBox listBox_SearchResults;
+		private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
+		private System.Windows.Forms.Label label_Timer;
 	}
 }
