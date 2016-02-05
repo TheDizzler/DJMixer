@@ -8,15 +8,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using HundredMilesSoftware.UltraID3Lib;
+using Id3;
+using Id3.Frames;
 using TagLib;
 
 namespace DJMixer {
 	public partial class MetaDataEditForm : Form {
 
-		//private UltraID3 metaData;
+		public Id3Tag id3Tag;
 		private File metaFile;
 
-		private bool initialized = false;
+		//private bool initialized = false;
 
 		public MetaDataEditForm() {
 			InitializeComponent();
@@ -24,6 +26,8 @@ namespace DJMixer {
 
 
 		public void initialize(Song song) {
+
+
 
 			if (song.usingTagLib) {
 
@@ -41,20 +45,21 @@ namespace DJMixer {
 
 				button_SaveChanges.Enabled = true;
 
-			//} else if (song.usingUltraID3) {
+			} else if (song.usingId3Tag && !song.fileCorrupted) {
 
-				//metaData = song.metaData;
+				id3Tag = song.id3Tag;
 
-				//this.Text = song.ToString();
-				//textBox_Title.Text = metaData.Title;
-				//textBox_Artist.Text = metaData.Artist;
-				//textBox_Genre.Text = metaData.Genre;
-				//textBox_Album.Text = metaData.Album;
-				//textBox_Year.Text = "" + metaData.Year;
-				//textBox_Comments.Text = metaData.Comments;
+				this.Text = song.ToString();
+				textBox_Title.Text = id3Tag.Title.Value;
+				textBox_Artist.Text = id3Tag.Artists.Value;
+				textBox_Genre.Text = id3Tag.Genre.Value;
+				textBox_Album.Text = id3Tag.Album.Value;
+				textBox_Year.Text = "" + id3Tag.Year.Value;
+				foreach (CommentFrame comment in id3Tag.Comments)
+					textBox_Comments.Text += comment.Comment + "\n";
 
-				//button_SaveChanges.Enabled = true;
-				//initialized = true;
+				button_SaveChanges.Enabled = true;
+
 			} else {
 				//initialized = false;
 

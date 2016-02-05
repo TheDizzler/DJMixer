@@ -49,7 +49,8 @@ namespace DJMixer {
 
 				Stopwatch timer = new Stopwatch();
 				timer.Start();
-				List<Song> results = getResults(Directory.GetFiles(folderBrowserDialog.SelectedPath, "*.mp3", SearchOption.AllDirectories));
+				List<Song> results = getResults(Directory.GetFiles(folderBrowserDialog.SelectedPath,
+					"*.mp3", SearchOption.AllDirectories));
 				timer.Stop();
 
 				//if (results.Count > 0) {
@@ -100,6 +101,10 @@ namespace DJMixer {
 
 			if (String.IsNullOrWhiteSpace(searchKeyword.Text))
 				searchKeyword.BackColor = Color.White;
+		}
+
+		private void button_Select_Click(Object sender, EventArgs e) {
+
 		}
 	}
 }

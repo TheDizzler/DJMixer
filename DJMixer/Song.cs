@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HundredMilesSoftware.UltraID3Lib;
+using Id3;
+using Id3.Frames;
 using TagLib;
 
 namespace DJMixer {
@@ -16,10 +18,12 @@ namespace DJMixer {
 		private String filename;
 
 		public TagLib.File tagFile;
-
+		public Id3Tag id3Tag;
 		//public UltraID3 metaData;
-		//public bool usingUltraID3 = false;
+
+		public bool usingId3Tag = false;
 		public bool usingTagLib = false;
+		public bool fileCorrupted = false;
 
 		//private String songname;
 		//private String artist;
@@ -71,29 +75,86 @@ namespace DJMixer {
 
 			try {
 				tagFile = File.Create(filepath);
-			} catch (Exception ex) {
-				Console.WriteLine(filepath + " invalid");
-				Console.WriteLine(ex.Message);
-				usingTagLib = false;
-				return false;
-			}
-			usingTagLib = true;
 
-			return true;
+				//TagLib.File.LocalFileAbstraction abstraction = new TagLib.File.LocalFileAbstraction(filepath);
+				//TagLib.ReadStyle propertiesStyle = TagLib.ReadStyle.Average;
+				//tagFile = new TagLib.Mpeg.AudioFile(abstraction, propertiesStyle);
+
+				usingTagLib = true;
+				return true;
+
+			} catch (Exception ex) {
+				Console.WriteLine(filepath + " invalid. Trying ID3.");
+				//Console.WriteLine(ex.Message);
+				usingTagLib = false;
+			}
+
+
+			//try {
+
+			using (Mp3File mp3 = new Mp3File(filepath, Mp3Permissions.ReadWrite)) {
+
+				id3Tag = mp3.GetTag(Id3TagFamily.FileStartTag);
+				try {
+
+					if (!String.IsNullOrWhiteSpace(id3Tag.Artists.Value)
+						&& !String.IsNullOrWhiteSpace(id3Tag.Title.Value)) {
+
+						usingId3Tag = true;
+						return true;
+					}
+
+				} catch (Exception ex) {
+					Console.WriteLine("Could not load ID3v2. Attempting v1");
+
+				}
+
+				try {
+
+					id3Tag = mp3.GetTag(Id3TagFamily.FileEndTag);
+					Console.WriteLine("trying v1");
+
+					if (!String.IsNullOrWhiteSpace(id3Tag.Artists.Value)
+						&& !String.IsNullOrWhiteSpace(id3Tag.Title.Value)) {
+
+						usingId3Tag = true;
+						return true;
+					}
+
+				} catch (Exception ex) {
+					Console.WriteLine("Could not load v1!!!");
+					fileCorrupted = true;
+				}
+			}
+
+
+
+			//} catch (Exception ex) {
+			//	Console.WriteLine(filepath + " invalid. Onoes :(");
+			//	Console.WriteLine(ex.Message);
+			//	usingId3Tag = false;
+			//}
+
+			//if (id3Tag != null) {
+			//	usingId3Tag = true;
+			//	return true;
+			//}
+
+
+			return false;
 		}
 
 
 		public bool matchesAll(String keyword) {
 
-			if (usingTagLib) {
-				try {
-					return matchesArtist(keyword) || matchesAlbum(keyword)
-						|| matchesInComment(keyword) || matchesFilename(keyword)
-						|| matchesGenre(keyword);
-				} catch (Exception ex) {
 
-					Console.WriteLine(filename + " has a problem");
-				}
+			try {
+				return matchesArtist(keyword) || matchesAlbum(keyword)
+					|| matchesInComment(keyword) || matchesFilename(keyword)
+					|| matchesGenre(keyword);
+			} catch (Exception ex) {
+
+				Console.WriteLine(filename + ": " + ex.Message);
 			}
 
 			return false;
@@ -104,41 +165,68 @@ namespace DJMixer {
 
 			if (String.IsNullOrEmpty(filename))
 				return false;
+
 			return filename.ToLower().Contains(keyword);
 		}
 
 		private Boolean matchesInComment(String keyword) {
 
-			if (String.IsNullOrEmpty(tagFile.Tag.Comment))
-				return false;
-			return tagFile.Tag.Comment.ToLower().Contains(keyword);
+			if (usingId3Tag)
+				foreach (CommentFrame comment in id3Tag.Comments)
+					if (comment.Comment.ToLower().Contains(keyword))
+						return true;
+
+
+			if (usingTagLib) {
+				if (String.IsNullOrEmpty(tagFile.Tag.Comment))
+					return false;
+
+				return tagFile.Tag.Comment.ToLower().Contains(keyword);
+			}
+			return false;
 		}
 
 		private Boolean matchesAlbum(String keyword) {
 
-			if (String.IsNullOrEmpty(tagFile.Tag.Album))
-				return false;
-			return tagFile.Tag.Album.ToLower().Contains(keyword);
+			if (usingId3Tag)
+				return id3Tag.Album.Value.ToLower().Contains(keyword);
+
+			if (usingTagLib) {
+				if (String.IsNullOrEmpty(tagFile.Tag.Album))
+					return false;
+				return tagFile.Tag.Album.ToLower().Contains(keyword);
+			}
+
+			return false;
 		}
 
 		private Boolean matchesArtist(String keyword) {
-			
-			foreach (String artist in tagFile.Tag.Performers)
-				if (artist.ToLower().Contains(keyword))
-					return true;
 
+			if (usingId3Tag)
+				return id3Tag.Artists.Value.ToLower().Contains(keyword);
+
+			if (usingTagLib) {
+				foreach (String artist in tagFile.Tag.Performers)
+					if (artist.ToLower().Contains(keyword))
+						return true;
+			}
 			return false;
 		}
 
 
 		private Boolean matchesGenre(String keyword) {
 
-			foreach (String genre in tagFile.Tag.Genres) {
-				if (genre.ToLower().Contains(keyword))
-					return true;
+			if (usingId3Tag)
+				return id3Tag.Genre.Value.ToLower().Contains(keyword);
+
+			if (usingTagLib) {
+				foreach (String genre in tagFile.Tag.Genres) {
+					if (genre.ToLower().Contains(keyword))
+						return true;
+				}
 			}
-			
 			return false;
+
 		}
 
 		public override String ToString() {
@@ -146,13 +234,32 @@ namespace DJMixer {
 			//Console.WriteLine(filename);
 			//Console.WriteLine(tagFile.Tag.FirstPerformer.Length);
 			//Console.WriteLine(tagFile.Tag.Title.Length);
+			try {
+				if (usingTagLib) {
+					if (String.IsNullOrWhiteSpace(tagFile.Tag.FirstPerformer)
+						|| (tagFile.Tag.FirstPerformer.Length + tagFile.Tag.Title.Length == 0))
+						return filename;
+					return tagFile.Tag.FirstPerformer + " - " + tagFile.Tag.Title;
+				}
 
+				if (usingId3Tag) {
+					if (String.IsNullOrWhiteSpace(id3Tag.Artists.Value)
+						&& String.IsNullOrWhiteSpace(id3Tag.Title.Value))
+						return filename;
 
-			if (!usingTagLib || String.IsNullOrWhiteSpace(tagFile.Tag.FirstPerformer)
-				|| (tagFile.Tag.FirstPerformer.Length + tagFile.Tag.Title.Length == 0)) {
-				return filename;
-			} else
-				return tagFile.Tag.FirstPerformer + " - " + tagFile.Tag.Title;
+					return id3Tag.Artists.Value + " - " + id3Tag.Title.Value;
+				}
+			} catch (Exception ex) {
+				Console.WriteLine(filename + " is fuckered!!");
+
+				fileCorrupted = true;
+			}
+
+			if (fileCorrupted)
+				return "FILE CORRUPTED - " + filename;
+
+			return filename;
+
 		}
 
 		//if (usingUltraID3) {

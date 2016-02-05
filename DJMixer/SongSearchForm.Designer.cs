@@ -26,15 +26,15 @@
 			this.button_Search = new System.Windows.Forms.Button();
 			this.searchKeyword = new System.Windows.Forms.RichTextBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.label_Timer = new System.Windows.Forms.Label();
+			this.label_NumResults = new System.Windows.Forms.Label();
 			this.checkBox_Comments = new System.Windows.Forms.CheckBox();
 			this.checkBox3 = new System.Windows.Forms.CheckBox();
 			this.checkBox_Artist = new System.Windows.Forms.CheckBox();
 			this.checkBox_Title = new System.Windows.Forms.CheckBox();
-			this.label_NumResults = new System.Windows.Forms.Label();
 			this.button_Select = new System.Windows.Forms.Button();
 			this.listBox_SearchResults = new System.Windows.Forms.ListBox();
 			this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-			this.label_Timer = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -73,6 +73,24 @@
 			this.groupBox1.TabIndex = 3;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "groupBox1";
+			// 
+			// label_Timer
+			// 
+			this.label_Timer.AutoSize = true;
+			this.label_Timer.Location = new System.Drawing.Point(217, 95);
+			this.label_Timer.Name = "label_Timer";
+			this.label_Timer.Size = new System.Drawing.Size(67, 13);
+			this.label_Timer.TabIndex = 7;
+			this.label_Timer.Text = "in 0 seconds";
+			// 
+			// label_NumResults
+			// 
+			this.label_NumResults.AutoSize = true;
+			this.label_NumResults.Location = new System.Drawing.Point(217, 77);
+			this.label_NumResults.Name = "label_NumResults";
+			this.label_NumResults.Size = new System.Drawing.Size(90, 13);
+			this.label_NumResults.TabIndex = 6;
+			this.label_NumResults.Text = "0 Matches Found";
 			// 
 			// checkBox_Comments
 			// 
@@ -115,15 +133,6 @@
 			this.checkBox_Title.UseVisualStyleBackColor = true;
 			this.checkBox_Title.CheckedChanged += new System.EventHandler(this.checkBox_Title_CheckedChanged);
 			// 
-			// label_NumResults
-			// 
-			this.label_NumResults.AutoSize = true;
-			this.label_NumResults.Location = new System.Drawing.Point(217, 77);
-			this.label_NumResults.Name = "label_NumResults";
-			this.label_NumResults.Size = new System.Drawing.Size(90, 13);
-			this.label_NumResults.TabIndex = 6;
-			this.label_NumResults.Text = "0 Matches Found";
-			// 
 			// button_Select
 			// 
 			this.button_Select.Location = new System.Drawing.Point(189, 343);
@@ -132,6 +141,7 @@
 			this.button_Select.TabIndex = 5;
 			this.button_Select.Text = "Select Songs";
 			this.button_Select.UseVisualStyleBackColor = true;
+			this.button_Select.Click += new System.EventHandler(this.button_Select_Click);
 			// 
 			// listBox_SearchResults
 			// 
@@ -146,15 +156,6 @@
 			// 
 			this.folderBrowserDialog.Description = "Chose a directory to search";
 			this.folderBrowserDialog.ShowNewFolderButton = false;
-			// 
-			// label_Timer
-			// 
-			this.label_Timer.AutoSize = true;
-			this.label_Timer.Location = new System.Drawing.Point(217, 95);
-			this.label_Timer.Name = "label_Timer";
-			this.label_Timer.Size = new System.Drawing.Size(67, 13);
-			this.label_Timer.TabIndex = 7;
-			this.label_Timer.Text = "in 0 seconds";
 			// 
 			// SongSearchForm
 			// 

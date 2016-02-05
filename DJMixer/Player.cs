@@ -290,10 +290,10 @@ namespace DJMixer {
 				String fileType = file.Substring(file.LastIndexOf(".") + 1);
 				if (fileType == "mp3") {
 					Song song = new Song();
-					if (song.initialize(file))
-						songList.Items.Add(song);
-					else
-						MessageBox.Show(file + " does not appear to be a valid mp3 file");
+					if (!song.initialize(file))
+						MessageBox.Show(" Could not read ID3 metadata in " + file);
+
+					songList.Items.Add(song);
 
 				} else if (fileType == "m3u") {
 
@@ -308,11 +308,9 @@ namespace DJMixer {
 								filepath = file.Substring(0, file.LastIndexOf("\\") + 1) + filepath;
 							}
 							Song song = new Song();
-							if (song.initialize(file))
-								songList.Items.Add(song);
-							else
-								MessageBox.Show(file + " does not appear to be a valid mp3 file");
-
+							if (!song.initialize(file))
+								MessageBox.Show(" Could not read ID3 metadata in " + file);
+							songList.Items.Add(song);
 						}
 					}
 				}
