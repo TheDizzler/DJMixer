@@ -11,6 +11,7 @@ using NAudio.Wave;
 using System.Threading;
 using NAudio.Wave.SampleProviders;
 using NAudio.Gui;
+using System.Diagnostics;
 
 namespace DJMixer {
 	/// <summary>
@@ -24,8 +25,6 @@ namespace DJMixer {
 
 		protected IWavePlayer deviceOut;
 
-		//private WaveOut waveOut;
-		//private DirectSoundOut directSoundOut;
 
 		protected Mp3FileReader fileReader;
 		protected Thread threadGUIUpdater;
@@ -122,7 +121,7 @@ namespace DJMixer {
 
 				deviceOut.PlaybackStopped -= loadNextSong;
 				if (deviceOut.PlaybackState == PlaybackState.Playing) {
-					Console.WriteLine("wave out playing");
+					Debug.WriteLine("wave out playing");
 					deviceOut.Pause();
 					waveOut = new WaveOut();
 					waveOut.DeviceNumber = waveOutDeviceNumber;
@@ -132,7 +131,7 @@ namespace DJMixer {
 					changedDevice = false;
 					
 				} else {
-					Console.WriteLine("wave out NOT playing");
+					Debug.WriteLine("wave out NOT playing");
 					waveOut = new WaveOut();
 					waveOut.DeviceNumber = waveOutDeviceNumber;
 					if (postVolumeMeter != null)
@@ -144,7 +143,7 @@ namespace DJMixer {
 				
 				deviceOut.Dispose();
 			} else {
-				//Console.WriteLine("device null");
+				//Debug.WriteLine("device null");
 				waveOut = new WaveOut();
 				waveOut.DeviceNumber = waveOutDeviceNumber;
 				changedDevice = false;
@@ -179,7 +178,20 @@ namespace DJMixer {
 			if (fileReader != null)
 				volumeDelegate(absoluteVolume * mixedVolume);
 
-			//Console.WriteLine(absoluteVolume * mixedVolume);
+			//Debug.WriteLine("absoluteVolume: " + absoluteVolume + " mixedVolume: " + mixedVolume);
+			//Debug.WriteLine("absoluteVolume * mixedVolume = " + absoluteVolume * mixedVolume);
+		}
+
+
+		public void setMixedVolume(float mixVol) {
+
+			mixedVolume = mixVol;
+
+			if (fileReader != null)
+				volumeDelegate(absoluteVolume * mixedVolume);
+
+			//Debug.WriteLine("absoluteVolume: " + absoluteVolume + " mixedVolume: " + mixedVolume);
+			//Debug.WriteLine("absoluteVolume * mixedVolume = " + absoluteVolume * mixedVolume);
 		}
 
 
@@ -197,7 +209,7 @@ namespace DJMixer {
 			}
 
 			setGUIText(String.Format("{0:00}:{1:00}", 0, 0));
-			Console.WriteLine(Thread.CurrentThread.Name + " Thread terminated");
+			Debug.WriteLine(Thread.CurrentThread.Name + " Thread terminated");
 		}
 
 		/// <summary>
@@ -226,14 +238,6 @@ namespace DJMixer {
 
 		}
 
-
-		public void setMixedVolume(float mixVol) {
-
-			mixedVolume = mixVol;
-
-			if (fileReader != null)
-				volumeDelegate(absoluteVolume * mixedVolume);
-		}
 
 		public void prepareForClose() {
 
@@ -264,13 +268,13 @@ namespace DJMixer {
 			runUpdateThread = false;
 
 			if (threadGUIUpdater != null && threadGUIUpdater.IsAlive) {
-				Console.WriteLine(threadGUIUpdater.Name + " starting close");
+				Debug.WriteLine(threadGUIUpdater.Name + " starting close");
 
 				//threadGUIUpdater.Join(1000);
 
 				//while (threadGUIUpdater.IsAlive) {
 				//	Thread.Sleep(500);
-				//	Console.WriteLine(threadGUIUpdater.Name + " not dieing");
+				//	Debug.WriteLine(threadGUIUpdater.Name + " not dieing");
 				//	threadGUIUpdater.Abort();
 				//}
 			}

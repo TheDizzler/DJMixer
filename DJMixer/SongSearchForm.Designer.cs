@@ -24,6 +24,7 @@
 		/// </summary>
 		private void InitializeComponent() {
 			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SongSearchForm));
 			this.button_Search = new System.Windows.Forms.Button();
 			this.searchKeyword = new System.Windows.Forms.RichTextBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -33,12 +34,14 @@
 			this.checkBox3 = new System.Windows.Forms.CheckBox();
 			this.checkBox_Artist = new System.Windows.Forms.CheckBox();
 			this.checkBox_Title = new System.Windows.Forms.CheckBox();
-			this.button_Select = new System.Windows.Forms.Button();
+			this.button_SendToLeftPlayer = new System.Windows.Forms.Button();
 			this.listBox_SearchResults = new System.Windows.Forms.ListBox();
 			this.rightClickMenu_PlayList = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.editID3DataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
 			this.progressBar_Searching = new System.Windows.Forms.ProgressBar();
+			this.button_SendToRightPlayer = new System.Windows.Forms.Button();
+			this.label1 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.rightClickMenu_PlayList.SuspendLayout();
 			this.SuspendLayout();
@@ -55,7 +58,7 @@
 			// 
 			// searchKeyword
 			// 
-			this.searchKeyword.Location = new System.Drawing.Point(79, 20);
+			this.searchKeyword.Location = new System.Drawing.Point(90, 41);
 			this.searchKeyword.Name = "searchKeyword";
 			this.searchKeyword.Size = new System.Drawing.Size(137, 29);
 			this.searchKeyword.TabIndex = 2;
@@ -64,6 +67,7 @@
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.label1);
 			this.groupBox1.Controls.Add(this.progressBar_Searching);
 			this.groupBox1.Controls.Add(this.label_Timer);
 			this.groupBox1.Controls.Add(this.label_NumResults);
@@ -78,7 +82,6 @@
 			this.groupBox1.Size = new System.Drawing.Size(404, 119);
 			this.groupBox1.TabIndex = 3;
 			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "groupBox1";
 			// 
 			// label_Timer
 			// 
@@ -88,6 +91,7 @@
 			this.label_Timer.TabIndex = 7;
 			this.label_Timer.Text = "in 0 seconds";
 			this.label_Timer.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.label_Timer.Visible = false;
 			// 
 			// label_NumResults
 			// 
@@ -97,10 +101,12 @@
 			this.label_NumResults.TabIndex = 6;
 			this.label_NumResults.Text = "0 Matches Found";
 			this.label_NumResults.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.label_NumResults.Visible = false;
 			// 
 			// checkBox_Comments
 			// 
 			this.checkBox_Comments.AutoSize = true;
+			this.checkBox_Comments.Enabled = false;
 			this.checkBox_Comments.Location = new System.Drawing.Point(6, 89);
 			this.checkBox_Comments.Name = "checkBox_Comments";
 			this.checkBox_Comments.Size = new System.Drawing.Size(75, 17);
@@ -111,6 +117,7 @@
 			// checkBox3
 			// 
 			this.checkBox3.AutoSize = true;
+			this.checkBox3.Enabled = false;
 			this.checkBox3.Location = new System.Drawing.Point(6, 66);
 			this.checkBox3.Name = "checkBox3";
 			this.checkBox3.Size = new System.Drawing.Size(55, 17);
@@ -121,6 +128,7 @@
 			// checkBox_Artist
 			// 
 			this.checkBox_Artist.AutoSize = true;
+			this.checkBox_Artist.Enabled = false;
 			this.checkBox_Artist.Location = new System.Drawing.Point(6, 43);
 			this.checkBox_Artist.Name = "checkBox_Artist";
 			this.checkBox_Artist.Size = new System.Drawing.Size(49, 17);
@@ -131,6 +139,7 @@
 			// checkBox_Title
 			// 
 			this.checkBox_Title.AutoSize = true;
+			this.checkBox_Title.Enabled = false;
 			this.checkBox_Title.Location = new System.Drawing.Point(6, 20);
 			this.checkBox_Title.Name = "checkBox_Title";
 			this.checkBox_Title.Size = new System.Drawing.Size(46, 17);
@@ -139,15 +148,15 @@
 			this.checkBox_Title.UseVisualStyleBackColor = true;
 			this.checkBox_Title.CheckedChanged += new System.EventHandler(this.checkBox_Title_CheckedChanged);
 			// 
-			// button_Select
+			// button_SendToLeftPlayer
 			// 
-			this.button_Select.Location = new System.Drawing.Point(189, 343);
-			this.button_Select.Name = "button_Select";
-			this.button_Select.Size = new System.Drawing.Size(75, 23);
-			this.button_Select.TabIndex = 5;
-			this.button_Select.Text = "Select Songs";
-			this.button_Select.UseVisualStyleBackColor = true;
-			this.button_Select.Click += new System.EventHandler(this.button_Select_Click);
+			this.button_SendToLeftPlayer.Location = new System.Drawing.Point(12, 342);
+			this.button_SendToLeftPlayer.Name = "button_SendToLeftPlayer";
+			this.button_SendToLeftPlayer.Size = new System.Drawing.Size(117, 23);
+			this.button_SendToLeftPlayer.TabIndex = 5;
+			this.button_SendToLeftPlayer.Text = "Send to Left Player";
+			this.button_SendToLeftPlayer.UseVisualStyleBackColor = true;
+			this.button_SendToLeftPlayer.Click += new System.EventHandler(this.button_SendToLeftPlayer_Click);
 			// 
 			// listBox_SearchResults
 			// 
@@ -185,14 +194,38 @@
 			this.progressBar_Searching.Size = new System.Drawing.Size(100, 23);
 			this.progressBar_Searching.TabIndex = 8;
 			// 
+			// button_SendToRightPlayer
+			// 
+			this.button_SendToRightPlayer.Location = new System.Drawing.Point(299, 342);
+			this.button_SendToRightPlayer.Name = "button_SendToRightPlayer";
+			this.button_SendToRightPlayer.Size = new System.Drawing.Size(117, 23);
+			this.button_SendToRightPlayer.TabIndex = 6;
+			this.button_SendToRightPlayer.Text = "Send To Right Player";
+			this.button_SendToRightPlayer.UseVisualStyleBackColor = true;
+			this.button_SendToRightPlayer.Click += new System.EventHandler(this.button_SendToRightPlayer_Click);
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(90, 20);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(51, 13);
+			this.label1.TabIndex = 9;
+			this.label1.Text = "Keyword:";
+			// 
 			// SongSearchForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(428, 371);
-			this.Controls.Add(this.button_Select);
+			this.Controls.Add(this.button_SendToRightPlayer);
+			this.Controls.Add(this.button_SendToLeftPlayer);
 			this.Controls.Add(this.listBox_SearchResults);
 			this.Controls.Add(this.groupBox1);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(444, 410);
+			this.MinimumSize = new System.Drawing.Size(444, 173);
 			this.Name = "SongSearchForm";
 			this.Text = "SongSearchForm";
 			this.groupBox1.ResumeLayout(false);
@@ -212,12 +245,14 @@
 		private System.Windows.Forms.CheckBox checkBox_Artist;
 		private System.Windows.Forms.CheckBox checkBox_Title;
 		private System.Windows.Forms.Label label_NumResults;
-		private System.Windows.Forms.Button button_Select;
+		private System.Windows.Forms.Button button_SendToLeftPlayer;
 		private System.Windows.Forms.ListBox listBox_SearchResults;
 		private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
 		private System.Windows.Forms.Label label_Timer;
 		private System.Windows.Forms.ContextMenuStrip rightClickMenu_PlayList;
 		private System.Windows.Forms.ToolStripMenuItem editID3DataToolStripMenuItem;
 		private System.Windows.Forms.ProgressBar progressBar_Searching;
+		private System.Windows.Forms.Button button_SendToRightPlayer;
+		private System.Windows.Forms.Label label1;
 	}
 }

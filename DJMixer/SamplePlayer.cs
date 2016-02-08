@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using NAudio.Wave;
+using System.Diagnostics;
 
 namespace DJMixer {
 	public partial class SamplePlayer : BasicPlayer {
@@ -125,7 +126,7 @@ namespace DJMixer {
 			try {
 
 				if (currentSong == null) {
-					Console.WriteLine("No samples to play");
+					Debug.WriteLine("No samples to play");
 					mainPlayer.sampleDone();
 					return;
 				}
@@ -157,7 +158,7 @@ namespace DJMixer {
 		private void getNextSample() {
 
 			if (sampleList.Items.Count < 1) {
-				Console.WriteLine("No samples loaded");
+				Debug.WriteLine("No samples loaded");
 				return;
 			}
 

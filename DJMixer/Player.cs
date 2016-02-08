@@ -12,6 +12,7 @@ using System.Threading;
 using NAudio.Wave.SampleProviders;
 using System.Collections;
 using System.IO;
+using System.Diagnostics;
 
 namespace DJMixer {
 	public partial class Player : BasicPlayer {
@@ -37,7 +38,7 @@ namespace DJMixer {
 
 		public void sampleDone() {
 
-			Console.WriteLine("Sample Done");
+			Debug.WriteLine("Sample Done");
 			playSong();
 			startGUIThread();
 		}
@@ -100,6 +101,9 @@ namespace DJMixer {
 			sampleChannel.PreVolumeMeter += onPreVolumeMeter;
 			volumeDelegate = (vol) => sampleChannel.Volume = vol;
 			volumeDelegate(absoluteVolume * mixedVolume);
+			
+			//Debug.WriteLine("absoluteVolume: " + absoluteVolume + " mixedVolume: " + mixedVolume);
+			//Debug.WriteLine("absoluteVolume * mixedVolume = " + absoluteVolume * mixedVolume);
 
 			postVolumeMeter = new MeteringSampleProvider(sampleChannel);
 			postVolumeMeter.StreamVolume += onPostVolumeMeter;
@@ -130,7 +134,10 @@ namespace DJMixer {
 
 		}
 
-
+		internal void addSongs(List<Song> selectedSongs) {
+			
+			songList.Items.AddRange(selectedSongs.ToArray());
+		}
 
 		protected override void button_Stop_Click(Object sender, EventArgs e) {
 
@@ -146,9 +153,9 @@ namespace DJMixer {
 
 		protected override void loadNextSong(object sender, StoppedEventArgs e) {
 
-			Console.WriteLine("Load next song");
+			Debug.WriteLine("Load next song");
 			if (manuallyStopped) {  // this prevents next song from loading when stop button is pressed
-				Console.WriteLine("Manual stop");
+				Debug.WriteLine("Manual stop");
 				manuallyStopped = false;
 				return;
 			}
@@ -164,7 +171,7 @@ namespace DJMixer {
 
 		Song getNextSong() {
 
-			Console.WriteLine("Get next song");
+			Debug.WriteLine("Get next song");
 			if (songList.Items.Count > 0 && songList.Items.Count > nextSongIndex + 1) {
 				Song next = (Song)songList.Items[++nextSongIndex];
 				return next;
@@ -216,7 +223,7 @@ namespace DJMixer {
 			nextSongIndex = songList.SelectedIndex - 1;
 
 			if (!stop()) {
-				//Console.WriteLine("stopped?");
+				//Debug.WriteLine("stopped?");
 				loadNextSong(null, null);
 			}
 
@@ -336,7 +343,7 @@ namespace DJMixer {
 		private void startGUIThread() {
 
 			if (!threadGUIUpdater.IsAlive && fileReader != null) {
-				Console.WriteLine("Starting Thread");
+				Debug.WriteLine("Starting Thread");
 				threadGUIUpdater.Start();
 			}
 
@@ -385,8 +392,15 @@ namespace DJMixer {
 			songList.SelectedIndex = index;
 			if (e.Button == MouseButtons.Right)
 				songRightClicked = (Song)songList.Items[index];
-			//Console.WriteLine(index);
-			//Console.WriteLine(songRightClicked);
+			else if (e.Button == MouseButtons.Left) {
+
+				Label label = new Label();
+				label.Location = e.Location;
+				label.Text = "Test";
+
+			}
+			//Debug.WriteLine(index);
+			//Debug.WriteLine(songRightClicked);
 		}
 
 

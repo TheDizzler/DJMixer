@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,30 +26,11 @@ namespace DJMixer {
 		public bool usingTagLib = false;
 		public bool fileCorrupted = false;
 
-		//private String songname;
-		//private String artist;
-		//private String album;
-		//private short? year;
-		//private String genre;
 
 
 		public Song() {
 		}
 
-		//public Song(String file) {
-
-		//	filepath = file;
-
-		//	int startpos = filepath.LastIndexOf("\\");
-		//	if (startpos == -1)
-		//		startpos = filepath.LastIndexOf("/");
-		//	if (startpos == -1)
-		//		startpos = 0;
-
-		//	filename = filepath.Substring(startpos + 1, filepath.Length - startpos - 5);
-
-		//	usingTagLib = false;
-		//}
 
 		public bool initialize(String file) {
 			filepath = file;
@@ -65,9 +47,9 @@ namespace DJMixer {
 			//try {
 			//	metaData.Read(filepath);
 			//} catch (Exception ex) {
-			//	Console.WriteLine("Source: " + ex.Source);
-			//	Console.WriteLine("BaseException: " + ex.GetBaseException());
-			//	Console.WriteLine(filepath + ": " + ex.Message);
+			//	Debug.WriteLine("Source: " + ex.Source);
+			//	Debug.WriteLine("BaseException: " + ex.GetBaseException());
+			//	Debug.WriteLine(filepath + ": " + ex.Message);
 
 			//	usingUltraID3 = false;
 			//	return false;
@@ -75,23 +57,16 @@ namespace DJMixer {
 
 			try {
 				tagFile = File.Create(filepath);
-
-				//TagLib.File.LocalFileAbstraction abstraction = new TagLib.File.LocalFileAbstraction(filepath);
-				//TagLib.ReadStyle propertiesStyle = TagLib.ReadStyle.Average;
-				//tagFile = new TagLib.Mpeg.AudioFile(abstraction, propertiesStyle);
-
 				usingTagLib = true;
 				return true;
 
 			} catch (Exception ex) {
-				Console.WriteLine(filepath + " invalid. Trying ID3.");
-				//Console.WriteLine(ex.Message);
+				Debug.WriteLine(filepath + " invalid. Trying ID3.");
+				//Debug.WriteLine(ex.Message);
 				usingTagLib = false;
 			}
 
-
-			//try {
-
+			
 			using (Mp3File mp3 = new Mp3File(filepath, Mp3Permissions.ReadWrite)) {
 
 				id3Tag = mp3.GetTag(Id3TagFamily.FileStartTag);
@@ -105,14 +80,14 @@ namespace DJMixer {
 					}
 
 				} catch (Exception ex) {
-					Console.WriteLine("Could not load ID3v2. Attempting v1");
+					Debug.WriteLine("Could not load ID3v2. Attempting v1");
 
 				}
 
 				try {
 
 					id3Tag = mp3.GetTag(Id3TagFamily.FileEndTag);
-					Console.WriteLine("trying v1");
+					Debug.WriteLine("trying v1");
 
 					if (!String.IsNullOrWhiteSpace(id3Tag.Artists.Value)
 						&& !String.IsNullOrWhiteSpace(id3Tag.Title.Value)) {
@@ -122,23 +97,10 @@ namespace DJMixer {
 					}
 
 				} catch (Exception ex) {
-					Console.WriteLine("Could not load v1!!!");
+					Debug.WriteLine("Could not load v1!!!");
 					fileCorrupted = true;
 				}
 			}
-
-
-
-			//} catch (Exception ex) {
-			//	Console.WriteLine(filepath + " invalid. Onoes :(");
-			//	Console.WriteLine(ex.Message);
-			//	usingId3Tag = false;
-			//}
-
-			//if (id3Tag != null) {
-			//	usingId3Tag = true;
-			//	return true;
-			//}
 
 
 			return false;
@@ -149,17 +111,18 @@ namespace DJMixer {
 
 
 			try {
-				return matchesArtist(keyword) || matchesAlbum(keyword)
-					|| matchesInComment(keyword) || matchesFilename(keyword)
-					|| matchesGenre(keyword);
+				return matchesArtist(keyword) || matchesTitle(keyword)
+					|| matchesAlbum(keyword) || matchesGenre(keyword)
+					|| matchesInComment(keyword) || matchesFilename(keyword);
 			} catch (Exception ex) {
 
-				Console.WriteLine(filename + ": " + ex.Message);
+				Debug.WriteLine(filename + ": " + ex.Message);
 			}
 
 			return false;
 
 		}
+
 
 		private Boolean matchesFilename(String keyword) {
 
@@ -213,6 +176,18 @@ namespace DJMixer {
 			return false;
 		}
 
+		private Boolean matchesTitle(String keyword) {
+
+			if (usingId3Tag)
+				return id3Tag.Title.Value.ToLower().Contains(keyword);
+
+			if (usingTagLib)
+				if (!String.IsNullOrEmpty(tagFile.Tag.Title))
+					return tagFile.Tag.Title.ToLower().Contains(keyword);
+
+			return false;
+		}
+
 
 		private Boolean matchesGenre(String keyword) {
 
@@ -231,9 +206,9 @@ namespace DJMixer {
 
 		public override String ToString() {
 
-			//Console.WriteLine(filename);
-			//Console.WriteLine(tagFile.Tag.FirstPerformer.Length);
-			//Console.WriteLine(tagFile.Tag.Title.Length);
+			//Debug.WriteLine(filename);
+			//Debug.WriteLine(tagFile.Tag.FirstPerformer.Length);
+			//Debug.WriteLine(tagFile.Tag.Title.Length);
 			try {
 				if (usingTagLib) {
 					if ((String.IsNullOrWhiteSpace(tagFile.Tag.FirstPerformer)
@@ -251,8 +226,8 @@ namespace DJMixer {
 					return id3Tag.Artists.Value + " - " + id3Tag.Title.Value;
 				}
 			} catch (Exception ex) {
-				Console.WriteLine(filename + " is fuckered!!");
-				Console.WriteLine(" Reason:" + ex);
+				Debug.WriteLine(filename + " is fuckered!!");
+				Debug.WriteLine(" Reason:" + ex);
 				fileCorrupted = true;
 			}
 
@@ -263,11 +238,6 @@ namespace DJMixer {
 
 		}
 
-		//if (usingUltraID3) {
-		//	//if (metaData.Artist.Length + metaData.Title.Length == 0)
-		//	//	return filename;
-		//	return metaData.Artist + " - " + metaData.Title;
-		//}
 	}
 }
 

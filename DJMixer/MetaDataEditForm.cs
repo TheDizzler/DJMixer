@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -85,7 +86,7 @@ namespace DJMixer {
 				metaFile.Tag.Year = uint.Parse(textBox_Year.Text);
 			} catch (Exception ex) {
 				//metaFile.Tag.Year = null;
-				Console.WriteLine("Could not parse year");
+				Debug.WriteLine("Could not parse year");
 			}
 			metaFile.Save();
 
@@ -96,9 +97,9 @@ namespace DJMixer {
 			//	try {
 			//		metaData.Genre = textBox_Genre.Text;
 			//	} catch (Exception ex) {
-			//		Console.WriteLine(ex.Message);
-			//		Console.WriteLine(ex.GetType().ToString());
-			//		Console.WriteLine(ex.HResult);
+			//		Debug.WriteLine(ex.Message);
+			//		Debug.WriteLine(ex.GetType().ToString());
+			//		Debug.WriteLine(ex.HResult);
 			//	}
 			//	metaData.Album = textBox_Album.Text;
 			//	try {
@@ -136,7 +137,7 @@ namespace DJMixer {
 			try {
 				short.Parse(textBox_Year.Text);
 			} catch (Exception ex) {
-				Console.WriteLine(ex.Message);
+				Debug.WriteLine(ex.Message);
 				//textBox_Year.Text = original;
 				textBox_Year.Undo();
 				textBox_Year.BackColor = Color.Crimson;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -78,7 +79,7 @@ namespace DJMixer {
 			comboBox_SoundDeviceSelect.Items.Clear();
 
 			for (int i = 0; i < WaveOut.DeviceCount; ++i) {
-				//Console.WriteLine(WaveOut.GetCapabilities(i).ProductName);
+				//Debug.WriteLine(WaveOut.GetCapabilities(i).ProductName);
 				WaveOutDevice wave = new WaveOutDevice(WaveOut.GetCapabilities(i));
 				comboBox_SoundDeviceSelect.Items.Add(wave);
 
@@ -134,7 +135,7 @@ namespace DJMixer {
 		private void comboBox_SoundDeviceSelect_SelectedIndexChanged(Object sender, EventArgs e) {
 
 			if (!populatingList) {
-				Console.WriteLine("Initing new sound device");
+				Debug.WriteLine("Initing new sound device");
 				deck.initSoundDevices();
 			}
 			populatingList = false;

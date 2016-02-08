@@ -18,6 +18,10 @@ namespace DJMixer {
 
 	public partial class SongSearchForm : Form {
 
+
+		public Form1 mixer;
+
+
 		Size defaultSize = new Size(new Point(444, 173));
 		Size fullSize = new Size(new Point(444, 410));
 
@@ -55,7 +59,7 @@ namespace DJMixer {
 			if (String.IsNullOrWhiteSpace(searchKeyword.Text)) {
 				searchKeyword.BackColor = Color.Red;
 				return;
-			}
+			} 
 
 			DialogResult result = folderBrowserDialog.ShowDialog(this);
 
@@ -63,6 +67,8 @@ namespace DJMixer {
 
 				listBox_SearchResults.Items.Clear();
 				songsFound = 0;
+				label_NumResults.Visible = true;
+				label_Timer.Visible = true;
 
 				if (timer == null)
 					timer = new Stopwatch();
@@ -102,11 +108,11 @@ namespace DJMixer {
 
 					files.AddRange(Directory.GetFiles(subDir, "*.mp3"));
 					files.AddRange(searchForFiles(subDir));
-					//Console.WriteLine(subDir + " Ok");
+					//Debug.WriteLine(subDir + " Ok");
 
 				} catch (UnauthorizedAccessException ex) {
 
-					//Console.WriteLine(subDir + " NOT cool!!!!");
+					//Debug.WriteLine(subDir + " is inaccessible.");
 				}
 			}
 
@@ -116,22 +122,13 @@ namespace DJMixer {
 
 		private void getResults(List<String> allFiles) {
 
-			//List<Song> results = new List<Song>();
-
-			//searchKeyword.Text = searchKeyword.Text.Trim(' ');
-
-			//String keyword = searchKeyword.Text.ToLower();
-
-
 			foreach (String file in allFiles) {
 
 				Song song = new Song();
 				if (song.initialize(file) && song.matchesAll(keyword)) {
 
-					//results.Add(song);
 					addToListBox(song);
-					//listBox_SearchResults.Items.Add(song);
-					//this.Size = fullSize;
+
 				}
 			}
 		}
@@ -140,7 +137,7 @@ namespace DJMixer {
 
 		private void searchFieldChanged(Object sender, EventArgs e) {
 
-			if (String.IsNullOrWhiteSpace(searchKeyword.Text))
+			if (!String.IsNullOrWhiteSpace(searchKeyword.Text))
 				searchKeyword.BackColor = Color.White;
 		}
 
@@ -153,7 +150,7 @@ namespace DJMixer {
 			//label_NumResults.Text = listBox_SearchResults.Items.Count + " Matches Found";
 			//label_Timer.Text = "in " + timer.Elapsed.Seconds + " seconds";
 
-			Console.WriteLine(Thread.CurrentThread.Name + " terminated");
+			Debug.WriteLine(Thread.CurrentThread.Name + " terminated");
 		}
 
 		/// <summary>
@@ -169,7 +166,7 @@ namespace DJMixer {
 
 			setGUIText();
 
-			Console.WriteLine(Thread.CurrentThread.Name + " Thread terminated");
+			Debug.WriteLine(Thread.CurrentThread.Name + " Thread terminated");
 		}
 
 		/// <summary>
@@ -205,10 +202,6 @@ namespace DJMixer {
 			}
 		}
 
-		private void button_Select_Click(Object sender, EventArgs e) {
-
-		}
-
 
 		private void mouseClickListBox(Object sender, MouseEventArgs e) {
 
@@ -220,8 +213,8 @@ namespace DJMixer {
 			if (e.Button == MouseButtons.Right)
 				songRightClicked = (Song)listBox_SearchResults.Items[index];
 
-			//Console.WriteLine(index);
-			//Console.WriteLine(songRightClicked);
+			//Debug.WriteLine(index);
+			//Debug.WriteLine(songRightClicked);
 		}
 
 		private void editID3Tag(Object sender, EventArgs e) {
@@ -234,6 +227,29 @@ namespace DJMixer {
 
 				songRightClicked = null;
 			}
+		}
+
+		private void button_SendToLeftPlayer_Click(Object sender, EventArgs e) {
+
+			mixer.addToLeftPlayer(getList());
+		}
+
+
+		private List<Song> getList() {
+
+			List<Song> list = new List<Song>();
+
+			for (int i = 0; i < listBox_SearchResults.SelectedItems.Count; ++i) {
+
+				list.Add((Song)listBox_SearchResults.SelectedItems[i]);
+			}
+
+			return list;
+		}
+
+		private void button_SendToRightPlayer_Click(Object sender, EventArgs e) {
+
+			mixer.addToRightPlayer(getList());
 		}
 	}
 }

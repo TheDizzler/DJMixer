@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -46,14 +47,14 @@ namespace DJMixer {
 
 			switch (config.getDeviceOut()) {
 				case DEVICEID.DIRECTSOUND:
-					Console.WriteLine("Initing direct sound");
+					Debug.WriteLine("Initing direct sound");
 					leftPlayer.setGUID(config.getDeviceGUID());
 					rightPlayer.setGUID(config.getDeviceGUID());
 					leftSamplePlayer.setGUID(config.getDeviceGUID());
 					rightSamplePlayer.setGUID(config.getDeviceGUID());
 					break;
 				case DEVICEID.WAVEOUT:
-					Console.WriteLine("Initing WAVE out");
+					Debug.WriteLine("Initing WAVE out");
 					leftPlayer.setWaveOut(config.getWaveOutDeviceNumber());
 					rightPlayer.setWaveOut(config.getWaveOutDeviceNumber());
 					leftSamplePlayer.setWaveOut(config.getWaveOutDeviceNumber());
@@ -112,7 +113,18 @@ namespace DJMixer {
 		private void searchToolStripMenuItem_Click(Object sender, EventArgs e) {
 
 			SongSearchForm searchForm = new SongSearchForm();
+			searchForm.mixer = this;
 			searchForm.Show();
+		}
+
+		internal void addToLeftPlayer(List<Song> selectedSongs) {
+
+			leftPlayer.addSongs(selectedSongs);
+		}
+
+		internal void addToRightPlayer(List<Song> selectedSongs) {
+			
+			rightPlayer.addSongs(selectedSongs);
 		}
 	}
 }
