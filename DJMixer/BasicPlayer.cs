@@ -197,7 +197,7 @@ namespace DJMixer {
 			}
 
 			setGUIText(String.Format("{0:00}:{1:00}", 0, 0));
-			Console.WriteLine(this.Name + "Thread terminated");
+			Console.WriteLine(Thread.CurrentThread.Name + " Thread terminated");
 		}
 
 		/// <summary>
@@ -214,7 +214,6 @@ namespace DJMixer {
 				timer.Invoke(d, new object[] { text });
 			} else {
 				timer.Text = text;
-				//progressBar.Value = (int)(fileReader.CurrentTime.TotalSeconds / fileReader.TotalTime.TotalSeconds * 100);
 			}
 
 		}

@@ -236,7 +236,8 @@ namespace DJMixer {
 			//Console.WriteLine(tagFile.Tag.Title.Length);
 			try {
 				if (usingTagLib) {
-					if (String.IsNullOrWhiteSpace(tagFile.Tag.FirstPerformer)
+					if ((String.IsNullOrWhiteSpace(tagFile.Tag.FirstPerformer)
+							|| String.IsNullOrWhiteSpace(tagFile.Tag.Title))
 						|| (tagFile.Tag.FirstPerformer.Length + tagFile.Tag.Title.Length == 0))
 						return filename;
 					return tagFile.Tag.FirstPerformer + " - " + tagFile.Tag.Title;
@@ -251,7 +252,7 @@ namespace DJMixer {
 				}
 			} catch (Exception ex) {
 				Console.WriteLine(filename + " is fuckered!!");
-
+				Console.WriteLine(" Reason:" + ex);
 				fileCorrupted = true;
 			}
 
