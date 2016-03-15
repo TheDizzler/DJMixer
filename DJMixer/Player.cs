@@ -94,7 +94,7 @@ namespace DJMixer {
 
 			startGUIThread();
 
-			waveChannel = new WaveChannel32(fileReader, absoluteVolume * mixedVolume, panSlider.Pan);
+			waveChannel = new WaveChannel32(fileReader, 1, panSlider.Pan);
 			waveChannel.PadWithZeroes = false;
 
 			SampleChannel sampleChannel = new SampleChannel(waveChannel);
@@ -295,11 +295,11 @@ namespace DJMixer {
 
 			foreach (string file in files) {
 				String fileType = file.Substring(file.LastIndexOf(".") + 1);
-				if (fileType == "mp3") {
+				if (fileType.ToLower() == "mp3") {
+
 					Song song = new Song();
 					if (!song.initialize(file))
 						MessageBox.Show(" Could not read ID3 metadata in " + file);
-
 					songList.Items.Add(song);
 
 				} else if (fileType == "m3u") {
@@ -314,10 +314,12 @@ namespace DJMixer {
 							if (filepath.Substring(1, 1) != ":") {
 								filepath = file.Substring(0, file.LastIndexOf("\\") + 1) + filepath;
 							}
+							
 							Song song = new Song();
-							if (!song.initialize(file))
-								MessageBox.Show(" Could not read ID3 metadata in " + file);
+							if (!song.initialize(filepath))
+								MessageBox.Show("Could not read ID3 metadata in " + filepath);
 							songList.Items.Add(song);
+							
 						}
 					}
 				}

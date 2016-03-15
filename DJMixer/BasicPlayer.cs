@@ -178,8 +178,8 @@ namespace DJMixer {
 			if (fileReader != null)
 				volumeDelegate(absoluteVolume * mixedVolume);
 
-			//Debug.WriteLine("absoluteVolume: " + absoluteVolume + " mixedVolume: " + mixedVolume);
-			//Debug.WriteLine("absoluteVolume * mixedVolume = " + absoluteVolume * mixedVolume);
+			Debug.WriteLine("absoluteVolume: " + absoluteVolume + " mixedVolume: " + mixedVolume);
+			Debug.WriteLine("absoluteVolume * mixedVolume = " + absoluteVolume * mixedVolume);
 		}
 
 

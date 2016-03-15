@@ -56,7 +56,7 @@ namespace DJMixer {
 			foreach (String file in loadMP3Dialog.FileNames) {
 
 				String fileType = file.Substring(file.LastIndexOf(".") + 1);
-				if (fileType == "mp3") {
+				if (fileType.ToLower() == "mp3") {
 					Song song = new Song();
 					if (song.initialize(file))
 						sampleList.Items.Add(song);
@@ -65,24 +65,33 @@ namespace DJMixer {
 
 				} else if (fileType == "m3u") {
 
-					StreamReader m3u = File.OpenText(file);
-					String line;
-					while ((line = m3u.ReadLine()) != null) {
+					StreamReader m3u;
+					try {
+						m3u = File.OpenText(file);
 
-						if (line.StartsWith("#EXTINF:")) {
+						String line;
+						while ((line = m3u.ReadLine()) != null) {
 
-							String filepath = m3u.ReadLine();
-							if (filepath.Substring(1, 1) != ":") {
-								filepath = file.Substring(0, file.LastIndexOf("\\") + 1) + filepath;
+							if (line.StartsWith("#EXTINF:")) {
+
+								String filepath = m3u.ReadLine();
+								if (filepath.Substring(1, 1) != ":") {
+									filepath = file.Substring(0, file.LastIndexOf("\\") + 1) + filepath;
+								}
+
+								Song song = new Song();
+								if (song.initialize(filepath)) {
+									sampleList.Items.Add(song);
+								} else
+									MessageBox.Show(filepath + " does not appear to be a valid mp3 file");
+
 							}
-							Song song = new Song();
-							if (song.initialize(file))
-								sampleList.Items.Add(song);
-							else
-								MessageBox.Show(file + " does not appear to be a valid mp3 file");
-
 						}
+					} catch (Exception ex) {
+						MessageBox.Show(ex.Message);
+						return;
 					}
+
 				}
 			}
 
@@ -141,7 +150,7 @@ namespace DJMixer {
 				return;
 			}
 
-			waveChannel = new WaveChannel32(fileReader, absoluteVolume * mixedVolume, panSlider.Pan);
+			waveChannel = new WaveChannel32(fileReader, 1, panSlider.Pan);
 			waveChannel.PadWithZeroes = false;
 
 			volumeDelegate = (vol) => waveChannel.Volume = vol;

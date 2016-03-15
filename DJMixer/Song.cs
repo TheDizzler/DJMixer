@@ -43,18 +43,6 @@ namespace DJMixer {
 
 			filename = filepath.Substring(startpos + 1, filepath.Length - startpos - 5);
 
-			//metaData = new UltraID3();
-			//try {
-			//	metaData.Read(filepath);
-			//} catch (Exception ex) {
-			//	Debug.WriteLine("Source: " + ex.Source);
-			//	Debug.WriteLine("BaseException: " + ex.GetBaseException());
-			//	Debug.WriteLine(filepath + ": " + ex.Message);
-
-			//	usingUltraID3 = false;
-			//	return false;
-			//}
-
 			try {
 				tagFile = File.Create(filepath);
 				usingTagLib = true;
@@ -66,43 +54,45 @@ namespace DJMixer {
 				usingTagLib = false;
 			}
 
-			
-			using (Mp3File mp3 = new Mp3File(filepath, Mp3Permissions.ReadWrite)) {
+			try {
+				using (Mp3File mp3 = new Mp3File(filepath, Mp3Permissions.ReadWrite)) {
 
-				id3Tag = mp3.GetTag(Id3TagFamily.FileStartTag);
-				try {
+					id3Tag = mp3.GetTag(Id3TagFamily.FileStartTag);
+					try {
 
-					if (!String.IsNullOrWhiteSpace(id3Tag.Artists.Value)
-						&& !String.IsNullOrWhiteSpace(id3Tag.Title.Value)) {
+						if (!String.IsNullOrWhiteSpace(id3Tag.Artists.Value)
+							&& !String.IsNullOrWhiteSpace(id3Tag.Title.Value)) {
 
-						usingId3Tag = true;
-						return true;
+							usingId3Tag = true;
+							return true;
+						}
+
+					} catch (Exception ex) {
+						Debug.WriteLine("Could not load ID3v2. Attempting v1");
+
 					}
 
-				} catch (Exception ex) {
-					Debug.WriteLine("Could not load ID3v2. Attempting v1");
+					try {
 
-				}
+						id3Tag = mp3.GetTag(Id3TagFamily.FileEndTag);
+						Debug.WriteLine("trying v1");
 
-				try {
+						if (!String.IsNullOrWhiteSpace(id3Tag.Artists.Value)
+							&& !String.IsNullOrWhiteSpace(id3Tag.Title.Value)) {
 
-					id3Tag = mp3.GetTag(Id3TagFamily.FileEndTag);
-					Debug.WriteLine("trying v1");
+							usingId3Tag = true;
+							return true;
+						}
 
-					if (!String.IsNullOrWhiteSpace(id3Tag.Artists.Value)
-						&& !String.IsNullOrWhiteSpace(id3Tag.Title.Value)) {
-
-						usingId3Tag = true;
-						return true;
+					} catch (Exception ex) {
+						Debug.WriteLine("Could not load v1!!!");
+						fileCorrupted = true;
 					}
-
-				} catch (Exception ex) {
-					Debug.WriteLine("Could not load v1!!!");
-					fileCorrupted = true;
 				}
+			} catch (Exception ex) {
+				Debug.WriteLine("Problem with mp3. Likely Problem: incorrect filepath or name.");
+				fileCorrupted = true;
 			}
-
-
 			return false;
 		}
 

@@ -37,7 +37,8 @@ namespace DJMixer {
 				this.Text = song.ToString();
 				textBox_Title.Text = metaFile.Tag.Title;
 				textBox_Artist.Text = metaFile.Tag.FirstPerformer;
-				textBox_Genre.Text = metaFile.Tag.Genres[0];
+				if (metaFile.Tag.Genres.Length > 0)
+					textBox_Genre.Text = metaFile.Tag.Genres[0];
 				foreach (String genre in metaFile.Tag.Genres)
 					textBox_Genre.Text += "; " + genre;
 				textBox_Album.Text = metaFile.Tag.Album;

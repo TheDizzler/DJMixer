@@ -37,6 +37,7 @@ namespace DJMixer {
 
 		private int songsFound = 0;
 
+		bool cancelSearch = false;
 
 
 		public SongSearchForm() {
@@ -59,7 +60,7 @@ namespace DJMixer {
 			if (String.IsNullOrWhiteSpace(searchKeyword.Text)) {
 				searchKeyword.BackColor = Color.Red;
 				return;
-			} 
+			}
 
 			DialogResult result = folderBrowserDialog.ShowDialog(this);
 
@@ -95,6 +96,9 @@ namespace DJMixer {
 				progressBar_Searching.Value = 100;
 
 			}
+
+			button_search.Visible = false;
+			button_cancelSearch.Visible = true;
 		}
 
 
@@ -128,7 +132,10 @@ namespace DJMixer {
 				if (song.initialize(file) && song.matchesAll(keyword)) {
 
 					addToListBox(song);
-
+					if (cancelSearch) {
+						cancelSearch = false;
+						return;
+					}
 				}
 			}
 		}
@@ -166,6 +173,9 @@ namespace DJMixer {
 
 			setGUIText();
 
+			changeButtons();
+			
+
 			Debug.WriteLine(Thread.CurrentThread.Name + " Thread terminated");
 		}
 
@@ -178,11 +188,22 @@ namespace DJMixer {
 		private delegate void SetListCallback(Song song);
 
 
+		protected virtual void changeButtons() {
+
+			if (button_search.InvokeRequired) {
+				SetTextCallback d = new SetTextCallback(changeButtons);
+				button_search.Invoke(d, new object[] { });
+			} else {
+				button_search.Visible = true;
+				button_cancelSearch.Visible = false;
+			}
+
+		}
 		protected virtual void setGUIText() {
 
 			if (label_NumResults.InvokeRequired) {
 				SetTextCallback d = new SetTextCallback(setGUIText);
-				label_NumResults.Invoke(d, new object[] {  });
+				label_NumResults.Invoke(d, new object[] { });
 			} else {
 				label_NumResults.Text = listBox_SearchResults.Items.Count + " Matches Found";
 				label_Timer.Text = "in " + timer.Elapsed.TotalSeconds + " seconds";
@@ -210,9 +231,9 @@ namespace DJMixer {
 			if (index <= -1)
 				return;
 
-			if (e.Button == MouseButtons.Right)
+			if (e.Button == MouseButtons.Right) {
 				songRightClicked = (Song)listBox_SearchResults.Items[index];
-
+			}
 			//Debug.WriteLine(index);
 			//Debug.WriteLine(songRightClicked);
 		}
@@ -250,6 +271,16 @@ namespace DJMixer {
 		private void button_SendToRightPlayer_Click(Object sender, EventArgs e) {
 
 			mixer.addToRightPlayer(getList());
+		}
+
+		private void button_cancelSearch_Click(Object sender, EventArgs e) {
+
+			cancelSearch = true;
+		}
+
+		private void songList_MouseDoubleClick(Object sender, MouseEventArgs e) {
+			songRightClicked = (Song)listBox_SearchResults.SelectedItem;
+			editID3Tag(sender, e);
 		}
 	}
 }

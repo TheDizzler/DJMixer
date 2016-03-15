@@ -25,9 +25,11 @@
 		private void InitializeComponent() {
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SongSearchForm));
-			this.button_Search = new System.Windows.Forms.Button();
+			this.button_search = new System.Windows.Forms.Button();
 			this.searchKeyword = new System.Windows.Forms.RichTextBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.label1 = new System.Windows.Forms.Label();
+			this.progressBar_Searching = new System.Windows.Forms.ProgressBar();
 			this.label_Timer = new System.Windows.Forms.Label();
 			this.label_NumResults = new System.Windows.Forms.Label();
 			this.checkBox_Comments = new System.Windows.Forms.CheckBox();
@@ -39,22 +41,21 @@
 			this.rightClickMenu_PlayList = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.editID3DataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-			this.progressBar_Searching = new System.Windows.Forms.ProgressBar();
 			this.button_SendToRightPlayer = new System.Windows.Forms.Button();
-			this.label1 = new System.Windows.Forms.Label();
+			this.button_cancelSearch = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
 			this.rightClickMenu_PlayList.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// button_Search
+			// button_search
 			// 
-			this.button_Search.Location = new System.Drawing.Point(313, 85);
-			this.button_Search.Name = "button_Search";
-			this.button_Search.Size = new System.Drawing.Size(75, 23);
-			this.button_Search.TabIndex = 0;
-			this.button_Search.Text = "Search";
-			this.button_Search.UseVisualStyleBackColor = true;
-			this.button_Search.Click += new System.EventHandler(this.button_Search_Click);
+			this.button_search.Location = new System.Drawing.Point(313, 85);
+			this.button_search.Name = "button_search";
+			this.button_search.Size = new System.Drawing.Size(75, 23);
+			this.button_search.TabIndex = 0;
+			this.button_search.Text = "Search";
+			this.button_search.UseVisualStyleBackColor = true;
+			this.button_search.Click += new System.EventHandler(this.button_Search_Click);
 			// 
 			// searchKeyword
 			// 
@@ -67,13 +68,14 @@
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.button_cancelSearch);
 			this.groupBox1.Controls.Add(this.label1);
 			this.groupBox1.Controls.Add(this.progressBar_Searching);
 			this.groupBox1.Controls.Add(this.label_Timer);
 			this.groupBox1.Controls.Add(this.label_NumResults);
 			this.groupBox1.Controls.Add(this.checkBox_Comments);
 			this.groupBox1.Controls.Add(this.searchKeyword);
-			this.groupBox1.Controls.Add(this.button_Search);
+			this.groupBox1.Controls.Add(this.button_search);
 			this.groupBox1.Controls.Add(this.checkBox3);
 			this.groupBox1.Controls.Add(this.checkBox_Artist);
 			this.groupBox1.Controls.Add(this.checkBox_Title);
@@ -82,6 +84,22 @@
 			this.groupBox1.Size = new System.Drawing.Size(404, 119);
 			this.groupBox1.TabIndex = 3;
 			this.groupBox1.TabStop = false;
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(90, 20);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(51, 13);
+			this.label1.TabIndex = 9;
+			this.label1.Text = "Keyword:";
+			// 
+			// progressBar_Searching
+			// 
+			this.progressBar_Searching.Location = new System.Drawing.Point(299, 25);
+			this.progressBar_Searching.Name = "progressBar_Searching";
+			this.progressBar_Searching.Size = new System.Drawing.Size(100, 23);
+			this.progressBar_Searching.TabIndex = 8;
 			// 
 			// label_Timer
 			// 
@@ -167,6 +185,7 @@
 			this.listBox_SearchResults.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
 			this.listBox_SearchResults.Size = new System.Drawing.Size(404, 199);
 			this.listBox_SearchResults.TabIndex = 4;
+			this.listBox_SearchResults.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.songList_MouseDoubleClick);
 			this.listBox_SearchResults.MouseDown += new System.Windows.Forms.MouseEventHandler(this.mouseClickListBox);
 			// 
 			// rightClickMenu_PlayList
@@ -181,18 +200,12 @@
 			this.editID3DataToolStripMenuItem.Name = "editID3DataToolStripMenuItem";
 			this.editID3DataToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.editID3DataToolStripMenuItem.Text = "Edit ID3 Data";
+			this.editID3DataToolStripMenuItem.Click += new System.EventHandler(this.editID3Tag);
 			// 
 			// folderBrowserDialog
 			// 
 			this.folderBrowserDialog.Description = "Chose a directory to search";
 			this.folderBrowserDialog.ShowNewFolderButton = false;
-			// 
-			// progressBar_Searching
-			// 
-			this.progressBar_Searching.Location = new System.Drawing.Point(299, 25);
-			this.progressBar_Searching.Name = "progressBar_Searching";
-			this.progressBar_Searching.Size = new System.Drawing.Size(100, 23);
-			this.progressBar_Searching.TabIndex = 8;
 			// 
 			// button_SendToRightPlayer
 			// 
@@ -204,14 +217,16 @@
 			this.button_SendToRightPlayer.UseVisualStyleBackColor = true;
 			this.button_SendToRightPlayer.Click += new System.EventHandler(this.button_SendToRightPlayer_Click);
 			// 
-			// label1
+			// button_cancelSearch
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(90, 20);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(51, 13);
-			this.label1.TabIndex = 9;
-			this.label1.Text = "Keyword:";
+			this.button_cancelSearch.Location = new System.Drawing.Point(313, 56);
+			this.button_cancelSearch.Name = "button_cancelSearch";
+			this.button_cancelSearch.Size = new System.Drawing.Size(75, 23);
+			this.button_cancelSearch.TabIndex = 10;
+			this.button_cancelSearch.Text = "Cancel";
+			this.button_cancelSearch.UseVisualStyleBackColor = true;
+			this.button_cancelSearch.Visible = false;
+			this.button_cancelSearch.Click += new System.EventHandler(this.button_cancelSearch_Click);
 			// 
 			// SongSearchForm
 			// 
@@ -237,7 +252,7 @@
 
 		#endregion
 
-		private System.Windows.Forms.Button button_Search;
+		private System.Windows.Forms.Button button_search;
 		private System.Windows.Forms.RichTextBox searchKeyword;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.CheckBox checkBox_Comments;
@@ -254,5 +269,6 @@
 		private System.Windows.Forms.ProgressBar progressBar_Searching;
 		private System.Windows.Forms.Button button_SendToRightPlayer;
 		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Button button_cancelSearch;
 	}
 }
